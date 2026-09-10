@@ -94,7 +94,14 @@ html.oc-embedded #oreon-chapters{height:100svh;}
   if(!embedded&&(rect.top>2||rect.bottom<innerHeight-2))return;
   const now=performance.now(),continuing=now-wheelStamp<200;wheelStamp=now;
   const direction=e.deltaY>0?1:-1;
-  if(!animating&&((settled===0&&direction<0)||(settled===2&&direction>0)))return;
+  if(!animating&&((settled===0&&direction<0)||(settled===2&&direction>0))){
+   if(embedded&&parentOrigin&&parentOrigin!=='null'){
+    e.preventDefault();
+    const delta=e.deltaY*(e.deltaMode===1?16:e.deltaMode===2?innerHeight:1);
+    parent.postMessage({type:'oreon:chapter-exit',delta:delta},parentOrigin);
+   }
+   return;
+  }
   e.preventDefault();
   if(animating||continuing)return;
   const chapter=Math.max(0,Math.min(2,settled+direction));
