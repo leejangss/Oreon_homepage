@@ -1,9 +1,9 @@
 <!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>OREON — AMPHEXON Technology</title><style>@import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500&display=swap");
-html,body{margin:0;background:#02050c;}
+html,body{margin:0;background:#080b18;}
 #oreon-amphexon,#oreon-amphexon *{box-sizing:border-box;}
-#oreon-amphexon{height:300svh;position:relative;background:#02050c;font-family:"IBM Plex Sans",sans-serif!important;}
-#oreon-amphexon .oa-screen{position:sticky;top:0;height:100svh;display:flex;align-items:center;justify-content:center;overflow:hidden;background:#02050c;isolation:isolate;}
-#oreon-amphexon .oa-backlight{position:absolute;inset:0;z-index:-1;background:radial-gradient(ellipse 110% 95% at 50% -20%,#2053c3 0%,#102858 42%,#061027 69%,transparent 100%);opacity:var(--oa-bg,.85);}
+#oreon-amphexon{height:300svh;position:relative;background:#080b18;font-family:"IBM Plex Sans",sans-serif!important;}
+#oreon-amphexon .oa-screen{position:sticky;top:0;height:100svh;display:flex;align-items:center;justify-content:center;overflow:hidden;background:#080b18;isolation:isolate;}
+#oreon-amphexon .oa-backlight{position:absolute;inset:0;z-index:-1;background:radial-gradient(ellipse 110% 95% at 50% -20%,#2053c3 0%,#102858 42%,#061027 69%,transparent 100%);opacity:var(--oa-bg,0);}
 #oreon-amphexon .oa-orb{--oa-size:min(110vw,110svh,1150px);position:relative;flex:none;width:var(--oa-size);height:var(--oa-size);transform:translateY(var(--oa-y,10svh)) scale(var(--oa-scale,.2));will-change:transform;}
 #oreon-amphexon canvas{position:absolute;inset:0;width:100%;height:100%;display:block;pointer-events:none;}
 #oreon-amphexon h2{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;margin:0;font-family:inherit!important;font-size:calc(var(--oa-size)*.094);font-weight:400;line-height:1.32;letter-spacing:-.035em;color:#eef1f7;text-align:center;white-space:nowrap;}
@@ -22,7 +22,7 @@ html.oa-embedded #oreon-amphexon{height:100svh;}
  let origin='';try{origin=new URL(document.referrer).origin;}catch(e){}
  let target=0,current=0,raf=0,last=0,clock=0,inView=true,draw=null,resizeGL=null;
  const clamp=x=>Math.max(0,Math.min(1,x));
- function paint(p){const ease=clamp(p);orb.style.setProperty('--oa-scale',.2+.6*ease);orb.style.setProperty('--oa-y',(10*(1-ease))+'svh');root.style.setProperty('--oa-bg',.9-.35*ease);}
+ function paint(p){const ease=clamp(p);orb.style.setProperty('--oa-scale',.2+.6*ease);orb.style.setProperty('--oa-y',(10*(1-ease))+'svh');root.style.setProperty('--oa-bg',.55*ease);}
  function tick(now){raf=0;if(document.hidden||!inView){last=0;return;}const dt=last?Math.min(60,now-last):16;last=now;const dest=reduced.matches?1:target;current=dest;paint(current);if(!reduced.matches)clock+=dt/1000;if(draw)draw(clock);if(!reduced.matches||current!==dest)raf=requestAnimationFrame(tick);else last=0;}
  function wake(){if(!raf&&!document.hidden&&inView)raf=requestAnimationFrame(tick);}
  function local(){if(!embedded)target=clamp(-root.getBoundingClientRect().top/Math.max(1,root.offsetHeight-innerHeight));wake();}
