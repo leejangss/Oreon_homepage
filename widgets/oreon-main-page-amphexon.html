@@ -1,0 +1,50 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>OREON — AMPHEXON Technology</title><style>@import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500&display=swap");
+html,body{margin:0;background:#02050c;}
+#oreon-amphexon,#oreon-amphexon *{box-sizing:border-box;}
+#oreon-amphexon{height:300svh;position:relative;background:#02050c;font-family:"IBM Plex Sans",sans-serif!important;}
+#oreon-amphexon .oa-screen{position:sticky;top:0;height:100svh;display:flex;align-items:center;justify-content:center;overflow:hidden;background:#02050c;isolation:isolate;}
+#oreon-amphexon .oa-backlight{position:absolute;inset:0;z-index:-1;background:radial-gradient(ellipse 110% 95% at 50% -20%,#2053c3 0%,#102858 42%,#061027 69%,transparent 100%);opacity:var(--oa-bg,.85);}
+#oreon-amphexon .oa-orb{--oa-size:min(110vw,110svh,1150px);position:relative;flex:none;width:var(--oa-size);height:var(--oa-size);transform:translateY(var(--oa-y,10svh)) scale(var(--oa-scale,.2));will-change:transform;}
+#oreon-amphexon canvas{position:absolute;inset:0;width:100%;height:100%;display:block;pointer-events:none;}
+#oreon-amphexon h2{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;margin:0;font-family:inherit!important;font-size:calc(var(--oa-size)*.094);font-weight:400;line-height:1.32;letter-spacing:-.035em;color:#eef1f7;text-align:center;white-space:nowrap;}
+#oreon-amphexon .oa-brand sup{font-size:.47em;vertical-align:super;line-height:0;letter-spacing:0;margin-left:.035em;}
+#oreon-amphexon .oa-technology{color:#29abe0;letter-spacing:-.03em;margin-top:.12em;}
+#oreon-amphexon .oa-fallback{position:absolute;inset:10%;border-radius:50%;background:conic-gradient(from 0deg,#19458b,#236da5,#77d7ff,#f5ffff,#508fea,#7060ba,#19458b);mask:radial-gradient(circle,transparent 59%,#000 67%,#000 69%,transparent 72%);-webkit-mask:radial-gradient(circle,transparent 59%,#000 67%,#000 69%,transparent 72%);filter:blur(2px);animation:oa-orbit 6.5s linear infinite;}
+#oreon-amphexon.oa-gl .oa-fallback{display:none;}
+@keyframes oa-orbit{to{transform:rotate(360deg);}}
+html.oa-embedded #oreon-amphexon{height:100svh;}
+@media(max-width:767px){#oreon-amphexon .oa-orb{--oa-size:min(114vw,98svh);}}
+@media(prefers-reduced-motion:reduce){#oreon-amphexon{height:100svh;}#oreon-amphexon .oa-orb{transform:scale(.8);will-change:auto;}#oreon-amphexon .oa-fallback{animation:none;}}
+</style></head><body><section id="oreon-amphexon" aria-labelledby="oa-title"><div class="oa-screen"><div class="oa-backlight" aria-hidden="true"></div><div class="oa-orb"><div class="oa-fallback" aria-hidden="true"></div><canvas aria-hidden="true"></canvas><h2 id="oa-title"><span class="oa-brand">AMPHEXON<sup>™</sup></span><span class="oa-technology">Technology</span></h2></div></div></section><script>(function(){
+ const root=document.getElementById('oreon-amphexon'),orb=root.querySelector('.oa-orb'),canvas=root.querySelector('canvas');
+ const reduced=matchMedia('(prefers-reduced-motion: reduce)'),embedded=parent!==window;
+ if(embedded)document.documentElement.classList.add('oa-embedded');
+ let origin='';try{origin=new URL(document.referrer).origin;}catch(e){}
+ let target=0,current=0,raf=0,last=0,clock=0,inView=true,draw=null,resizeGL=null;
+ const clamp=x=>Math.max(0,Math.min(1,x));
+ function paint(p){const ease=clamp(p);orb.style.setProperty('--oa-scale',.2+.6*ease);orb.style.setProperty('--oa-y',(10*(1-ease))+'svh');root.style.setProperty('--oa-bg',.9-.35*ease);}
+ function tick(now){raf=0;if(document.hidden||!inView){last=0;return;}const dt=last?Math.min(60,now-last):16;last=now;const dest=reduced.matches?1:target;current=dest;paint(current);if(!reduced.matches)clock+=dt/1000;if(draw)draw(clock);if(!reduced.matches||current!==dest)raf=requestAnimationFrame(tick);else last=0;}
+ function wake(){if(!raf&&!document.hidden&&inView)raf=requestAnimationFrame(tick);}
+ function local(){if(!embedded)target=clamp(-root.getBoundingClientRect().top/Math.max(1,root.offsetHeight-innerHeight));wake();}
+ function size(){if(resizeGL)resizeGL();local();}
+ addEventListener('scroll',local,{passive:true});addEventListener('resize',size);reduced.addEventListener('change',wake);document.addEventListener('visibilitychange',()=>{last=0;wake();});
+ if('IntersectionObserver' in window)new IntersectionObserver(entries=>{inView=entries[0].isIntersecting;if(inView)wake();},{rootMargin:'100px'}).observe(root);
+ let connected=false;
+ addEventListener('message',e=>{if(!embedded||e.source!==parent||(origin&&origin!=='null'&&e.origin!==origin))return;const d=e.data;if(d&&d.type==='oreon:amphexon-progress'&&Number.isFinite(d.progress)){connected=true;target=clamp(d.progress);if(typeof d.visible==='boolean')inView=d.visible;wake();}});
+ try{
+ const gl=canvas.getContext('webgl',{alpha:true,antialias:true,premultipliedAlpha:true});if(!gl)throw Error('WebGL unavailable');
+ const vert='attribute vec2 position;varying vec2 vUv;void main(){vUv=position*.5+.5;gl_Position=vec4(position,0.,1.);}';
+ const frag="precision highp float;\n      uniform float iTime;uniform vec3 iResolution;varying vec2 vUv;\n      vec3 hash33(vec3 p3){p3=fract(p3*vec3(0.1031,0.11369,0.13787));p3+=dot(p3,p3.yxz+19.19);return -1.0+2.0*fract(vec3(p3.x+p3.y,p3.x+p3.z,p3.y+p3.z)*p3.zyx);}\n      float snoise3(vec3 p){const float K1=0.333333333;const float K2=0.166666667;vec3 i=floor(p+(p.x+p.y+p.z)*K1);vec3 d0=p-(i-(i.x+i.y+i.z)*K2);vec3 e=step(vec3(0.0),d0-d0.yzx);vec3 i1=e*(1.0-e.zxy);vec3 i2=1.0-e.zxy*(1.0-e);vec3 d1=d0-(i1-K2);vec3 d2=d0-(i2-K1);vec3 d3=d0-0.5;vec4 h=max(0.6-vec4(dot(d0,d0),dot(d1,d1),dot(d2,d2),dot(d3,d3)),0.0);vec4 n=h*h*h*h*vec4(dot(d0,hash33(i)),dot(d1,hash33(i+i1)),dot(d2,hash33(i+i2)),dot(d3,hash33(i+1.0)));return dot(vec4(31.316),n);}\n      vec4 extractAlpha(vec3 c){float a=max(max(c.r,c.g),c.b);return vec4(c.rgb/(a+1e-5),a);}\n      const vec3 color1=vec3(0.30,0.55,0.98);const vec3 color2=vec3(0.18,0.66,0.91);const vec3 color3=vec3(0.02,0.05,0.35);\n      const float innerRadius=0.6;const float noiseScale=0.65;\n      float light1(float i,float a,float d){return i/(1.0+d*a);}\n      float light2(float i,float a,float d){return i/(1.0+d*d*a);}\n      vec4 draw(vec2 uv){\n        float ang=atan(uv.y,uv.x);float len=length(uv);float invLen=len>0.0?1.0/len:0.0;\n        float n0=snoise3(vec3(uv*noiseScale,iTime*0.5))*0.5+0.5;\n        float r0=mix(mix(innerRadius,1.0,0.34),mix(innerRadius,1.0,0.66),n0);\n        r0+=0.008*sin(ang*3.0+iTime*0.7);float d0=distance(uv,(r0*invLen)*uv);\n        float v0=light1(1.0,10.0,d0);v0*=(1.0-smoothstep(r0,r0*1.05,len));\n        float cl=cos(ang+iTime*2.0)*0.5+0.5;\n        float a=iTime*-1.0;vec2 pos=vec2(cos(a),sin(a))*r0;\n        float d=distance(uv,pos);float v1=light2(1.5,5.0,d);v1*=light1(1.0,50.0,d0);\n        float v2=(1.0-smoothstep(mix(innerRadius,1.0,n0*0.5),1.0,len));\n        float v3=smoothstep(innerRadius,mix(innerRadius,1.0,0.5),len);\n        vec3 col=mix(color1,color2,cl);float violet=pow(0.5+0.5*cos(ang+iTime*0.7+1.8),5.0);col=mix(col,vec3(0.49,0.36,0.94),violet*0.32);col=mix(color3,col,v0);col=(col+v1)*v2*v3;col=clamp(col,0.0,1.0);\n        return extractAlpha(col);\n      }\n      void main(){\n        vec2 fragCoord=vUv*iResolution.xy;vec2 center=iResolution.xy*0.5;float size=min(iResolution.x,iResolution.y);\n        vec2 uv=(fragCoord-center)/size*2.0;\n        float a=iTime*0.12;float s=sin(a);float c=cos(a);uv=vec2(c*uv.x-s*uv.y,s*uv.x+c*uv.y);\n        vec4 col=draw(uv);\n        gl_FragColor=vec4(col.rgb*col.a,col.a);\n      }";
+ function compile(type,src){const sh=gl.createShader(type);gl.shaderSource(sh,src);gl.compileShader(sh);if(!gl.getShaderParameter(sh,gl.COMPILE_STATUS)){gl.deleteShader(sh);throw Error('Shader compilation failed');}return sh;}
+ const vs=compile(gl.VERTEX_SHADER,vert),fs=compile(gl.FRAGMENT_SHADER,frag),program=gl.createProgram();gl.attachShader(program,vs);gl.attachShader(program,fs);gl.linkProgram(program);if(!gl.getProgramParameter(program,gl.LINK_STATUS))throw Error('Shader link failed');gl.deleteShader(vs);gl.deleteShader(fs);gl.useProgram(program);
+ const buf=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,buf);gl.bufferData(gl.ARRAY_BUFFER,new Float32Array([-1,-1,3,-1,-1,3]),gl.STATIC_DRAW);
+ const pos=gl.getAttribLocation(program,'position');gl.enableVertexAttribArray(pos);gl.vertexAttribPointer(pos,2,gl.FLOAT,false,0,0);
+ const timeLoc=gl.getUniformLocation(program,'iTime'),resLoc=gl.getUniformLocation(program,'iResolution');
+ resizeGL=function(){const max=1800,dpr=Math.min(devicePixelRatio||1,2),n=Math.max(1,Math.min(max,Math.round(orb.clientWidth*dpr)));if(canvas.width!==n||canvas.height!==n){canvas.width=n;canvas.height=n;}gl.viewport(0,0,n,n);gl.uniform3f(resLoc,n,n,1);};
+ draw=function(t){gl.uniform1f(timeLoc,reduced.matches?1.8:t*.85);gl.clear(gl.COLOR_BUFFER_BIT);gl.drawArrays(gl.TRIANGLES,0,3);};resizeGL();draw(0);root.classList.add('oa-gl');
+ canvas.addEventListener('webglcontextlost',e=>{e.preventDefault();draw=null;resizeGL=null;root.classList.remove('oa-gl');});
+ }catch(e){root.classList.remove('oa-gl');}
+ if('ResizeObserver' in window)new ResizeObserver(size).observe(orb);
+ paint(reduced.matches?1:0);local();
+ if(embedded){if(origin&&origin!=='null')parent.postMessage({type:'oreon:amphexon-ready'},origin);setTimeout(()=>{if(!connected){target=1;wake();}},2000);}
+})();</script></body></html>
