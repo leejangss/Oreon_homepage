@@ -1,0 +1,24 @@
+<!-- 배경 이미지를 아임웹에 업로드한 뒤 oreon-portal-minimal-main.png를 업로드 URL로 교체하세요. -->
+<style>
+@import url("https://cdn.jsdelivr.net/gh/wanteddev/wanted-sans@v1.0.3/packages/wanted-sans/fonts/webfonts/variable/split/WantedSansVariable.min.css");
+#oreon-main,#oreon-main *{box-sizing:border-box;font-family:"Wanted Sans Variable",sans-serif!important;}
+#oreon-main{position:relative;isolation:isolate;width:100%;min-height:640px;height:100svh;overflow:hidden;background:#010204;color:#fff;}
+#oreon-main .oreon-background{position:absolute;inset:0;z-index:-2;overflow:hidden;pointer-events:none;background-image:linear-gradient(180deg,rgba(0,3,10,.12),rgba(0,3,10,.05) 60%,rgba(0,3,10,.18)),url("oreon-portal-minimal-main.png");background-size:100% 100%;background-position:center;}
+#oreon-main .oreon-content{position:relative;transform:translateY(-4cm);width:100%;margin:0 auto;padding:clamp(150px,26vh,330px) 30px 120px calc(23.03% + clamp(30px, 4vw, 64px) - 20px);}
+#oreon-main .oreon-eyebrow{margin:0 0 26px;color:#bac8da;font-size:clamp(14px,1.42vw,28px);font-weight:300;line-height:1.5;letter-spacing:.32em;}
+#oreon-main .oreon-title{display:inline-block;max-width:100%;margin:0;padding:0 0 .12em;font-size:clamp(44px,4.85vw,96px);font-weight:500;line-height:1.12;letter-spacing:calc(-0.045em + 10px);color:#a9dfff;background-image:linear-gradient(90deg,#2584ff 0%,#64d9ff 20%,#ffffff 40%,#64d9ff 60%,#2584ff 80%,#2584ff 100%);background-size:200% 100%;background-repeat:repeat-x;background-clip:text;-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:oreon-gradient-flow 5s linear infinite;}
+@keyframes oreon-gradient-flow{from{background-position:200% 50%;}to{background-position:0% 50%;}}
+#oreon-main .oreon-description{display:flex;align-items:center;gap:18px;margin:27px 0 0;color:#dce5f3;font-size:clamp(16px,1.45vw,28px);font-weight:300;line-height:1.5;letter-spacing:-.025em;}
+#oreon-main .oreon-description::before{content:"";flex:0 0 11.2px;height:1px;background:rgba(220,229,243,.6);}
+@media(max-width:1024px){#oreon-main{min-height:600px;}#oreon-main .oreon-content{padding-left:calc(23.03% + clamp(30px, 4vw, 64px) - 20px);padding-right:30px;}#oreon-main .oreon-title{font-size:clamp(44px,6vw,64px);}}
+@media(max-width:767px){#oreon-main{min-height:560px;height:90svh;}#oreon-main .oreon-content{padding:25vh 20px 80px calc(23.03% + clamp(30px, 4vw, 64px) - 20px);}#oreon-main .oreon-eyebrow{margin-bottom:22px;font-size:12px;letter-spacing:.24em;}#oreon-main .oreon-title{max-width:560px;font-size:clamp(28px,7vw,52px);line-height:1.1;overflow-wrap:break-word;}#oreon-main .oreon-description{align-items:flex-start;gap:12px;max-width:340px;margin-top:24px;font-size:16px;}#oreon-main .oreon-description::before{flex-basis:7.7px;margin-top:12px;}}
+@media(prefers-reduced-motion:reduce){#oreon-main .oreon-title{animation:none;}}
+</style>
+<section id="oreon-main" aria-labelledby="oreon-main-title">
+<div class="oreon-background" aria-hidden="true"></div>
+<div class="oreon-content">
+<p class="oreon-eyebrow">A NEW PERSPECTIVE</p>
+<h1 id="oreon-main-title" class="oreon-title">Innovation Without Limits</h1>
+<p class="oreon-description">The next era of aesthetics begins with OREON.</p>
+</div>
+</section>
