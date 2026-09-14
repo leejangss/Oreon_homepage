@@ -1,17 +1,31 @@
 <!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>AMPHEXON™ Technology</title>
 <style>
-*{box-sizing:border-box}
-html,body{margin:0;background:#080b18;color:#edf1fa;font-family:Arial,Helvetica,sans-serif}
-.amp-section{min-height:100svh;display:flex;align-items:center;padding:clamp(44px,6vw,100px) 5vw;background:radial-gradient(ellipse at 72% 50%,#101b36 0,transparent 58%),#080b18}
-.amp-layout{width:100%;max-width:1680px;margin:auto;display:grid;grid-template-columns:minmax(0,.86fr) minmax(0,1.14fr);align-items:start;gap:0;isolation:isolate}
-.amp-copy{grid-column:1;grid-row:1;width:calc(100% + 40px);transform:none;position:relative;z-index:2;padding:clamp(28px,3.1vw,52px);border:2px solid transparent;border-radius:0;background:linear-gradient(#080b18,#080b18) padding-box,linear-gradient(110deg,#17465b,#305fff,#9cc9ff,#17465b) border-box;background-size:100% 100%,300% 100%;animation:borderFlow 6s linear infinite}
-h1{margin:0 0 clamp(26px,2.6vw,44px);font-size:clamp(34px,4.1vw,68px);line-height:1.18;font-weight:500;letter-spacing:-.025em;background:linear-gradient(90deg,#d4f5ff,#2159ff,#ae7bff,#24dfff,#d4f5ff);background-size:300% 100%;background-clip:text;-webkit-background-clip:text;color:transparent;animation:titleFlow 2.8s linear infinite}
-h1 span{display:block;margin-top:8px;font-size:.72em}h1 sup{font-size:.38em;vertical-align:super;letter-spacing:0}
-h2{font-size:clamp(19px,1.65vw,28px);line-height:1.4;margin:0 0 clamp(24px,2.6vw,44px);letter-spacing:-.025em;font-weight:500;text-wrap:balance}
-.amp-description{font-size:clamp(15px,1.15vw,19px);line-height:1.9;color:#a9b9c7;margin:0}.amp-description strong{color:#d5dfeb;font-weight:600}.amp-description span{display:block;margin-top:10px}
-.amp-video{display:block;width:100%;height:auto;transform:translateX(-20px) scale(.88,1.1);transform-origin:left center;object-fit:contain;border:0;border-radius:0;background:transparent}.amp-media{grid-column:2;grid-row:1;position:relative;z-index:1;min-width:0;margin:clamp(150px,14vw,235px) 0 0;display:block}
-@keyframes titleFlow{to{background-position:150% 0}}
-@keyframes borderFlow{to{background-position:0 0,150% 0}}
-@media(max-width:800px){.amp-section{padding:40px 22px;min-height:0}.amp-layout{grid-template-columns:1fr;gap:28px;max-width:620px}.amp-copy{grid-column:1;grid-row:auto;width:100%;transform:none;padding:30px 26px}h1{font-size:clamp(34px,7.4vw,48px);margin-bottom:28px}h2{font-size:22px;margin-bottom:24px}.amp-description{font-size:16px}.amp-media{grid-column:1;grid-row:auto;width:100%;margin:0;aspect-ratio:auto}}
-</style></head><body><section class="amp-section" aria-labelledby="amp-title"><div class="amp-layout"><div class="amp-copy"><h1 id="amp-title">AMPHEXON<sup>™</sup><span>Technology</span></h1><h2>High Elasticity + High Cohesiveness</h2><p class="amp-description">Combining the <strong>Elasticity</strong> of Biphasic gels<span>+ the <strong>Cohesiveness</strong> of Monophasic gels.</span></p></div><figure class="amp-media"><video class="amp-video" autoplay muted loop playsinline preload="auto" aria-label="Biphasic and monophasic gels combining into AMPHEXON technology"><source src="amphexon-loop.mp4" type="video/mp4"></video></figure></div></section><script>const video=document.querySelector('video');video.muted=true;video.play().catch(()=>{document.addEventListener('pointerdown',()=>video.play().catch(()=>{}),{once:true})});</script></body></html>
+*{box-sizing:border-box}html,body{margin:0;background:#080b18;color:#edf1fa;font-family:Arial,Helvetica,sans-serif}
+.amp-section{min-height:100svh;display:flex;align-items:center;padding:clamp(44px,6vw,100px) 5vw;background:radial-gradient(ellipse at 72% 50%,#101b36 0,transparent 58%),#080b18;overflow:hidden}
+.amp-layout{width:100%;max-width:1680px;margin:auto;display:grid;grid-template-columns:minmax(0,.86fr) minmax(0,1.14fr);align-items:start;gap:0;isolation:isolate;transform:translateX(30px)}
+.amp-copy{grid-column:1;grid-row:1;width:calc(100% + 40px);position:relative;z-index:2;padding:clamp(28px,3.1vw,52px);border:2px solid transparent;border-radius:0;background:linear-gradient(#080b18,#080b18) padding-box,linear-gradient(110deg,#17465b,#305fff,#9cc9ff,#17465b) border-box;background-size:100% 100%,300% 100%;animation:borderFlow 6s linear infinite}
+h1{margin:0 0 clamp(26px,2.6vw,44px);font-size:clamp(34px,4.1vw,68px);line-height:1.18;font-weight:500;letter-spacing:-.025em;background:linear-gradient(90deg,#d4f5ff,#2159ff,#ae7bff,#24dfff,#d4f5ff);background-size:300% 100%;background-clip:text;-webkit-background-clip:text;color:transparent;animation:titleFlow 2.8s linear infinite}h1 span{display:block;margin-top:8px;font-size:.72em}h1 sup{font-size:.38em;vertical-align:super;letter-spacing:0}
+h2{font-size:clamp(19px,1.65vw,28px);line-height:1.4;margin:0 0 clamp(24px,2.6vw,44px);letter-spacing:-.025em;font-weight:500;text-wrap:balance}.amp-description{font-size:clamp(15px,1.15vw,19px);line-height:1.9;color:#a9b9c7;margin:0}.amp-description strong{color:#d5dfeb;font-weight:600}.amp-description span{display:block;margin-top:10px}
+.amp-media{grid-column:2;grid-row:1;position:relative;z-index:1;min-width:0;margin:clamp(150px,14vw,235px) 0 0;display:block}
+.amp-video{display:block;width:100%;height:auto;transform:translateX(-20px) scale(.88,1.1);transform-origin:left center;object-fit:contain;border:0;border-radius:0;background:transparent;opacity:0}
+@keyframes titleFlow{to{background-position:150% 0}}@keyframes borderFlow{to{background-position:0 0,150% 0}}
+@media(max-width:800px){.amp-section{padding:40px 22px;min-height:0}.amp-layout{grid-template-columns:1fr;gap:28px;max-width:620px;transform:none}.amp-copy{grid-column:1;grid-row:auto;width:100%;padding:30px 26px}h1{font-size:clamp(34px,7.4vw,48px);margin-bottom:28px}h2{font-size:22px;margin-bottom:24px}.amp-description{font-size:16px}.amp-media{grid-column:1;grid-row:auto;width:100%;margin:0}}
+</style></head><body><section class="amp-section" aria-labelledby="amp-title"><div class="amp-layout"><div class="amp-copy"><h1 id="amp-title">AMPHEXON<sup>™</sup><span>Technology</span></h1><h2>High Elasticity + High Cohesiveness</h2><p class="amp-description">Combining the <strong>Elasticity</strong> of Biphasic gels<span>+ the <strong>Cohesiveness</strong> of Monophasic gels.</span></p></div><figure class="amp-media"><video class="amp-video" autoplay muted loop playsinline preload="auto" aria-label="Biphasic and monophasic gels combining into AMPHEXON technology"><source src="amphexon-loop.mp4" type="video/mp4"><source src="https://leejangss.github.io/Oreon_homepage/widgets/amphexon-loop.mp4" type="video/mp4"></video></figure></div></section><script>
+(()=>{
+ const video=document.querySelector('.amp-video');
+ const fadeIn=.75, fadeOut=1.0;
+ const smooth=x=>{x=Math.max(0,Math.min(1,x));return x*x*(3-2*x)};
+ function update(){
+  const duration=Number.isFinite(video.duration)?Math.min(27.5,video.duration):27.5;
+  video.style.opacity=String(Math.min(smooth(video.currentTime/fadeIn),smooth((duration-video.currentTime)/fadeOut)));
+ }
+ function frame(){update();requestAnimationFrame(frame)}
+ video.muted=true;
+ video.addEventListener('seeking',()=>{video.style.opacity='0'});
+ video.addEventListener('timeupdate',update);
+ video.addEventListener('loadedmetadata',update);
+ requestAnimationFrame(frame);
+ video.play().catch(()=>document.addEventListener('pointerdown',()=>video.play().catch(()=>{}),{once:true}));
+})();
+</script></body></html>
