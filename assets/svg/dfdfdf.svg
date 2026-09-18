@@ -1,0 +1,419 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:c2pa="http://c2pa.org/manifest" version="1.1" viewBox="0 0 1909 818">
+  <!-- Generator: Adobe Illustrator 29.2.1, SVG Export Plug-In . SVG Version: 2.1.0 Build 116)  -->
+  <defs>
+    <style>
+      .st0, .st1, .st2, .st3, .st4 {
+        fill: none;
+      }
+
+      .st5 {
+        fill: url(#linear-gradient2);
+      }
+
+      .st6 {
+        fill: url(#linear-gradient1);
+      }
+
+      .st7 {
+        fill: url(#linear-gradient9);
+      }
+
+      .st8 {
+        fill: url(#linear-gradient3);
+      }
+
+      .st9 {
+        fill: url(#linear-gradient6);
+      }
+
+      .st10 {
+        fill: url(#linear-gradient8);
+      }
+
+      .st11 {
+        fill: url(#linear-gradient7);
+      }
+
+      .st12 {
+        fill: url(#linear-gradient5);
+      }
+
+      .st13 {
+        fill: url(#linear-gradient4);
+      }
+
+      .st1 {
+        stroke: #0d4ba0;
+        stroke-width: 8.5px;
+      }
+
+      .st1, .st2, .st3, .st4, .st14 {
+        stroke-miterlimit: 10;
+      }
+
+      .st1, .st15 {
+        mix-blend-mode: hard-light;
+      }
+
+      .st16 {
+        font-size: 20px;
+      }
+
+      .st16, .st17, .st18, .st19, .st20, .st21, .st22, .st23 {
+        isolation: isolate;
+      }
+
+      .st16, .st21, .st23 {
+        font-family: IBMPlexSans, 'IBM Plex Sans';
+      }
+
+      .st24 {
+        fill: url(#linear-gradient);
+      }
+
+      .st2 {
+        stroke: #0087cd;
+        stroke-width: 2.8px;
+      }
+
+      .st25 {
+        mix-blend-mode: multiply;
+      }
+
+      .st26 {
+        filter: url(#softGlowSmall1);
+      }
+
+      .st27 {
+        filter: url(#softGlowSmall3);
+      }
+
+      .st28 {
+        filter: url(#softGlowSmall7);
+      }
+
+      .st29 {
+        filter: url(#softGlowSmall6);
+      }
+
+      .st30 {
+        filter: url(#softGlowSmall5);
+      }
+
+      .st31 {
+        filter: url(#softGlowSmall2);
+      }
+
+      .st32 {
+        filter: url(#softGlowSmall4);
+      }
+
+      .st18 {
+        font-size: 38.9px;
+      }
+
+      .st18, .st19 {
+        font-family: IBMPlexSans-Medium, 'IBM Plex Sans';
+        font-weight: 500;
+      }
+
+      .st18, .st19, .st20, .st22, .st23 {
+        fill: #fff;
+      }
+
+      .st19 {
+        font-size: 20.7px;
+      }
+
+      .st33 {
+        fill: #0d0000;
+      }
+
+      .st20 {
+        font-family: IBMPlexSans-Bold, 'IBM Plex Sans';
+        font-size: 40px;
+        font-weight: 700;
+      }
+
+      .st21 {
+        fill: #e8f2ff;
+        font-size: 31.1px;
+      }
+
+      .st34 {
+        mix-blend-mode: color-dodge;
+      }
+
+      .st35 {
+        fill: #eaf7ff;
+      }
+
+      .st36 {
+        mix-blend-mode: screen;
+      }
+
+      .st3 {
+        stroke: #a0dcf8;
+        stroke-width: 1.3px;
+      }
+
+      .st4 {
+        stroke: #050912;
+      }
+
+      .st37 {
+        fill: #00020d;
+      }
+
+      .st22 {
+        font-family: IBMPlexSans-Light, 'IBM Plex Sans';
+        font-size: 52px;
+        font-weight: 300;
+      }
+
+      .st14 {
+        fill: #3ec7f4;
+        stroke: #fff;
+      }
+
+      .st38 {
+        clip-path: url(#clippath);
+      }
+
+      .st23 {
+        font-size: 26px;
+      }
+
+      .st39 {
+        filter: url(#softGlowSmall);
+      }
+    </style>
+    <filter id="softGlowSmall" x="-200%" y="-200%" width="500%" height="500%">
+      <feGaussianBlur result="blur" stdDeviation="6"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <filter id="softGlowSmall1" data-name="softGlowSmall" x="-200%" y="-200%" width="500%" height="500%">
+      <feGaussianBlur result="blur" stdDeviation="6"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <filter id="softGlowSmall2" data-name="softGlowSmall" x="-200%" y="-200%" width="500%" height="500%">
+      <feGaussianBlur result="blur" stdDeviation="6"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <filter id="softGlowSmall3" data-name="softGlowSmall" x="-200%" y="-200%" width="500%" height="500%">
+      <feGaussianBlur result="blur" stdDeviation="6"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <filter id="softGlowSmall4" data-name="softGlowSmall" x="-200%" y="-200%" width="500%" height="500%">
+      <feGaussianBlur result="blur" stdDeviation="6"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <filter id="softGlowSmall5" data-name="softGlowSmall" x="-200%" y="-200%" width="500%" height="500%">
+      <feGaussianBlur result="blur" stdDeviation="6"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <filter id="softGlowSmall6" data-name="softGlowSmall" x="-200%" y="-200%" width="500%" height="500%">
+      <feGaussianBlur result="blur" stdDeviation="6"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <filter id="softGlowSmall7" data-name="softGlowSmall" x="-200%" y="-200%" width="500%" height="500%">
+      <feGaussianBlur result="blur" stdDeviation="6"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <clipPath id="clippath">
+      <rect class="st0" x="106.4" y="1003.3" width="817.7" height="713.3"/>
+    </clipPath>
+    <linearGradient id="linear-gradient" x1="1192.9" y1="183.2" x2="1722.6" y2="183.2" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#fff"/>
+      <stop offset=".4" stop-color="#084ca1"/>
+      <stop offset=".7" stop-color="#009ce0"/>
+      <stop offset="1" stop-color="#00aeef"/>
+    </linearGradient>
+    <linearGradient id="linear-gradient1" x1="934" y1="184.7" x2="1135.9" y2="184.7" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#00020d"/>
+      <stop offset=".3" stop-color="#05306a"/>
+      <stop offset=".4" stop-color="#084ca1"/>
+      <stop offset=".7" stop-color="#0076be"/>
+      <stop offset="1" stop-color="#fff"/>
+    </linearGradient>
+    <linearGradient id="linear-gradient2" x1="1740.9" y1="184.7" x2="1835.1" y2="184.7" gradientTransform="translate(3511.8 369.4) rotate(-180)" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#00020d"/>
+      <stop offset=".3" stop-color="#05306a"/>
+      <stop offset=".4" stop-color="#084ca1"/>
+    </linearGradient>
+    <linearGradient id="linear-gradient3" y1="44.7" y2="44.7" xlink:href="#linear-gradient2"/>
+    <linearGradient id="linear-gradient4" y1="327.2" y2="327.2" xlink:href="#linear-gradient"/>
+    <linearGradient id="linear-gradient5" y1="328.7" y2="328.7" xlink:href="#linear-gradient1"/>
+    <linearGradient id="linear-gradient6" y1="471.2" y2="471.2" xlink:href="#linear-gradient"/>
+    <linearGradient id="linear-gradient7" y1="472.7" y2="472.7" xlink:href="#linear-gradient1"/>
+    <linearGradient id="linear-gradient8" y1="615.2" y2="615.2" xlink:href="#linear-gradient"/>
+    <linearGradient id="linear-gradient9" y1="616.7" y2="616.7" xlink:href="#linear-gradient1"/>
+  </defs>
+  <g class="st17">
+    <g id="Layer_2">
+      <rect class="st37" x="18.9" y="25.5" width="1877.1" height="759"/>
+    </g>
+    <g id="Layer_1">
+      <g class="st15">
+        <image width="1342" height="1342" transform="translate(204.5 71.6) scale(.5)" xlink:href="dfdfdf-1.png"/>
+      </g>
+      <image width="1961" height="1962" transform="translate(57.6 -74.3) scale(.5)" xlink:href="dfdfdf-2.png"/>
+      <image width="1459" height="1460" transform="translate(178.1 46.2) scale(.5)" xlink:href="dfdfdf-3.png"/>
+      <g class="st15">
+        <image width="1856" height="1856" transform="translate(81.1 -48.9) scale(.5)" xlink:href="dfdfdf-4.png"/>
+      </g>
+      <circle class="st3" cx="528.3" cy="396.5" r="312.2"/>
+      <g class="st25">
+        <image width="1435" height="1436" transform="translate(183.8 51.9) scale(.5)" xlink:href="dfdfdf-5.png"/>
+      </g>
+      <g class="st15">
+        <image width="1289" height="1288" transform="translate(218.9 87.4) scale(.5)" xlink:href="dfdfdf-6.png"/>
+      </g>
+      <g class="st15">
+        <image width="997" height="998" transform="translate(289 157) scale(.5)" xlink:href="dfdfdf-7.png"/>
+      </g>
+      <image class="st36" width="490" height="490" transform="translate(309.1 177.4) scale(.9)" xlink:href="dfdfdf-8.png"/>
+      <g class="st15">
+        <image width="860" height="860" transform="translate(320.2 192.1) scale(.5)" xlink:href="dfdfdf-9.png"/>
+      </g>
+      <image width="807" height="808" transform="translate(334.6 202.6) scale(.5)" xlink:href="dfdfdf-10.png"/>
+      <g class="st34">
+        <image width="978" height="978" transform="translate(292.3 162.3) scale(.5)" xlink:href="dfdfdf-11.png"/>
+      </g>
+      <image width="821" height="822" transform="translate(330.2 198.8) scale(.5)" xlink:href="dfdfdf-12.png"/>
+      <g class="st15">
+        <image width="577" height="578" transform="translate(330.2 194.2) scale(.7)" xlink:href="dfdfdf-13.png"/>
+      </g>
+      <circle class="st33" cx="528.2" cy="396.5" r="146.9"/>
+      <g class="st15">
+        <image width="1297" height="1298" transform="translate(216 84.1) scale(.5)" xlink:href="dfdfdf-14.png"/>
+      </g>
+      <image width="1003" height="1004" transform="translate(287.5 154.6) scale(.5)" xlink:href="dfdfdf-15.png"/>
+      <g class="st17">
+        <text class="st18" transform="translate(412.9 393.3)"><tspan x="0" y="0">AMPHEXON</tspan></text>
+        <text class="st19" transform="translate(627 375.2)"><tspan x="0" y="0">TM</tspan></text>
+      </g>
+      <text class="st21" transform="translate(443.5 434.2)"><tspan x="0" y="0">Technology</tspan></text>
+      <circle class="st1" cx="527.8" cy="396.2" r="148.6"/>
+      <circle class="st2" cx="528.2" cy="396.5" r="231.8"/>
+      <rect class="st4" x="-2116.5" y="0" width="1909" height="818" rx="28" ry="28"/>
+      <rect class="st0" x="-2115.5" y="1" width="1907" height="816" rx="27" ry="27"/>
+      <line class="st0" x1="-336.5" y1="185" x2="-336.5" y2="635"/>
+      <line class="st0" x1="-976.5" y1="185" x2="-921.5" y2="185"/>
+      <g class="st39">
+        <circle class="st35" cx="-976.5" cy="185" r="6"/>
+      </g>
+      <path d="M-881.5,145h420c22.1,0,40,17.9,40,40h0c0,22.1-17.9,40-40,40h-420c-22.1,0-40-17.9-40-40h0c0-22.1,17.9-40,40-40Z"/>
+      <text class="st20" transform="translate(-881.5 197)"><tspan x="0" y="0">AMPH</tspan></text>
+      <text class="st16" transform="translate(-666.5 192)"><tspan x="0" y="0">Amphiphasic</tspan></text>
+      <line class="st0" x1="-421.5" y1="185" x2="-336.5" y2="185"/>
+      <g class="st26">
+        <circle class="st35" cx="-336.5" cy="185" r="6"/>
+      </g>
+      <line class="st0" x1="-976.5" y1="335" x2="-921.5" y2="335"/>
+      <g class="st31">
+        <circle class="st35" cx="-976.5" cy="335" r="6"/>
+      </g>
+      <path d="M-881.5,295h420c22.1,0,40,17.9,40,40h0c0,22.1-17.9,40-40,40h-420c-22.1,0-40-17.9-40-40h0c0-22.1,17.9-40,40-40Z"/>
+      <text class="st20" transform="translate(-881.5 347)"><tspan x="0" y="0">E</tspan></text>
+      <text class="st16" transform="translate(-806.5 342)"><tspan x="0" y="0">Elastic + Cohesive</tspan></text>
+      <line class="st0" x1="-421.5" y1="335" x2="-336.5" y2="335"/>
+      <g class="st27">
+        <circle class="st35" cx="-336.5" cy="335" r="6"/>
+      </g>
+      <line class="st0" x1="-976.5" y1="485" x2="-921.5" y2="485"/>
+      <g class="st32">
+        <circle class="st35" cx="-976.5" cy="485" r="6"/>
+      </g>
+      <path d="M-881.5,445h420c22.1,0,40,17.9,40,40h0c0,22.1-17.9,40-40,40h-420c-22.1,0-40-17.9-40-40h0c0-22.1,17.9-40,40-40Z"/>
+      <text class="st20" transform="translate(-881.5 497)"><tspan x="0" y="0">X</tspan></text>
+      <text class="st16" transform="translate(-806.5 492)"><tspan x="0" y="0">Cross-linked</tspan></text>
+      <line class="st0" x1="-421.5" y1="485" x2="-336.5" y2="485"/>
+      <g class="st30">
+        <circle class="st35" cx="-336.5" cy="485" r="6"/>
+      </g>
+      <line class="st0" x1="-976.5" y1="635" x2="-921.5" y2="635"/>
+      <g class="st29">
+        <circle class="st35" cx="-976.5" cy="635" r="6"/>
+      </g>
+      <path d="M-881.5,595h420c22.1,0,40,17.9,40,40h0c0,22.1-17.9,40-40,40h-420c-22.1,0-40-17.9-40-40h0c0-22.1,17.9-40,40-40Z"/>
+      <text class="st20" transform="translate(-881.5 647)"><tspan x="0" y="0">ON</tspan></text>
+      <text class="st16" transform="translate(-776.5 642)"><tspan x="0" y="0">OREON</tspan></text>
+      <text class="st22" transform="translate(1223.7 197)"><tspan x="0" y="0">AMPH</tspan></text>
+      <text class="st23" transform="translate(1407.9 189.7)"><tspan x="0" y="0">Amphiphasic</tspan></text>
+      <text class="st22" transform="translate(1223.7 341.4)"><tspan x="0" y="0">E</tspan></text>
+      <text class="st23" transform="translate(1312.9 333)"><tspan x="0" y="0">Elastic + Cohesive</tspan></text>
+      <text class="st22" transform="translate(1223.7 488)"><tspan x="0" y="0">X</tspan></text>
+      <text class="st23" transform="translate(1299.3 477.3)"><tspan x="0" y="0">Cross-linked</tspan></text>
+      <text class="st22" transform="translate(1220.3 634) scale(1.1 1)"><tspan x="0" y="0">ON</tspan></text>
+      <text class="st23" transform="translate(1358.7 626.4)"><tspan x="0" y="0">OREON</tspan></text>
+      <line class="st0" x1="-421.5" y1="635" x2="-336.5" y2="635"/>
+      <g class="st28">
+        <circle class="st35" cx="-336.5" cy="635" r="6"/>
+      </g>
+      <image width="1909" height="824" transform="translate(35.1 949)" xlink:href="홈페이지/HTML(마케팅)/헤더 로고 교체 완료/uploads/amphexon-diagram5.png"/>
+      <g class="st38">
+        <image width="1536" height="1024" transform="translate(-267.1 954.4)" xlink:href="홈페이지/HTML(마케팅)/헤더 로고 교체 완료/uploads/amphexon-diagram6.png"/>
+      </g>
+      <image width="1226" height="355" transform="translate(1114.6 98) scale(.5)" xlink:href="dfdfdf-16.png"/>
+      <path class="st24" d="M1618.3,232.3h-419.2c-26.6,0-48.3-21.7-48.3-48.3v-1.5c0-26.6,21.7-48.3,48.3-48.3h419.2c26.6,0,48.3,21.7,48.3,48.3v1.5c0,26.6-21.7,48.3-48.3,48.3ZM1199.1,135.1c-26.1,0-47.3,21.2-47.3,47.3v1.5c0,26.1,21.2,47.3,47.3,47.3h419.2c26.1,0,47.3-21.2,47.3-47.3v-1.5c0-26.1-21.2-47.3-47.3-47.3h-419.2Z"/>
+      <image width="209" height="209" transform="translate(1101.6 133) scale(.5)" xlink:href="dfdfdf-17.png"/>
+      <circle class="st14" cx="1151.1" cy="183.2" r="6.8"/>
+      <rect class="st6" x="928.6" y="184.2" width="218" height="1"/>
+      <rect class="st5" x="1671.8" y="184.2" width="101.6" height="1"/>
+      <rect class="st8" x="1671.8" y="324.2" width="101.6" height="1"/>
+      <g>
+        <image width="1226" height="355" transform="translate(1114.6 242) scale(.5)" xlink:href="dfdfdf-18.png"/>
+        <g>
+          <path class="st13" d="M1618.3,376.3h-419.2c-26.6,0-48.3-21.7-48.3-48.3v-1.5c0-26.6,21.7-48.3,48.3-48.3h419.2c26.6,0,48.3,21.7,48.3,48.3v1.5c0,26.6-21.7,48.3-48.3,48.3ZM1199.1,279.1c-26.1,0-47.3,21.2-47.3,47.3v1.5c0,26.1,21.2,47.3,47.3,47.3h419.2c26.1,0,47.3-21.2,47.3-47.3v-1.5c0-26.1-21.2-47.3-47.3-47.3h-419.2Z"/>
+          <image width="209" height="209" transform="translate(1101.6 277) scale(.5)" xlink:href="dfdfdf-19.png"/>
+          <circle class="st14" cx="1151.1" cy="327.2" r="6.8"/>
+          <rect class="st12" x="928.6" y="328.2" width="218" height="1"/>
+        </g>
+      </g>
+      <g>
+        <image width="1226" height="355" transform="translate(1114.6 386) scale(.5)" xlink:href="dfdfdf-20.png"/>
+        <g>
+          <path class="st9" d="M1618.3,520.3h-419.2c-26.6,0-48.3-21.7-48.3-48.3v-1.5c0-26.6,21.7-48.3,48.3-48.3h419.2c26.6,0,48.3,21.7,48.3,48.3v1.5c0,26.6-21.7,48.3-48.3,48.3ZM1199.1,423.1c-26.1,0-47.3,21.2-47.3,47.3v1.5c0,26.1,21.2,47.3,47.3,47.3h419.2c26.1,0,47.3-21.2,47.3-47.3v-1.5c0-26.1-21.2-47.3-47.3-47.3h-419.2Z"/>
+          <image width="209" height="209" transform="translate(1101.6 421) scale(.5)" xlink:href="dfdfdf-21.png"/>
+          <circle class="st14" cx="1151.1" cy="471.2" r="6.8"/>
+          <rect class="st11" x="928.6" y="472.2" width="218" height="1"/>
+        </g>
+      </g>
+      <g>
+        <image width="1226" height="355" transform="translate(1114.6 530) scale(.5)" xlink:href="dfdfdf-22.png"/>
+        <g>
+          <path class="st10" d="M1618.3,664.3h-419.2c-26.6,0-48.3-21.7-48.3-48.3v-1.5c0-26.6,21.7-48.3,48.3-48.3h419.2c26.6,0,48.3,21.7,48.3,48.3v1.5c0,26.6-21.7,48.3-48.3,48.3ZM1199.1,567.1c-26.1,0-47.3,21.2-47.3,47.3v1.5c0,26.1,21.2,47.3,47.3,47.3h419.2c26.1,0,47.3-21.2,47.3-47.3v-1.5c0-26.1-21.2-47.3-47.3-47.3h-419.2Z"/>
+          <image width="209" height="209" transform="translate(1101.6 565) scale(.5)" xlink:href="dfdfdf-23.png"/>
+          <circle class="st14" cx="1151.1" cy="615.2" r="6.8"/>
+          <rect class="st7" x="928.6" y="616.2" width="218" height="1"/>
+        </g>
+      </g>
+    </g>
+  </g>
+</svg>
