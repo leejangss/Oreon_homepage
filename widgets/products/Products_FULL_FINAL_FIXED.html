@@ -4,6 +4,11 @@
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
 
 <style>
+html,body{margin:0!important;padding:0!important;width:100%;background:#02040b;overflow-x:hidden;}
+body{min-width:0;}
+</style>
+
+<style>
   .oreon-products-hero,
   .oreon-products-hero * { box-sizing: border-box; }
 
@@ -11,8 +16,8 @@
     position: relative;
     overflow: hidden;
     width: 100%;
-    min-height: 100svh;
-    height: clamp(660px, 100svh, 1000px);
+    min-height: 0;
+    height: clamp(720px, 50vw, 864px);
     padding: 48px 0 42px;
     display: flex;
     flex-direction: column;
@@ -134,7 +139,7 @@
   }
 
   @media (max-width: 560px) {
-    .oreon-products-hero { min-height: 720px; height: auto; }
+    .oreon-products-hero { min-height: 640px; height: 720px; }
     .oreon-products-hero__content { transform: translateY(-90px); }
   }
 
@@ -241,7 +246,7 @@
 
   .oreon-products-cards {
     width: 100%;
-    padding: clamp(48px, 7vw, 88px) 0;
+    padding: clamp(34px, 4vw, 56px) 0 72px;
     background: linear-gradient(180deg, #02040b 0%, #050a13 100%);
     font-family: 'Outfit', sans-serif;
   }
@@ -315,32 +320,29 @@
     }
   }
 
-  /* JS only hides cards after motion is initialized, so cards never disappear if JS fails. */
-  .oreon-products-cards.motion-ready .oreon-material-card-reveal {
-    opacity: 0;
-    transform: translateY(34px);
+  /* IMWEB-safe: cards are never hidden by JS. They rise in with CSS only. */
+  @keyframes oreonProductsCardRise {
+    from { opacity: 0; transform: translateY(28px); }
+    to   { opacity: 1; transform: translateY(0); }
   }
 
-  .oreon-products-cards.motion-ready .oreon-material-card-reveal.is-visible {
+  .oreon-material-card-reveal {
     opacity: 1;
     transform: translateY(0);
-    transition:
-      opacity .82s cubic-bezier(.16,1,.3,1),
-      transform .82s cubic-bezier(.16,1,.3,1);
+    animation: oreonProductsCardRise .78s cubic-bezier(.16,1,.3,1) both;
   }
-
-  .oreon-products-cards.motion-ready .oreon-material-card-reveal:nth-child(1)  { transition-delay: .05s; }
-  .oreon-products-cards.motion-ready .oreon-material-card-reveal:nth-child(2)  { transition-delay: .12s; }
-  .oreon-products-cards.motion-ready .oreon-material-card-reveal:nth-child(3)  { transition-delay: .19s; }
-  .oreon-products-cards.motion-ready .oreon-material-card-reveal:nth-child(4)  { transition-delay: .26s; }
-  .oreon-products-cards.motion-ready .oreon-material-card-reveal:nth-child(5)  { transition-delay: .10s; }
-  .oreon-products-cards.motion-ready .oreon-material-card-reveal:nth-child(6)  { transition-delay: .17s; }
-  .oreon-products-cards.motion-ready .oreon-material-card-reveal:nth-child(7)  { transition-delay: .24s; }
-  .oreon-products-cards.motion-ready .oreon-material-card-reveal:nth-child(8)  { transition-delay: .31s; }
-  .oreon-products-cards.motion-ready .oreon-material-card-reveal:nth-child(9)  { transition-delay: .15s; }
-  .oreon-products-cards.motion-ready .oreon-material-card-reveal:nth-child(10) { transition-delay: .22s; }
-  .oreon-products-cards.motion-ready .oreon-material-card-reveal:nth-child(11) { transition-delay: .29s; }
-  .oreon-products-cards.motion-ready .oreon-material-card-reveal:nth-child(12) { transition-delay: .36s; }
+  .oreon-material-card-reveal:nth-child(1)  { animation-delay: .04s; }
+  .oreon-material-card-reveal:nth-child(2)  { animation-delay: .10s; }
+  .oreon-material-card-reveal:nth-child(3)  { animation-delay: .16s; }
+  .oreon-material-card-reveal:nth-child(4)  { animation-delay: .22s; }
+  .oreon-material-card-reveal:nth-child(5)  { animation-delay: .08s; }
+  .oreon-material-card-reveal:nth-child(6)  { animation-delay: .14s; }
+  .oreon-material-card-reveal:nth-child(7)  { animation-delay: .20s; }
+  .oreon-material-card-reveal:nth-child(8)  { animation-delay: .26s; }
+  .oreon-material-card-reveal:nth-child(9)  { animation-delay: .12s; }
+  .oreon-material-card-reveal:nth-child(10) { animation-delay: .18s; }
+  .oreon-material-card-reveal:nth-child(11) { animation-delay: .24s; }
+  .oreon-material-card-reveal:nth-child(12) { animation-delay: .30s; }
 
   @media (max-width: 900px) {
     .oreon-material-grid { grid-template-columns: repeat(2, minmax(0,1fr)); }
@@ -351,12 +353,7 @@
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .oreon-products-cards.motion-ready .oreon-material-card-reveal,
-    .oreon-products-cards.motion-ready .oreon-material-card-reveal.is-visible {
-      opacity: 1 !important;
-      transform: none !important;
-      transition: none !important;
-    }
+    .oreon-material-card-reveal { animation: none !important; opacity: 1 !important; transform: none !important; }
     .oreon-material-card { transition: none !important; }
   }
 </style>
@@ -450,30 +447,15 @@
   </div>
 </section>
 
+
 <script>
-(function () {
-  const section = document.getElementById('oreon-products-cards');
-  if (!section || section.dataset.motionInit === '1') return;
-  section.dataset.motionInit = '1';
-
-  const cards = Array.from(section.querySelectorAll('.oreon-material-card-reveal'));
-  if (!cards.length) return;
-
-  if (!('IntersectionObserver' in window) || window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-    cards.forEach(card => card.classList.add('is-visible'));
-    return;
+(function(){
+  function sendOreonProductsHeight(){
+    var h=Math.max(document.documentElement.scrollHeight,document.body?document.body.scrollHeight:0);
+    try{ window.parent.postMessage({type:'oreon-products-height',height:h},'*'); }catch(e){}
   }
-
-  section.classList.add('motion-ready');
-
-  const observer = new IntersectionObserver((entries, obs) => {
-    entries.forEach(entry => {
-      if (!entry.isIntersecting) return;
-      entry.target.classList.add('is-visible');
-      obs.unobserve(entry.target);
-    });
-  }, { threshold: 0.12, rootMargin: '0px 0px -5% 0px' });
-
-  cards.forEach(card => observer.observe(card));
+  window.addEventListener('load',function(){sendOreonProductsHeight();setTimeout(sendOreonProductsHeight,300);setTimeout(sendOreonProductsHeight,1000);});
+  window.addEventListener('resize',sendOreonProductsHeight);
+  if('ResizeObserver' in window){ new ResizeObserver(sendOreonProductsHeight).observe(document.documentElement); }
 })();
 </script>
