@@ -1,0 +1,262 @@
+<meta charset="UTF-8">
+<!-- OREON IR : HERO SECTION ONLY -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+<style>
+html,body{margin:0!important;padding:0!important;width:100%;background:#02040b;overflow-x:hidden;}
+body{min-width:0;}
+</style>
+
+<style>
+  .oreon-ir-hero,
+  .oreon-ir-hero * { box-sizing: border-box; }
+
+  .oreon-ir-hero {
+    position: relative;
+    overflow: hidden;
+    width: 100%;
+    min-height: 0;
+    height: clamp(610px, 37vw, 670px);
+    padding: 0;
+    display: block;
+    background: #000107;
+    font-family: 'Outfit', sans-serif;
+  }
+
+  @keyframes oreonIRSealTurn {
+    from { transform: translateY(calc(-50% - 5px)) rotate(0deg); }
+    to   { transform: translateY(calc(-50% - 5px)) rotate(360deg); }
+  }
+
+  @keyframes oreonIRLineGlow {
+    0%,100% { opacity: .20; }
+    22%     { opacity: .50; }
+    48%     { opacity: .30; }
+    72%     { opacity: .68; }
+  }
+
+  @keyframes oreonIRLineCore {
+    0%,100% { opacity: .58; }
+    20%     { opacity: .94; }
+    46%     { opacity: .72; }
+    70%     { opacity: 1; }
+  }
+
+  .oreon-ir-hero__line-glow {
+    animation: oreonIRLineGlow 5.6s ease-in-out infinite;
+    will-change: opacity;
+  }
+
+  .oreon-ir-hero__line-core {
+    animation: oreonIRLineCore 5.6s ease-in-out infinite;
+    will-change: opacity;
+  }
+
+  .oreon-ir-hero__seal {
+    position: absolute;
+    right: clamp(-100px, -4vw, -30px);
+    top: 41.5%;
+    width: clamp(230px, 23.04vw, 384px);
+    height: clamp(230px, 23.04vw, 384px);
+    opacity: .85;
+    pointer-events: none;
+    animation: oreonIRSealTurn 24s linear infinite;
+  }
+
+  .oreon-ir-hero__content {
+    position: absolute;
+    z-index: 1;
+    top: clamp(72px, 5.6vw, 92px);
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0 24px;
+    box-sizing: border-box;
+  }
+
+  .oreon-ir-hero__copy {
+    display: flex;
+    flex-direction: column;
+    max-width: 720px;
+  }
+
+  .oreon-ir-hero__eyebrow {
+    display: inline-flex;
+    align-items: center;
+    font-size: 11px;
+    letter-spacing: .26em;
+    text-transform: uppercase;
+    color: #4FC3F7;
+    font-weight: 600;
+  }
+
+  .oreon-ir-hero__title {
+    margin: 18px 0 0;
+    max-width: 1100px;
+    white-space: nowrap;
+    font-weight: 300;
+    font-size: clamp(48px, 5.1vw, 82px);
+    line-height: 1.02;
+    letter-spacing: 0;
+    color: #f5f7fc;
+  }
+
+  .oreon-ir-hero__title-line { display: block; }
+
+  @keyframes oreonIRTitleGradientFlow {
+    0%   { background-position: 0% 50%; }
+    50%  { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+
+  .oreon-ir-hero__gradient-word {
+    font-weight: 400;
+    background: linear-gradient(90deg,
+      #ffffff 0%,
+      #e9f6ff 16%,
+      #b9ddff 34%,
+      #78baff 50%,
+      #4FC3F7 66%,
+      #9adfff 82%,
+      #ffffff 100%);
+    background-size: 240% 100%;
+    background-position: 0% 50%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+    text-shadow: 0 0 28px rgba(79,195,247,.08);
+    animation: oreonIRTitleGradientFlow 7s ease-in-out infinite;
+    will-change: background-position;
+  }
+
+  .oreon-ir-hero__sub {
+    margin: 22px 0 0;
+    max-width: 60ch;
+    white-space: nowrap;
+    font-family: 'IBM Plex Sans', Arial, sans-serif;
+    font-weight: 300;
+    font-size: clamp(13px, 1vw, 15px);
+    line-height: 1.8;
+    letter-spacing: .1em;
+    color: #c0c9d8;
+  }
+
+  @media (max-width: 900px) {
+    .oreon-ir-hero__content { top: 72px; transform: none; padding-inline: 40px; }
+    .oreon-ir-hero__title { white-space: normal; }
+    .oreon-ir-hero__sub { white-space: normal; }
+  }
+
+  @media (max-width: 560px) {
+    .oreon-ir-hero { min-height: 560px; height: 600px; }
+    .oreon-ir-hero__content { top: 58px; transform: none; padding-inline: 24px; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .oreon-ir-hero__seal,
+    .oreon-ir-hero__line-glow,
+    .oreon-ir-hero__line-core,
+    .oreon-ir-hero__gradient-word { animation: none !important; }
+  }
+</style>
+
+<section class="oreon-ir-hero" aria-label="Investor Relations hero">
+  <!-- Gradient line: positioned 50px lower than V3 -->
+  <div aria-hidden="true" style="position:absolute;inset:0;z-index:0;pointer-events:none;overflow:hidden;">
+    <svg viewBox="0 0 1672 941" preserveAspectRatio="none" style="display:block;width:100%;height:100%;">
+      <defs>
+        <linearGradient id="oreon-ir-hz-core" x1="0" y1="0" x2="1672" y2="0" gradientUnits="userSpaceOnUse">
+          <stop stop-color="#0439b8"/>
+          <stop offset=".18" stop-color="#2463df"/>
+          <stop offset=".36" stop-color="#498dff"/>
+          <stop offset=".54" stop-color="#7cb4fb"/>
+          <stop offset=".66" stop-color="#9adfff"/>
+          <stop offset=".78" stop-color="#d6f4fe"/>
+          <stop offset=".87" stop-color="#fdfffe"/>
+          <stop offset=".95" stop-color="#f6fbfe"/>
+          <stop offset="1" stop-color="#d4f2ff"/>
+        </linearGradient>
+        <linearGradient id="oreon-ir-hz-glow" x1="0" y1="0" x2="1672" y2="0" gradientUnits="userSpaceOnUse">
+          <stop stop-color="#0b4cff" stop-opacity=".2"/>
+          <stop offset=".3" stop-color="#1160ff" stop-opacity=".35"/>
+          <stop offset=".6" stop-color="#2f7bff" stop-opacity=".6"/>
+          <stop offset=".85" stop-color="#5c9dff" stop-opacity=".85"/>
+          <stop offset="1" stop-color="#bcdcff" stop-opacity=".9"/>
+        </linearGradient>
+        <filter id="oreon-ir-hz-b1" filterUnits="userSpaceOnUse" x="0" y="0" width="1672" height="941">
+          <feGaussianBlur stdDeviation="22"/>
+        </filter>
+        <filter id="oreon-ir-hz-b2" filterUnits="userSpaceOnUse" x="0" y="0" width="1672" height="941">
+          <feGaussianBlur stdDeviation="7"/>
+        </filter>
+      </defs>
+
+      <rect width="1672" height="941" fill="#000000"/>
+      <g transform="translate(0 70)">
+      <path class="oreon-ir-hero__line-glow"
+            d="M0 725 C250 640 520 558 760 516 S1270 448 1672 459"
+            fill="none" stroke="url(#oreon-ir-hz-glow)" stroke-width="24"
+            filter="url(#oreon-ir-hz-b1)" opacity=".35"/>
+      <path class="oreon-ir-hero__line-glow"
+            d="M0 725 C250 640 520 558 760 516 S1270 448 1672 459"
+            fill="none" stroke="url(#oreon-ir-hz-glow)" stroke-width="8"
+            filter="url(#oreon-ir-hz-b2)" opacity=".60"
+            style="animation-delay:-1.4s"/>
+      <path class="oreon-ir-hero__line-core"
+            d="M0 725 C250 640 520 558 760 516 S1270 448 1672 459"
+            fill="none" stroke="url(#oreon-ir-hz-core)" stroke-width="2.4"
+            stroke-linecap="round" opacity=".86"/>
+      </g>
+    </svg>
+  </div>
+
+  <!-- Rotating IR text circle: same Products hero format -->
+  <svg class="oreon-ir-hero__seal" viewBox="0 0 500 500" aria-hidden="true">
+    <defs>
+      <path id="oreon-ir-seal-circle"
+            pathLength="100"
+            d="M250 22a228 228 0 1 1 0 456a228 228 0 1 1 0-456"/>
+    </defs>
+    <text fill="#c4d7f4" style="font:400 16px Outfit,sans-serif;letter-spacing:5px;word-spacing:4px;">
+      <textPath href="#oreon-ir-seal-circle">
+        IR &#183; IR &#183; IR &#183; IR &#183; IR &#183; IR &#183; IR &#183; IR &#183; IR &#183; IR &#183; IR &#183; IR &#183; IR &#183; IR &#183; IR &#183; IR &#183; IR &#183; IR &#183; IR &#183; IR &#183; IR &#183; IR &#183; IR &#183; IR &#183; IR &#183; IR &#183; IR &#183; IR &#183; IR &#183; IR &#183; IR &#183; IR &#183; IR &#183; IR &#183; IR &#183; IR &#183; IR &#183; IR &#183; IR &#183; IR &#183; IR &#183; IR &#183; IR
+      </textPath>
+    </text>
+  </svg>
+
+  <div class="oreon-ir-hero__content">
+    <div class="oreon-ir-hero__copy">
+      <span class="oreon-ir-hero__eyebrow">INVESTOR RELATIONS</span>
+
+      <h1 class="oreon-ir-hero__title">
+        <span class="oreon-ir-hero__title-line">
+          The <span class="oreon-ir-hero__gradient-word">Value</span>
+        </span>
+        <span class="oreon-ir-hero__title-line">
+          We Build <span class="oreon-ir-hero__gradient-word">Together.</span>
+        </span>
+      </h1>
+
+      <p class="oreon-ir-hero__sub">
+        Rooted in timeless values, driven by innovation &#8212; creating a future that serves both<br>people and progress.
+      </p>
+    </div>
+  </div>
+</section>
+
+<script>
+(function(){
+  function sendHeight(){
+    var h=Math.max(document.documentElement.scrollHeight,document.body?document.body.scrollHeight:0);
+    try{window.parent.postMessage({type:'oreon-ir-hero-height',height:h},'*');}catch(e){}
+  }
+  window.addEventListener('load',function(){sendHeight();setTimeout(sendHeight,300);});
+  window.addEventListener('resize',sendHeight);
+  if('ResizeObserver' in window){new ResizeObserver(sendHeight).observe(document.documentElement);}
+})();
+</script>
