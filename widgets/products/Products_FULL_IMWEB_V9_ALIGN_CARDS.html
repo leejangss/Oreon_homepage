@@ -71,9 +71,10 @@ body{min-width:0;}
     left: 50%;
     transform: translateX(-50%);
     width: 100%;
-    max-width: 1440px;
-    margin: 0;
-    padding: 0 clamp(24px, 8vw, 160px);
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0 24px;
+    box-sizing: border-box;
   }
 
   .oreon-products-hero__copy {
@@ -133,14 +134,14 @@ body{min-width:0;}
   }
 
   @media (max-width: 900px) {
-    .oreon-products-hero__content { top: 72px; transform: translateX(-50%); }
+    .oreon-products-hero__content { top: 72px; transform: none; padding-inline: 40px; }
     .oreon-products-hero__title { white-space: normal; }
     .oreon-products-hero__sub { white-space: normal; }
   }
 
   @media (max-width: 560px) {
     .oreon-products-hero { min-height: 560px; height: 600px; }
-    .oreon-products-hero__content { top: 58px; transform: translateX(-50%); }
+    .oreon-products-hero__content { top: 58px; transform: none; padding-inline: 24px; }
   }
 
   @media (prefers-reduced-motion: reduce) {
