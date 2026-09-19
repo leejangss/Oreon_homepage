@@ -106,19 +106,31 @@ body{min-width:0;}
 
   .oreon-products-hero__title-line { display: block; }
 
+  @keyframes oreonProductsTitleGradientFlow {
+    0%   { background-position: 0% 50%; }
+    50%  { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+
   .oreon-products-hero__gradient-word {
     font-weight: 400;
     background: linear-gradient(90deg,
       #ffffff 0%,
-      #e9f6ff 22%,
-      #b9ddff 52%,
-      #78baff 78%,
-      #4FC3F7 100%);
+      #e9f6ff 16%,
+      #b9ddff 34%,
+      #78baff 50%,
+      #4FC3F7 66%,
+      #9adfff 82%,
+      #ffffff 100%);
+    background-size: 240% 100%;
+    background-position: 0% 50%;
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
     color: transparent;
     text-shadow: 0 0 28px rgba(79,195,247,.08);
+    animation: oreonProductsTitleGradientFlow 7s ease-in-out infinite;
+    will-change: background-position;
   }
 
   .oreon-products-hero__sub {
@@ -147,7 +159,8 @@ body{min-width:0;}
   @media (prefers-reduced-motion: reduce) {
     .oreon-products-hero__seal,
     .oreon-products-hero__line-glow,
-    .oreon-products-hero__line-core { animation: none !important; }
+    .oreon-products-hero__line-core,
+    .oreon-products-hero__gradient-word { animation: none !important; }
   }
 </style>
 
