@@ -1,0 +1,228 @@
+<!-- OREON PRODUCTS : HERO SECTION ONLY -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+<style>
+  .oreon-products-hero,
+  .oreon-products-hero * { box-sizing: border-box; }
+
+  .oreon-products-hero {
+    position: relative;
+    overflow: hidden;
+    width: 100%;
+    min-height: 100svh;
+    height: clamp(660px, 100svh, 1000px);
+    padding: 48px 0 42px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    background: #000107;
+    font-family: 'Outfit', sans-serif;
+  }
+
+  @keyframes oreonProductsSealTurn {
+    from { transform: translateY(calc(-50% - 50px)) rotate(0deg); }
+    to   { transform: translateY(calc(-50% - 50px)) rotate(360deg); }
+  }
+
+  @keyframes oreonProductsLineGlow {
+    0%,100% { opacity: .20; }
+    22%     { opacity: .50; }
+    48%     { opacity: .30; }
+    72%     { opacity: .68; }
+  }
+
+  @keyframes oreonProductsLineCore {
+    0%,100% { opacity: .58; }
+    20%     { opacity: .94; }
+    46%     { opacity: .72; }
+    70%     { opacity: 1; }
+  }
+
+  .oreon-products-hero__line-glow {
+    animation: oreonProductsLineGlow 5.6s ease-in-out infinite;
+    will-change: opacity;
+  }
+
+  .oreon-products-hero__line-core {
+    animation: oreonProductsLineCore 5.6s ease-in-out infinite;
+    will-change: opacity;
+  }
+
+  .oreon-products-hero__seal {
+    position: absolute;
+    right: clamp(-100px, -4vw, -30px);
+    top: 38.5%;
+    width: clamp(208px, 24vw, 384px);
+    height: clamp(208px, 24vw, 384px);
+    opacity: .85;
+    pointer-events: none;
+    animation: oreonProductsSealTurn 24s linear infinite;
+  }
+
+  .oreon-products-hero__content {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 0 clamp(24px, 8vw, 160px);
+    transform: translateY(-220px);
+  }
+
+  .oreon-products-hero__copy {
+    display: flex;
+    flex-direction: column;
+    max-width: 720px;
+  }
+
+  .oreon-products-hero__eyebrow {
+    display: inline-flex;
+    align-items: center;
+    font-size: 11px;
+    letter-spacing: .26em;
+    text-transform: uppercase;
+    color: #4FC3F7;
+    font-weight: 600;
+  }
+
+  .oreon-products-hero__title {
+    margin: 24px 0 0;
+    max-width: 1100px;
+    white-space: nowrap;
+    font-weight: 300;
+    font-size: clamp(56px, 7vw, 104px);
+    line-height: 1.02;
+    letter-spacing: 0;
+    color: #f5f7fc;
+  }
+
+  .oreon-products-hero__title-line { display: block; }
+
+  .oreon-products-hero__gradient-word {
+    font-weight: 400;
+    background: linear-gradient(90deg,
+      #ffffff 0%,
+      #e9f6ff 22%,
+      #b9ddff 52%,
+      #78baff 78%,
+      #4FC3F7 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+    text-shadow: 0 0 28px rgba(79,195,247,.08);
+  }
+
+  .oreon-products-hero__sub {
+    margin: 28px 0 0;
+    max-width: 60ch;
+    white-space: nowrap;
+    font-family: 'IBM Plex Sans', Arial, sans-serif;
+    font-weight: 300;
+    font-size: clamp(13px, 1vw, 15px);
+    line-height: 1.8;
+    letter-spacing: .1em;
+    color: #c0c9d8;
+  }
+
+  @media (max-width: 900px) {
+    .oreon-products-hero__content { transform: translateY(-130px); }
+    .oreon-products-hero__title { white-space: normal; }
+    .oreon-products-hero__sub { white-space: normal; }
+  }
+
+  @media (max-width: 560px) {
+    .oreon-products-hero { min-height: 720px; height: auto; }
+    .oreon-products-hero__content { transform: translateY(-90px); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .oreon-products-hero__seal,
+    .oreon-products-hero__line-glow,
+    .oreon-products-hero__line-core { animation: none !important; }
+  }
+</style>
+
+<section class="oreon-products-hero" aria-label="Products hero">
+  <!-- Gradient line: moved 50px upward from the previous baseline -->
+  <div aria-hidden="true" style="position:absolute;inset:0;z-index:0;pointer-events:none;overflow:hidden;">
+    <svg viewBox="0 0 1672 941" preserveAspectRatio="none" style="display:block;width:100%;height:100%;">
+      <defs>
+        <linearGradient id="oreon-products-hz-core" x1="0" y1="0" x2="1672" y2="0" gradientUnits="userSpaceOnUse">
+          <stop stop-color="#0439b8"/>
+          <stop offset=".18" stop-color="#2463df"/>
+          <stop offset=".36" stop-color="#498dff"/>
+          <stop offset=".54" stop-color="#7cb4fb"/>
+          <stop offset=".66" stop-color="#9adfff"/>
+          <stop offset=".78" stop-color="#d6f4fe"/>
+          <stop offset=".87" stop-color="#fdfffe"/>
+          <stop offset=".95" stop-color="#f6fbfe"/>
+          <stop offset="1" stop-color="#d4f2ff"/>
+        </linearGradient>
+        <linearGradient id="oreon-products-hz-glow" x1="0" y1="0" x2="1672" y2="0" gradientUnits="userSpaceOnUse">
+          <stop stop-color="#0b4cff" stop-opacity=".2"/>
+          <stop offset=".3" stop-color="#1160ff" stop-opacity=".35"/>
+          <stop offset=".6" stop-color="#2f7bff" stop-opacity=".6"/>
+          <stop offset=".85" stop-color="#5c9dff" stop-opacity=".85"/>
+          <stop offset="1" stop-color="#bcdcff" stop-opacity=".9"/>
+        </linearGradient>
+        <filter id="oreon-products-hz-b1" filterUnits="userSpaceOnUse" x="0" y="0" width="1672" height="941">
+          <feGaussianBlur stdDeviation="22"/>
+        </filter>
+        <filter id="oreon-products-hz-b2" filterUnits="userSpaceOnUse" x="0" y="0" width="1672" height="941">
+          <feGaussianBlur stdDeviation="7"/>
+        </filter>
+      </defs>
+
+      <rect width="1672" height="941" fill="#000000"/>
+      <path class="oreon-products-hero__line-glow"
+            d="M0 725 C250 640 520 558 760 516 S1270 448 1672 459"
+            fill="none" stroke="url(#oreon-products-hz-glow)" stroke-width="24"
+            filter="url(#oreon-products-hz-b1)" opacity=".35"/>
+      <path class="oreon-products-hero__line-glow"
+            d="M0 725 C250 640 520 558 760 516 S1270 448 1672 459"
+            fill="none" stroke="url(#oreon-products-hz-glow)" stroke-width="8"
+            filter="url(#oreon-products-hz-b2)" opacity=".60"
+            style="animation-delay:-1.4s"/>
+      <path class="oreon-products-hero__line-core"
+            d="M0 725 C250 640 520 558 760 516 S1270 448 1672 459"
+            fill="none" stroke="url(#oreon-products-hz-core)" stroke-width="2.4"
+            stroke-linecap="round" opacity=".86"/>
+    </svg>
+  </div>
+
+  <!-- Rotating PRODUCTS text circle: fixed 50px upward -->
+  <svg class="oreon-products-hero__seal" viewBox="0 0 500 500" aria-hidden="true">
+    <defs>
+      <path id="oreon-products-seal-circle"
+            pathLength="100"
+            d="M250 22a228 228 0 1 1 0 456a228 228 0 1 1 0-456"/>
+    </defs>
+    <text fill="#c4d7f4" style="font:400 16px Outfit,sans-serif;letter-spacing:5px;">
+      <textPath href="#oreon-products-seal-circle">
+        PRODUCTS · PRODUCTS · PRODUCTS · PRODUCTS · PRODUCTS · PRODUCTS · PRODUCTS · PRODUCTS · PRODUCTS · PRODUCTS · PRODUCTS · PRODUCTS ·
+      </textPath>
+    </text>
+  </svg>
+
+  <div class="oreon-products-hero__content">
+    <div class="oreon-products-hero__copy">
+      <span class="oreon-products-hero__eyebrow">PRODUCT PORTFOLIO</span>
+
+      <h1 class="oreon-products-hero__title">
+        <span class="oreon-products-hero__title-line">
+          One <span class="oreon-products-hero__gradient-word">Partner</span>
+        </span>
+        <span class="oreon-products-hero__title-line">
+          Every <span class="oreon-products-hero__gradient-word">Market's Need.</span>
+        </span>
+      </h1>
+
+      <p class="oreon-products-hero__sub">
+        Twelve advanced biomaterials, one integrated portfolio for medical aesthetics.
+      </p>
+    </div>
+  </div>
+</section>
