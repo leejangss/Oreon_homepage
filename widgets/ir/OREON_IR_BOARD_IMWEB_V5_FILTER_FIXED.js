@@ -1,10 +1,10 @@
-/* OREON IR BOARD - Imweb custom renderer v4
+/* OREON IR BOARD - Imweb custom renderer v5
    Target widget: w20260920efdd7cabae0a1
    Rebuilds the visible IR list from Imweb's native board DOM instead of assuming a <table>.
 */
 (function () {
   const ID = "w20260920efdd7cabae0a1";
-  const STYLE_ID = "oreon-ir-board-v4-style";
+  const STYLE_ID = "oreon-ir-board-v5-style";
 
   if (!document.getElementById(STYLE_ID)) {
     const style = document.createElement("style");
@@ -155,6 +155,7 @@
   white-space:nowrap;
 }
 #${ID} .oreon-ir-empty{
+  display:none;
   padding:42px 12px 18px;
   text-align:center;
   color:#8f9caf;
@@ -458,14 +459,22 @@
     function filter(){
       const q = upper(input.value);
       let count = 0;
+
       rows.forEach(row=>{
-        const catOk = activeCat === "ALL" || row.dataset.category === activeCat;
-        const searchOk = !q || row.dataset.search.includes(q);
+        const rowCat = upper(row.dataset.category || "");
+        const catOk = activeCat === "ALL" || rowCat === activeCat;
+        const searchOk = !q || upper(row.dataset.search || "").includes(q);
         const show = catOk && searchOk;
-        row.hidden = !show;
+
+        // Do not rely on the HTML hidden attribute because .oreon-ir-row uses display:grid.
+        // Set display directly so Imweb/browser CSS cannot override the filter.
+        row.style.display = show ? "grid" : "none";
+
         if(show) count++;
       });
+
       empty.hidden = count !== 0;
+      empty.style.display = count ? "none" : "block";
     }
 
     shell.querySelectorAll(".oreon-ir-tab").forEach(btn=>{
@@ -477,6 +486,7 @@
       });
     });
     input.addEventListener("input",filter);
+    filter();
 
     // Owner/admin WRITE button: only appears when Imweb itself rendered a native write control.
     if(nativeWrite){
