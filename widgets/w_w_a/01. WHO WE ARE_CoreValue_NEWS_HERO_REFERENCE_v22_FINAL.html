@@ -1663,6 +1663,74 @@ try{if(window.self!==window.top){document.documentElement.classList.add('oreon-i
 }
 </style>
 
+
+<style id="imweb-v23-stable-iframe-final">
+/* IMWEB ONLY — keep the approved standalone design unchanged.
+   The iframe's own height must never drive 100svh/380vh layouts. */
+html.oreon-imweb-embedded #core-value-hero{
+  height:clamp(720px,52vw,820px)!important;
+  min-height:720px!important;
+  padding-top:clamp(112px,8vw,126px)!important;
+  padding-bottom:42px!important;
+}
+html.oreon-imweb-embedded #values{
+  margin-top:-18px!important;
+  padding-left:var(--space)!important;
+  padding-right:var(--space)!important;
+  overflow:visible!important;
+}
+html.oreon-imweb-embedded #values .tri-pin-outer{
+  height:auto!important;
+  min-height:0!important;
+  position:relative!important;
+}
+html.oreon-imweb-embedded #values .tri-pin-inner{
+  position:relative!important;
+  top:auto!important;
+  height:auto!important;
+  min-height:0!important;
+  display:block!important;
+  padding:22px 0 48px!important;
+}
+html.oreon-imweb-embedded #values .tri-stage{
+  width:min(960px,84vw)!important;
+  height:auto!important;
+  max-height:none!important;
+  aspect-ratio:1100/640!important;
+  margin:18px auto 28px!important;
+  position:relative!important;
+  top:-30px!important;
+  transform:scale(1.06)!important;
+  transform-origin:center center!important;
+}
+html.oreon-imweb-embedded #values .tri-stage svg{
+  width:100%!important;
+  height:auto!important;
+  display:block!important;
+}
+html.oreon-imweb-embedded #values .value-cards{
+  display:grid!important;
+  grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  gap:22px!important;
+  margin:24px auto 0!important;
+  transform:none!important;
+}
+html.oreon-imweb-embedded #values .value-card{
+  min-height:140px!important;
+  opacity:1!important;
+  transform:none!important;
+}
+html.oreon-imweb-embedded .vm-section{
+  height:auto!important;
+  min-height:0!important;
+}
+@media(max-width:700px){
+  html.oreon-imweb-embedded #core-value-hero{height:700px!important;min-height:700px!important;}
+  html.oreon-imweb-embedded #values .tri-stage{width:100%!important;transform:scale(1.04)!important;}
+  html.oreon-imweb-embedded #values .value-cards{grid-template-columns:1fr!important;gap:15px!important;}
+}
+</style>
+
 </head>
 <body>
 <main><section id="core-value-hero" aria-label="Core Value Hero">
@@ -1724,7 +1792,7 @@ function measure(){
 const embedded=document.documentElement.classList.contains('oreon-imweb-embedded');
 if(embedded){top=0;travel=1;section.style.removeProperty('--pin-top');section.style.removeProperty('--pin-height');outer.style.removeProperty('height');cards.forEach((card,i)=>{card.classList.toggle('active',i===0);if(i===0)card.setAttribute('aria-current','step');else card.removeAttribute('aria-current');});labels.forEach((label,i)=>label.classList.toggle('active',i===0));requestFrameHeight();return;}
 const header=document.querySelector('header');top=header?Math.round(header.getBoundingClientRect().height):0;const available=Math.max(360,window.innerHeight-top);travel=Math.max(1500,available*2.8);section.style.setProperty('--pin-top',top+'px');section.style.setProperty('--pin-height',available+'px');outer.style.height=(available+travel)+'px';update();} 
-function requestFrameHeight(){if(window.self===window.top)return;requestAnimationFrame(()=>{const h=Math.ceil(document.documentElement.scrollHeight);window.parent.postMessage({type:'OREON_COREVALUE_HEIGHT',height:h},'*');});}
+function requestFrameHeight(){if(window.self===window.top)return;requestAnimationFrame(()=>{const root=document.querySelector('main')||document.body;const h=Math.ceil(Math.max(root.scrollHeight,root.getBoundingClientRect().height));window.parent.postMessage({type:'OREON_COREVALUE_HEIGHT',height:h},'*');});}
 section.querySelectorAll('.reveal').forEach(el=>el.classList.add('visible'));
 window.addEventListener('scroll',schedule,{passive:true});window.addEventListener('resize',measure);window.addEventListener('pageshow',measure);if(document.fonts)document.fonts.ready.then(measure);measure();if(document.documentElement.classList.contains('oreon-imweb-embedded')){window.addEventListener('load',requestFrameHeight);window.addEventListener('resize',requestFrameHeight);if('ResizeObserver' in window){new ResizeObserver(requestFrameHeight).observe(document.body);}setTimeout(requestFrameHeight,120);setTimeout(requestFrameHeight,600);}
 })();
