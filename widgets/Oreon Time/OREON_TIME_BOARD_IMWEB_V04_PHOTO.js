@@ -1,7 +1,10 @@
-/* OREON TIME photo-card board V03 — scoped to the existing Imweb board widget */
+/* OREON TIME photo-card board V04.
+   Reads Imweb photo/gallery posts; keeps native posts intact underneath for routing.
+   Hides native public write controls; publishing remains available via Imweb admin.
+*/
 (function(){
 "use strict";
-const ID="w202610103e49cc0075aa3", STYLE="oreon-time-photo-v03-style";
+const ID="w202610103e49cc0075aa3", STYLE="oreon-time-photo-v04-style";
 const CATS=["CONFERENCE & EXHIBITION","EMPLOYEE STORY","GLOBAL PARTNERS"];
 const norm=s=>String(s||"").replace(/\s+/g," ").trim();
 const upper=s=>norm(s).toUpperCase();
@@ -12,6 +15,11 @@ if(!document.getElementById(STYLE)){
  style.textContent=`
 #${ID}{max-width:1400px!important;margin:0 auto!important;padding:0!important;background:transparent!important}
 #${ID}>.oreon-time-native-hidden{display:none!important}
+/* Native blue WRITE button: never show in public or board view. */
+#${ID} .btn-write,#${ID} .btn_write,#${ID} .board_write,#${ID} .board-write,
+#${ID} .write_btn,#${ID} .write-button,#${ID} .btn-write-wrap,
+#${ID} .board_write_btn,#${ID} a[href*="write_mode"],
+#${ID} a[href*="mode=write"]{display:none!important}
 #${ID} .oreon-time-shell{background:#0b111b;border:1px solid rgba(160,180,205,.18);border-radius:22px;padding:48px 52px 40px;box-sizing:border-box;overflow:hidden}
 #${ID} .oreon-time-toolbar{display:flex;justify-content:space-between;align-items:center;gap:28px;margin:0 0 34px}
 #${ID} .oreon-time-tabs{display:flex;align-items:center;flex-wrap:wrap;gap:12px}
@@ -60,41 +68,70 @@ function backgroundSource(el){
  const match=style.match(/background-image\s*:\s*url\(\s*(['"]?)(.*?)\1\s*\)/i);
  return match?match[2]:"";
 }
-function rowFor(link,root){
- let n=link;
- for(let i=0;i<9&&n&&n!==root;i++,n=n.parentElement){
-  if(n.classList.contains("oreon-time-shell"))return null;
-  const text=norm(n.textContent);
-  if(text.length>1300)continue;
-  if(n.matches("li,article,.board-item,.board_item,.item,.gallery-item,.gallery_item,.list-item,.list_item,.card,.card-item,.card_item,.board-list-item,.board_list_item, tr"))return n;
-  const images=n.querySelectorAll("img").length;
-  const hasDate=[...n.querySelectorAll("time,span,div,td")].some(el=>el.children.length===0&&isDate(el.textContent));
-  if((images||hasDate)&&text.length<500&&text.length>norm(link.textContent).length)return n;
+function likelyPhoto(el){
+ if(!el)return false;
+ const img=[...el.querySelectorAll("img")].find(x=>!/(avatar|profile|icon|user|emoticon|logo)/i.test((x.getAttribute("src")||"")+" "+(x.className||"")));
+ if(img&&imageSource(img))return true;
+ return !![...el.querySelectorAll("[style*='background']")].map(backgroundSource).find(Boolean);
+}
+function pickCard(anchor,root){
+ let el=anchor, fallback=null;
+ for(let n=0;n<12&&el&&el!==root;el=el.parentElement,n++){
+  if(el.classList.contains("oreon-time-shell"))break;
+  const t=norm(el.textContent);
+  if(t.length>2200)break;
+  if(!likelyPhoto(el))continue;
+  if(t.length>2&&!fallback)fallback=el;
+  // Prefer the repeated tile / gallery item, not its inner image wrapper.
+  if(el.matches("li,article,tr,[class*='gallery-item'],[class*='gallery_item'],[class*='board-item'],[class*='board_item'],[class*='card'],[class*='col-md-'],[class*='col-sm-'],[class*='col-xs-'],[class*='list_item'],[class*='list-item'],[class*='item-wrap'],[class*='item_wrap']"))return el;
+  if(el.parentElement&&el.parentElement.children.length>=2&&t.length>=5)return el;
  }
- return null;
+ return fallback;
+}
+function getTitle(tile){
+ const selectors=[".board-title",".board_title",".post-title",".post_title",".title a",".title",".subject a",".subject",".txt_title","[class*='title'] a","a[title]"];
+ for(const sel of selectors){
+  const node=tile.querySelector(sel);
+  const t=norm(node?.textContent)||norm(node?.getAttribute("title"));
+  if(t&&t.length>2&&t.length<220&&!isDate(t)&&!excluded.has(upper(t)))return {text:t,link:node.closest("a")||tile.querySelector("a")};
+ }
+ const links=[...tile.querySelectorAll("a")];
+ const candidates=links.map(a=>({text:norm(a.textContent)||norm(a.getAttribute("title")),link:a}))
+  .filter(o=>o.text.length>2&&o.text.length<220&&!isDate(o.text)&&!excluded.has(upper(o.text))&&!/^(관리자|ADMIN|답글|댓글|좋아요|MORE|READ MORE)$/.test(upper(o.text)));
+ candidates.sort((a,b)=>b.text.length-a.text.length);
+ if(candidates.length)return candidates[0];
+ const textNodes=[...tile.querySelectorAll("h1,h2,h3,h4,p,span,div")].filter(x=>x.children.length===0);
+ const texts=textNodes.map(el=>norm(el.textContent)).filter(t=>t.length>2&&t.length<220&&!isDate(t)&&!excluded.has(upper(t))&&!/^(관리자|ADMIN)$/.test(upper(t)));
+ const text=texts.sort((a,b)=>b.length-a.length)[0]||"";
+ return {text,link:links[0]||null};
 }
 function extract(root){
  const native=[...root.children].filter(ch=>!ch.classList.contains("oreon-time-shell"));
- const out=[], seen=new Set();
- for(const a of native.flatMap(ch=>[...ch.querySelectorAll("a")])){
-  if(!visible(a)||a.closest(".pagination,.pagination_wrap,.paging,.board_paging,.paging-block"))continue;
-  const raw=a.getAttribute("href")||"", aText=norm(a.textContent);
-  if(excluded.has(upper(aText))||/^(이동|수정|지우기|삭제|공유|인쇄)$/.test(aText))continue;
-  const row=rowFor(a,root);if(!row||seen.has(row))continue;
-  const links=[...row.querySelectorAll("a")];
-  const titleLink=links.find(x=>norm(x.textContent)&&!excluded.has(upper(x.textContent))&&!isDate(x.textContent)&&norm(x.textContent).length>2)||a;
-  let title=norm(titleLink.textContent)||norm(titleLink.getAttribute("title"))||norm(row.querySelector("[title]")?.getAttribute("title"));
-  if(!title||excluded.has(upper(title))||title.length>240)continue;
-  const img=row.querySelector("img:not([src*='icon']):not([src*='profile']):not([src*='avatar'])");
-  const bg=[...row.querySelectorAll("[style*='background']")].map(backgroundSource).find(Boolean);
-  const photo=imageSource(img)||bg||"";
-  const rowText=upper(row.textContent);
-  const category=CATS.find(c=>rowText.includes(c))||"";
-  const date=[...row.querySelectorAll("time,span,div,td")].filter(x=>x.children.length===0).map(x=>norm(x.textContent)).find(isDate)||"";
-  const num=[...row.querySelectorAll("span,div,td")].filter(x=>x.children.length===0).map(x=>norm(x.textContent)).find(x=>/^\d+$/.test(x))||"";
-  const linkHref=titleLink.getAttribute("href")||raw;
-  seen.add(row);
-  out.push({title,photo,category,date,no:num||String(out.length+1),href:linkHref&&linkHref!=="#"&&!/^javascript:/i.test(linkHref)?titleLink.href:"",nativeLink:titleLink});
+ const out=[],seen=new Set();
+ const allImgs=native.flatMap(ch=>[...ch.querySelectorAll("img")]).filter(img=>visible(img)&&imageSource(img));
+ const anchors=native.flatMap(ch=>[...ch.querySelectorAll("a")])
+  .filter(a=>!a.closest(".pagination,.pagination_wrap,.paging,.board_paging,.paging-block"));
+ // Image-first discovery also handles Imweb galleries whose picture links have no text.
+ const candidates=[...new Set([...allImgs.map(img=>img.closest("a")||img),...anchors])];
+ for(const element of candidates){
+  const tile=pickCard(element,root);
+  if(!tile||seen.has(tile)||tile.closest(".oreon-time-shell"))continue;
+  if(tile.querySelectorAll("img").length>5)continue; // likely entire gallery, not a post
+  const {text:title,link}=getTitle(tile);
+  if(!title)continue;
+  const image=[...tile.querySelectorAll("img")].find(x=>!/(avatar|profile|icon|user|emoticon|logo)/i.test((x.getAttribute("src")||"")+" "+(x.className||"")));
+  const bg=[...tile.querySelectorAll("[style*='background']")].map(backgroundSource).find(Boolean);
+  const photo=imageSource(image)||bg||"";
+  const category=CATS.find(c=>upper(tile.textContent).includes(c))||"";
+  const strings=[...tile.querySelectorAll("time,span,div,small")].filter(x=>x.children.length===0).map(x=>norm(x.textContent));
+  const date=strings.find(isDate)||"";
+  const no=strings.find(x=>/^\d+$/.test(x))||String(out.length+1);
+  const target=link||element.closest("a")||tile.querySelector("a");
+  if(!target)continue;
+  const raw=target.getAttribute("href")||"";
+  const href=raw&&raw!=="#"&&!/^javascript:/i.test(raw)?target.href:"";
+  seen.add(tile);
+  out.push({title,photo,category,date,no,href,nativeLink:target});
  }
  return out;
 }
@@ -109,7 +146,8 @@ function build(root){
  const posts=extract(root),page=pagination(root);
  // On unrecognized Imweb gallery markup, leave the native board visible instead of rendering an empty UI.
  if(!posts.length)return;
- const write=[...root.querySelectorAll("a,button")].find(x=>visible(x)&&["글쓰기","WRITE"].includes(upper(x.textContent)))||root.querySelector(".btn-write");
+ // Do not reproduce WRITE buttons: manage and publish from Imweb admin. 
+ const write=null;
  const shell=document.createElement("div");shell.className="oreon-time-shell";
  shell.innerHTML=`<div class="oreon-time-toolbar"><div class="oreon-time-tabs"><button class="oreon-time-tab is-active" data-cat="ALL">ALL</button><button class="oreon-time-tab" data-cat="CONFERENCE & EXHIBITION">Conference & Exhibition</button><button class="oreon-time-tab" data-cat="EMPLOYEE STORY">Employee Story</button><button class="oreon-time-tab" data-cat="GLOBAL PARTNERS">Global Partners</button></div><label class="oreon-time-search"><input type="search" placeholder="Search" aria-label="Search Oreon Time posts"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="11" cy="11" r="7" stroke-width="1.7"/><path d="M16.5 16.5L21 21" stroke-width="1.7" stroke-linecap="round"/></svg></label></div><div class="oreon-time-grid"></div><div class="oreon-time-empty" hidden>No OREON TIME posts found.</div><div class="oreon-time-pagination"></div><div class="oreon-time-admin-actions"></div>`;
  const grid=shell.querySelector(".oreon-time-grid");
@@ -138,6 +176,18 @@ function build(root){
  }finally{root.dataset.oreonTimeBuilding="0";}
 }
 function boot(n=0){const root=document.getElementById(ID);if(!root){if(n<60)setTimeout(()=>boot(n+1),200);return;}
- build(root);let timer;new MutationObserver(mutations=>{if(!mutations.some(m=>{const e=m.target.nodeType===1?m.target:m.target.parentElement;return e&&!e.closest(".oreon-time-shell");}))return;clearTimeout(timer);timer=setTimeout(()=>build(root),300);}).observe(root,{childList:true,subtree:true,characterData:true});}
+ build(root);
+ [...root.querySelectorAll("a,button")].forEach(el=>{
+   if(["글쓰기","WRITE"].includes(upper(el.textContent))&&!el.closest(".oreon-time-shell")){
+     el.style.setProperty("display","none","important");
+   }
+ });
+ let timer;new MutationObserver(mutations=>{if(!mutations.some(m=>{const e=m.target.nodeType===1?m.target:m.target.parentElement;return e&&!e.closest(".oreon-time-shell");}))return;clearTimeout(timer);timer=setTimeout(()=>{
+  build(root);
+  [...root.querySelectorAll("a,button")].forEach(el=>{
+    if(["글쓰기","WRITE"].includes(upper(el.textContent))&&!el.closest(".oreon-time-shell"))
+      el.style.setProperty("display","none","important");
+  });
+ },300);}).observe(root,{childList:true,subtree:true,characterData:true});}
 boot();
 })();
