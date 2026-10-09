@@ -1659,70 +1659,87 @@ When extracting a category, include its marked HTML block plus the matching sect
 })();
 </script>
 
-<!-- OREON IFRAME → IMWEB SCROLL BRIDGE -->
-<style>
-  html, body { overscroll-behavior-y: contain; }
-</style>
+
+<!-- OREON IFRAME → IMWEB ROBUST SCROLL BRIDGE -->
 <script>
 (function () {
-  const EPS = 4;
+  const EPS = 12;
+  let lastSent = 0;
+
+  function scroller() {
+    return document.scrollingElement || document.documentElement || document.body;
+  }
 
   function atBottom() {
-    const el = document.scrollingElement || document.documentElement;
+    const el = scroller();
     return el.scrollTop + window.innerHeight >= el.scrollHeight - EPS;
   }
 
   function atTop() {
-    const el = document.scrollingElement || document.documentElement;
+    const el = scroller();
     return el.scrollTop <= EPS;
   }
 
   function send(direction, amount) {
+    const now = Date.now();
+    if (now - lastSent < 24) return;
+    lastSent = now;
     try {
       parent.postMessage({
         type: 'OREON_IFRAME_EDGE_SCROLL',
-        direction: direction,
-        amount: Math.max(1, Math.min(240, Math.abs(amount || 80)))
+        direction,
+        amount: Math.max(80, Math.min(420, Math.abs(amount || 140)))
       }, '*');
     } catch (e) {}
   }
 
   window.addEventListener('wheel', function (e) {
+    const el = scroller();
+    const before = el.scrollTop;
+
     if (e.deltaY > 0 && atBottom()) {
       send('down', e.deltaY);
-    } else if (e.deltaY < 0 && atTop()) {
-      send('up', e.deltaY);
+      return;
     }
-  }, { passive: true });
+    if (e.deltaY < 0 && atTop()) {
+      send('up', e.deltaY);
+      return;
+    }
 
-  let lastTouchY = null;
+    requestAnimationFrame(function () {
+      const after = el.scrollTop;
+      if (e.deltaY > 0 && Math.abs(after - before) < 1) {
+        send('down', e.deltaY);
+      } else if (e.deltaY < 0 && Math.abs(after - before) < 1) {
+        send('up', e.deltaY);
+      }
+    });
+  }, { passive:true });
 
+  let touchY = null;
   window.addEventListener('touchstart', function (e) {
-    if (e.touches && e.touches.length) lastTouchY = e.touches[0].clientY;
-  }, { passive: true });
+    if (e.touches && e.touches.length) touchY = e.touches[0].clientY;
+  }, { passive:true });
 
   window.addEventListener('touchmove', function (e) {
-    if (lastTouchY == null || !e.touches || !e.touches.length) return;
+    if (touchY == null || !e.touches || !e.touches.length) return;
     const y = e.touches[0].clientY;
-    const delta = lastTouchY - y;
-    lastTouchY = y;
+    const delta = touchY - y;
+    touchY = y;
 
-    if (delta > 0 && atBottom()) {
-      send('down', delta * 2);
-    } else if (delta < 0 && atTop()) {
-      send('up', delta * 2);
-    }
-  }, { passive: true });
+    if (delta > 0 && atBottom()) send('down', delta * 3);
+    if (delta < 0 && atTop()) send('up', delta * 3);
+  }, { passive:true });
 
   window.addEventListener('touchend', function () {
-    lastTouchY = null;
-  }, { passive: true });
+    touchY = null;
+  }, { passive:true });
 
   window.addEventListener('keydown', function (e) {
     if ((e.key === 'PageDown' || e.key === 'ArrowDown' || e.key === ' ') && atBottom()) {
-      send('down', 120);
+      send('down', 220);
     } else if ((e.key === 'PageUp' || e.key === 'ArrowUp') && atTop()) {
-      send('up', -120);
+      send('up', 220);
     }
   });
 })();
