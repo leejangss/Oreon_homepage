@@ -1659,89 +1659,31 @@ When extracting a category, include its marked HTML block plus the matching sect
 })();
 </script>
 
-
-<!-- OREON IFRAME → IMWEB ROBUST SCROLL BRIDGE -->
+<!-- OREON IFRAME END-RELEASE -->
+<div id="oreon-scroll-end-sentinel" aria-hidden="true" style="height:1px;width:1px;pointer-events:none;"></div>
 <script>
-(function () {
-  const EPS = 12;
-  let lastSent = 0;
+(function(){
+  const sentinel = document.getElementById('oreon-scroll-end-sentinel');
+  if(!sentinel) return;
 
-  function scroller() {
-    return document.scrollingElement || document.documentElement || document.body;
-  }
+  let sent = false;
 
-  function atBottom() {
-    const el = scroller();
-    return el.scrollTop + window.innerHeight >= el.scrollHeight - EPS;
-  }
+  const io = new IntersectionObserver(function(entries){
+    const visible = entries.some(function(entry){ return entry.isIntersecting; });
 
-  function atTop() {
-    const el = scroller();
-    return el.scrollTop <= EPS;
-  }
-
-  function send(direction, amount) {
-    const now = Date.now();
-    if (now - lastSent < 24) return;
-    lastSent = now;
-    try {
-      parent.postMessage({
-        type: 'OREON_IFRAME_EDGE_SCROLL',
-        direction,
-        amount: Math.max(80, Math.min(420, Math.abs(amount || 140)))
-      }, '*');
-    } catch (e) {}
-  }
-
-  window.addEventListener('wheel', function (e) {
-    const el = scroller();
-    const before = el.scrollTop;
-
-    if (e.deltaY > 0 && atBottom()) {
-      send('down', e.deltaY);
-      return;
-    }
-    if (e.deltaY < 0 && atTop()) {
-      send('up', e.deltaY);
-      return;
+    if(visible && !sent){
+      sent = true;
+      try{
+        parent.postMessage({type:'OREON_RELEASE_PARENT_SCROLL'}, '*');
+      }catch(e){}
     }
 
-    requestAnimationFrame(function () {
-      const after = el.scrollTop;
-      if (e.deltaY > 0 && Math.abs(after - before) < 1) {
-        send('down', e.deltaY);
-      } else if (e.deltaY < 0 && Math.abs(after - before) < 1) {
-        send('up', e.deltaY);
-      }
-    });
-  }, { passive:true });
-
-  let touchY = null;
-  window.addEventListener('touchstart', function (e) {
-    if (e.touches && e.touches.length) touchY = e.touches[0].clientY;
-  }, { passive:true });
-
-  window.addEventListener('touchmove', function (e) {
-    if (touchY == null || !e.touches || !e.touches.length) return;
-    const y = e.touches[0].clientY;
-    const delta = touchY - y;
-    touchY = y;
-
-    if (delta > 0 && atBottom()) send('down', delta * 3);
-    if (delta < 0 && atTop()) send('up', delta * 3);
-  }, { passive:true });
-
-  window.addEventListener('touchend', function () {
-    touchY = null;
-  }, { passive:true });
-
-  window.addEventListener('keydown', function (e) {
-    if ((e.key === 'PageDown' || e.key === 'ArrowDown' || e.key === ' ') && atBottom()) {
-      send('down', 220);
-    } else if ((e.key === 'PageUp' || e.key === 'ArrowUp') && atTop()) {
-      send('up', 220);
+    if(!visible){
+      sent = false;
     }
-  });
+  }, {threshold:0});
+
+  io.observe(sentinel);
 })();
 </script>
 
