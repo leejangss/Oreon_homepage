@@ -1658,4 +1658,74 @@ When extracting a category, include its marked HTML block plus the matching sect
  });
 })();
 </script>
+
+<!-- OREON IFRAME → IMWEB SCROLL BRIDGE -->
+<style>
+  html, body { overscroll-behavior-y: contain; }
+</style>
+<script>
+(function () {
+  const EPS = 4;
+
+  function atBottom() {
+    const el = document.scrollingElement || document.documentElement;
+    return el.scrollTop + window.innerHeight >= el.scrollHeight - EPS;
+  }
+
+  function atTop() {
+    const el = document.scrollingElement || document.documentElement;
+    return el.scrollTop <= EPS;
+  }
+
+  function send(direction, amount) {
+    try {
+      parent.postMessage({
+        type: 'OREON_IFRAME_EDGE_SCROLL',
+        direction: direction,
+        amount: Math.max(1, Math.min(240, Math.abs(amount || 80)))
+      }, '*');
+    } catch (e) {}
+  }
+
+  window.addEventListener('wheel', function (e) {
+    if (e.deltaY > 0 && atBottom()) {
+      send('down', e.deltaY);
+    } else if (e.deltaY < 0 && atTop()) {
+      send('up', e.deltaY);
+    }
+  }, { passive: true });
+
+  let lastTouchY = null;
+
+  window.addEventListener('touchstart', function (e) {
+    if (e.touches && e.touches.length) lastTouchY = e.touches[0].clientY;
+  }, { passive: true });
+
+  window.addEventListener('touchmove', function (e) {
+    if (lastTouchY == null || !e.touches || !e.touches.length) return;
+    const y = e.touches[0].clientY;
+    const delta = lastTouchY - y;
+    lastTouchY = y;
+
+    if (delta > 0 && atBottom()) {
+      send('down', delta * 2);
+    } else if (delta < 0 && atTop()) {
+      send('up', delta * 2);
+    }
+  }, { passive: true });
+
+  window.addEventListener('touchend', function () {
+    lastTouchY = null;
+  }, { passive: true });
+
+  window.addEventListener('keydown', function (e) {
+    if ((e.key === 'PageDown' || e.key === 'ArrowDown' || e.key === ' ') && atBottom()) {
+      send('down', 120);
+    } else if ((e.key === 'PageUp' || e.key === 'ArrowUp') && atTop()) {
+      send('up', -120);
+    }
+  });
+})();
+</script>
+
 </body></html>
