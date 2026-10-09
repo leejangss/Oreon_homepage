@@ -1,0 +1,199 @@
+<!-- OREON HOME NEWS AUTO-LIST -->
+<style>
+#w2026100970ce3854441b1 {
+  background:#000 !important;
+  color:#eef1f6 !important;
+}
+#w2026100970ce3854441b1 .oreon-auto-news {
+  max-width:1440px;
+  width:calc(100% - 48px);
+  margin:0 auto;
+  padding:0 0 clamp(88px,12vh,140px);
+  font-family:'Outfit','Noto Sans KR',Arial,sans-serif;
+}
+#w2026100970ce3854441b1 .oreon-auto-news-line {
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:20px;
+  padding:clamp(12px,1.8vh,18px) 0;
+  border-bottom:1px solid rgba(255,255,255,.14);
+  text-decoration:none !important;
+  transition:opacity .2s ease;
+}
+#w2026100970ce3854441b1 .oreon-auto-news-line:first-child {
+  border-top:1px solid rgba(255,255,255,.14);
+}
+#w2026100970ce3854441b1 .oreon-auto-news-line:hover {
+  opacity:.7;
+}
+#w2026100970ce3854441b1 .oreon-auto-news-title {
+  min-width:0;
+  color:#eef1f6;
+  font-weight:500;
+  font-size:clamp(.92rem,1.4vh,1.05rem);
+  line-height:1.45;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+#w2026100970ce3854441b1 .oreon-auto-news-date {
+  flex:0 0 auto;
+  color:#7f8fa0;
+  font-size:.82rem;
+  white-space:nowrap;
+}
+#w2026100970ce3854441b1 .oreon-board-original-hidden {
+  display:none !important;
+}
+@media(max-width:640px){
+  #w2026100970ce3854441b1 .oreon-auto-news {
+    width:calc(100% - 32px);
+  }
+  #w2026100970ce3854441b1 .oreon-auto-news-line {
+    align-items:flex-start;
+    gap:12px;
+  }
+  #w2026100970ce3854441b1 .oreon-auto-news-title {
+    white-space:normal;
+    display:-webkit-box;
+    -webkit-line-clamp:2;
+    -webkit-box-orient:vertical;
+  }
+}
+</style>
+
+<script>
+(function(){
+  const WIDGET_ID = "w2026100970ce3854441b1";
+  const widget = document.getElementById(WIDGET_ID);
+  if(!widget) return;
+
+  let timer = null;
+  let rebuilding = false;
+
+  function getDate(text){
+    const patterns = [
+      /\b\d{1,2}\s+[A-Za-z]{3}\s+\d{4}\b/,
+      /\b\d{4}[.\/-]\d{1,2}[.\/-]\d{1,2}\b/,
+      /\b\d{2}[.\/-]\d{1,2}[.\/-]\d{1,2}\b/,
+      /\b\d{4}\s*년\s*\d{1,2}\s*월\s*\d{1,2}\s*일\b/
+    ];
+    for(const p of patterns){
+      const m = text.match(p);
+      if(m) return m[0];
+    }
+    return "";
+  }
+
+  function candidateRows(){
+    const selectors = [
+      "tbody tr",
+      ".board-list-body .li_body",
+      ".board-list .list",
+      ".list-style-card .list",
+      "[class*='board'] [class*='row']"
+    ];
+    const seen = new Set();
+    const rows = [];
+    selectors.forEach(sel => {
+      widget.querySelectorAll(sel).forEach(el => {
+        if(!seen.has(el)){ seen.add(el); rows.push(el); }
+      });
+    });
+    return rows;
+  }
+
+  function pickTitleLink(row){
+    const links = [...row.querySelectorAll("a[href]")].filter(a => {
+      const t = (a.textContent || "").trim();
+      return t.length >= 4 && a.offsetParent !== null;
+    });
+    if(!links.length) return null;
+    links.sort((a,b) => (b.textContent||"").trim().length - (a.textContent||"").trim().length);
+    return links[0];
+  }
+
+  function rebuild(){
+    if(rebuilding) return;
+    rebuilding = true;
+
+    widget.querySelectorAll(".oreon-auto-news").forEach(el => el.remove());
+
+    const rows = candidateRows();
+    const items = [];
+    const hrefSeen = new Set();
+
+    rows.forEach(row => {
+      const link = pickTitleLink(row);
+      if(!link) return;
+      const title = (link.textContent || "").replace(/\s+/g," ").trim();
+      const href = link.href;
+      if(!title || !href || hrefSeen.has(href)) return;
+
+      // Exclude obvious controls/pagination/category-only links.
+      if(/^(글쓰기|write|목록|list|이전|다음|prev|next)$/i.test(title)) return;
+      if(title.length < 6) return;
+
+      hrefSeen.add(href);
+      items.push({
+        title,
+        href,
+        date:getDate((row.innerText || "").replace(/\s+/g," "))
+      });
+    });
+
+    // Keep only the first five linked news posts, matching the existing home layout.
+    const news = items.slice(0,5);
+    if(news.length){
+      const list = document.createElement("div");
+      list.className = "oreon-auto-news";
+
+      news.forEach(item => {
+        const a = document.createElement("a");
+        a.className = "oreon-auto-news-line";
+        a.href = item.href;
+
+        const title = document.createElement("span");
+        title.className = "oreon-auto-news-title";
+        title.textContent = item.title;
+
+        const date = document.createElement("span");
+        date.className = "oreon-auto-news-date";
+        date.textContent = item.date;
+
+        a.append(title,date);
+        list.appendChild(a);
+      });
+
+      // Hide the original board UI, but keep it in the DOM as the live data source.
+      [...widget.children].forEach(ch => {
+        if(ch !== list && !ch.classList.contains("oreon-auto-news")) {
+          ch.classList.add("oreon-board-original-hidden");
+        }
+      });
+
+      widget.appendChild(list);
+    }
+
+    rebuilding = false;
+  }
+
+  function schedule(){
+    clearTimeout(timer);
+    timer = setTimeout(rebuild,180);
+  }
+
+  rebuild();
+
+  const observer = new MutationObserver(mutations => {
+    // Ignore mutations caused only by our own generated list.
+    const external = mutations.some(m => {
+      const t = m.target.nodeType === 1 ? m.target : m.target.parentElement;
+      return !(t && t.closest && t.closest(".oreon-auto-news"));
+    });
+    if(external) schedule();
+  });
+  observer.observe(widget,{childList:true,subtree:true,characterData:true});
+})();
+</script>
