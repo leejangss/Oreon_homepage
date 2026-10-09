@@ -1,10 +1,10 @@
-/* OREON TIME photo-card board V04.
+/* OREON TIME photo-card board V05.
    Reads Imweb photo/gallery posts; keeps native posts intact underneath for routing.
    Hides native public write controls; publishing remains available via Imweb admin.
 */
 (function(){
 "use strict";
-const ID="w202610103e49cc0075aa3", STYLE="oreon-time-photo-v04-style";
+const ID="w202610103e49cc0075aa3", STYLE="oreon-time-photo-v05-style";
 const CATS=["CONFERENCE & EXHIBITION","EMPLOYEE STORY","GLOBAL PARTNERS"];
 const norm=s=>String(s||"").replace(/\s+/g," ").trim();
 const upper=s=>norm(s).toUpperCase();
@@ -31,12 +31,12 @@ if(!document.getElementById(STYLE)){
 #${ID} .oreon-time-search input::placeholder{color:#aab4c4}
 #${ID} .oreon-time-search svg{position:absolute;right:18px;top:50%;width:18px;height:18px;transform:translateY(-50%);stroke:#9fb0c7;pointer-events:none}
 #${ID} .oreon-time-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));column-gap:24px;row-gap:30px;border-top:1px solid rgba(172,190,213,.28);padding-top:30px}
-#${ID} .oreon-time-card{min-width:0;background:rgba(255,255,255,.018);border:1px solid rgba(160,180,205,.18);border-radius:15px;overflow:hidden;transition:border-color .2s,transform .2s,box-shadow .25s}
-#${ID} .oreon-time-card:hover{transform:translateY(-3px);border-color:rgba(47,108,224,.5);box-shadow:0 12px 30px rgba(0,0,0,.16)}
+#${ID} .oreon-time-card{min-width:0;background:rgba(255,255,255,.018);border:1px solid rgba(160,180,205,.18);border-radius:15px;overflow:hidden;transition:border-color .25s,box-shadow .25s}
+#${ID} .oreon-time-card:hover{border-color:rgba(47,108,224,.5);box-shadow:0 12px 30px rgba(0,0,0,.16)}
 #${ID} .oreon-time-card-link{display:block;color:inherit!important;text-decoration:none!important}
 #${ID} .oreon-time-photo{aspect-ratio:16/10;background:linear-gradient(135deg,#101f37,#0a111d);overflow:hidden;position:relative}
-#${ID} .oreon-time-photo img{width:100%;height:100%;display:block;object-fit:cover;transition:transform .4s ease}
-#${ID} .oreon-time-card:hover .oreon-time-photo img{transform:scale(1.035)}
+#${ID} .oreon-time-photo img{width:100%;height:100%;display:block;object-fit:cover;transition:transform .35s ease-out}
+#${ID} .oreon-time-card:hover .oreon-time-photo img{transform:scale(1.025)}
 #${ID} .oreon-time-photo-empty{height:100%;display:flex;align-items:center;justify-content:center;color:#58769f;font:600 12px Arial,sans-serif;letter-spacing:.24em}
 #${ID} .oreon-time-info{padding:23px 22px 25px}
 #${ID} .oreon-time-badge{display:inline-flex;align-items:center;justify-content:center;min-height:28px;padding:0 12px;border:1px solid rgba(47,108,224,.55);border-radius:999px;color:#8fb8ff;font:600 10px/1.2 Arial,sans-serif;letter-spacing:.04em;max-width:100%;box-sizing:border-box;text-align:center}
@@ -107,7 +107,7 @@ function getTitle(tile){
 }
 function extract(root){
  const native=[...root.children].filter(ch=>!ch.classList.contains("oreon-time-shell"));
- const out=[],seen=new Set();
+ const out=[],seen=new Set(),seenPosts=new Set();
  const allImgs=native.flatMap(ch=>[...ch.querySelectorAll("img")]).filter(img=>visible(img)&&imageSource(img));
  const anchors=native.flatMap(ch=>[...ch.querySelectorAll("a")])
   .filter(a=>!a.closest(".pagination,.pagination_wrap,.paging,.board_paging,.paging-block"));
@@ -130,7 +130,13 @@ function extract(root){
   if(!target)continue;
   const raw=target.getAttribute("href")||"";
   const href=raw&&raw!=="#"&&!/^javascript:/i.test(raw)?target.href:"";
+  // One photo and title may be discovered through multiple nested gallery anchors.
+  // De-duplicate by actual destination first, then normalized title + image.
+  const cleanHref=href ? href.replace(/#.*$/,'').replace(/([?&])preview_mode=1(&|$)/,'$1').replace(/[?&]$/,'') : '';
+  const key=cleanHref || (upper(title)+'|'+photo);
   seen.add(tile);
+  if(seenPosts.has(key))continue;
+  seenPosts.add(key);
   out.push({title,photo,category,date,no,href,nativeLink:target});
  }
  return out;
