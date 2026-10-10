@@ -74,8 +74,15 @@ var inquiryFound=false;
 content.querySelectorAll('div,p').forEach(function(x){
 if(x.children.length===0&&/^Pricing inquiry\s*\(see details\)$/i.test(x.textContent.trim())){inquiryFound=true;x.remove()}
 });
-content.querySelectorAll('p,h2,h3,h4,h5,h6').forEach(function(x){
-if(/^(Key Characteristics|Indications|Spec)$/i.test(x.textContent.trim())){var h=document.createElement('h3');h.textContent=x.textContent.trim();x.replaceWith(h)}
+// Recognize common section labels regardless of editor formatting.
+var sectionLabel=/^(Key Characteristics|Characteristics|Features|Key Features|Benefits|Indications|Applications|Usage|How to Use|Type|Description|Product Description|Spec|Specs|Specifications|Composition|Storage|주요 특징|특징|제품 설명|설명|적응증|사용 방법|규격|사양|성분|보관 방법)\s*[:：]?$/i;
+Array.from(content.querySelectorAll('p,div,h2,h3,h4,h5,h6')).forEach(function(x){
+ if(!content.contains(x))return;
+ var label=x.textContent.trim();
+ // Containers holding multiple paragraphs must not be mistaken for headings.
+ if(x.querySelector('p,div,h2,h3,h4,h5,h6,ul,ol,table,img'))return;
+ var explicitHeading=/^H[2-5]$/.test(x.tagName);
+ if(sectionLabel.test(label)||explicitHeading){var h=document.createElement('h3');h.textContent=label.replace(/[:：]$/, '');x.replaceWith(h)}
 });
 Array.from(content.querySelectorAll('p,div')).reverse().forEach(function(x){if(!x.textContent.trim()&&!x.querySelector('img,video,iframe,table,a,button,input'))x.remove()});
 // Group existing section headings and their content without inventing copy.
