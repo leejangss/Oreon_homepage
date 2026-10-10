@@ -23,6 +23,29 @@ function mount(){
  if(new URL(location.href).searchParams.get('bmode')==='view')return true;
  if(widget.querySelector('.permission_error'))return true;
  var nodes=Array.from(widget.querySelectorAll('.list-style-card')).filter(function(n){return n.querySelector('a.post_link_wrap')});
+ // Fixed category order; editing a post never changes its position.
+ var categoryOrder=['ECM','CaHA','rH Collagen','NAD+','PNLA','PLLA','PN','HA','Exosome','PDO','TCA','CA'];
+ var fixedIds=['175035692','175035689','175035679','175035674','175035672','175035666','175035662','175035659','175035655','175035648','175035639','175035626','175035584','175035591','175035573','175035450','175035438','175035434'];
+ function orderKey(node){
+  var labels=Array.from(node.querySelectorAll('.title em')).map(function(e){return e.textContent.trim()}).filter(function(v){return /^\[.+\]$/.test(v)});
+  var category=labels.length?labels[0].slice(1,-1).toLowerCase():'';
+  var rank=categoryOrder.findIndex(function(c){return c.toLowerCase()===category});
+  var id=new URL(node.querySelector('a.post_link_wrap').getAttribute('href'),location.href).searchParams.get('idx')||'';
+  var fixed=fixedIds.indexOf(id);
+  return {category:category,rank:rank<0?categoryOrder.length:rank,fixed:fixed<0?fixedIds.length:fixed,id:id};
+ }
+ function compareOrder(a,b){
+  if(a.rank!==b.rank)return a.rank-b.rank;
+  if(a.category!==b.category)return a.category<b.category?-1:1;
+  if(a.fixed!==b.fixed)return a.fixed-b.fixed;
+  // Ascending immutable post IDs keep newly registered products after older ones.
+  if(/^\d+$/.test(a.id)&&/^\d+$/.test(b.id)){
+   if(a.id.length!==b.id.length)return a.id.length-b.id.length;
+  }
+  return a.id===b.id?0:(a.id<b.id?-1:1);
+ }
+ nodes.sort(function(a,b){return compareOrder(orderKey(a),orderKey(b))});
+
  var totalText=widget.querySelector('.board-head .heading em');
  var total=totalText?Number(totalText.textContent.replace(/[^0-9]/g,'')):NaN;
  // Fail open: keep the native board if it spans pages. Never silently filter
