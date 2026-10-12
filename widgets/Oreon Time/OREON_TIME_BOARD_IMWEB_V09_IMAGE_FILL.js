@@ -1,10 +1,10 @@
-/* OREON TIME photo-card board V05.
+/* OREON TIME photo-card board V09.
    Reads Imweb photo/gallery posts; keeps native posts intact underneath for routing.
    Hides native public write controls; publishing remains available via Imweb admin.
 */
 (function(){
 "use strict";
-const ID="w202610103e49cc0075aa3", STYLE="oreon-time-photo-v05-style";
+const ID="w202610103e49cc0075aa3", STYLE="oreon-time-photo-v09-style";
 const CATS=["CONFERENCE & EXHIBITION","EMPLOYEE STORY","GLOBAL PARTNERS"];
 const norm=s=>String(s||"").replace(/\s+/g," ").trim();
 const upper=s=>norm(s).toUpperCase();
@@ -30,12 +30,13 @@ if(!document.getElementById(STYLE)){
 #${ID} .oreon-time-search input{width:100%;height:46px;box-sizing:border-box;border:1px solid rgba(185,198,217,.35);border-radius:999px;outline:0;background:rgba(255,255,255,.035);color:#eef4fb;padding:0 48px 0 22px;font:500 14px/1 Arial,sans-serif}
 #${ID} .oreon-time-search input::placeholder{color:#aab4c4}
 #${ID} .oreon-time-search svg{position:absolute;right:18px;top:50%;width:18px;height:18px;transform:translateY(-50%);stroke:#9fb0c7;pointer-events:none}
-#${ID} .oreon-time-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));column-gap:24px;row-gap:30px;border-top:1px solid rgba(172,190,213,.28);padding-top:30px}
+#${ID} .oreon-time-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));column-gap:20px;row-gap:30px;border-top:1px solid rgba(172,190,213,.28);padding-top:30px}
 #${ID} .oreon-time-card{min-width:0;background:rgba(255,255,255,.018);border:1px solid rgba(160,180,205,.18);border-radius:15px;overflow:hidden;transition:border-color .25s,box-shadow .25s}
 #${ID} .oreon-time-card:hover{border-color:rgba(47,108,224,.5);box-shadow:0 12px 30px rgba(0,0,0,.16)}
 #${ID} .oreon-time-card-link{display:block;color:inherit!important;text-decoration:none!important}
-#${ID} .oreon-time-photo{aspect-ratio:16/10;background:linear-gradient(135deg,#101f37,#0a111d);overflow:hidden;position:relative}
-#${ID} .oreon-time-photo img{width:100%;height:100%;display:block;object-fit:cover;transition:transform .35s ease-out}
+#${ID} .oreon-time-photo{aspect-ratio:16/10;background:#101723;overflow:hidden;position:relative}
+#${ID} .oreon-time-photo img{width:100%;height:100%;display:block;object-fit:cover;object-position:center center;transition:transform .35s ease-out}
+#${ID} .oreon-time-photo img.oreon-time-photo-cover{object-fit:cover}
 #${ID} .oreon-time-card:hover .oreon-time-photo img{transform:scale(1.025)}
 #${ID} .oreon-time-photo-empty{height:100%;display:flex;align-items:center;justify-content:center;color:#58769f;font:600 12px Arial,sans-serif;letter-spacing:.24em}
 #${ID} .oreon-time-info{padding:23px 22px 25px}
@@ -50,6 +51,7 @@ if(!document.getElementById(STYLE)){
 #${ID} .oreon-time-write{display:none!important;height:44px;padding:0 24px;align-items:center;justify-content:center;border:0;border-radius:999px;background:linear-gradient(135deg,#071126,#102d88 55%,#1949b8);color:#fff!important;font:700 13px/1 Arial,sans-serif;cursor:pointer}
 html.oreon-time-admin #${ID} .oreon-time-admin-actions{display:flex!important}
 html.oreon-time-admin #${ID} .oreon-time-write{display:inline-flex!important}
+@media(max-width:1250px){#${ID} .oreon-time-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
 @media(max-width:1100px){#${ID} .oreon-time-shell{padding:30px 24px}#${ID} .oreon-time-grid{grid-template-columns:repeat(2,minmax(0,1fr))}#${ID} .oreon-time-toolbar{flex-direction:column;align-items:stretch;gap:18px}#${ID} .oreon-time-search{width:100%}#${ID} .oreon-time-tab{height:40px;padding:0 16px;font-size:12px}}
 @media(max-width:650px){#${ID} .oreon-time-shell{padding:24px 16px;border-radius:18px}#${ID} .oreon-time-grid{grid-template-columns:1fr;gap:18px}#${ID} .oreon-time-tabs{gap:8px}#${ID} .oreon-time-tab{padding:0 12px;font-size:11px}#${ID} .oreon-time-info{padding:18px}#${ID} .oreon-time-title{font-size:16px}}
  `;
@@ -122,7 +124,7 @@ function extract(root){
   const image=[...tile.querySelectorAll("img")].find(x=>!/(avatar|profile|icon|user|emoticon|logo)/i.test((x.getAttribute("src")||"")+" "+(x.className||"")));
   const bg=[...tile.querySelectorAll("[style*='background']")].map(backgroundSource).find(Boolean);
   const photo=imageSource(image)||bg||"";
-  const category=CATS.find(c=>upper(tile.textContent).includes(c))||"";
+  const category=CATS.find(c=>upper(tile.textContent).includes(c))||CATS.find(c=>upper(title).includes(c))||"";
   const strings=[...tile.querySelectorAll("time,span,div,small")].filter(x=>x.children.length===0).map(x=>norm(x.textContent));
   const date=strings.find(isDate)||"";
   const no=strings.find(x=>/^\d+$/.test(x))||String(out.length+1);
@@ -162,7 +164,7 @@ function build(root){
   const a=document.createElement("a");a.className="oreon-time-card-link";a.href=p.href||"#";
   if(!p.href)a.addEventListener("click",e=>{e.preventDefault();p.nativeLink.click();});
   const photo=document.createElement("div");photo.className="oreon-time-photo";
-  if(p.photo){const img=document.createElement("img");img.src=p.photo;img.alt="";img.loading="lazy";photo.appendChild(img);}
+  if(p.photo){const img=document.createElement("img");img.alt="";img.loading="lazy";img.src=p.photo;photo.appendChild(img);}
   else{const empty=document.createElement("div");empty.className="oreon-time-photo-empty";empty.textContent="OREON TIME";photo.appendChild(empty);}
   const info=document.createElement("div");info.className="oreon-time-info";
   if(p.category){const badge=document.createElement("span");badge.className="oreon-time-badge";badge.textContent=p.category;info.appendChild(badge);}
@@ -175,25 +177,31 @@ function build(root){
  root.insertBefore(shell,root.firstChild);
  [...root.children].forEach(ch=>{if(ch!==shell)ch.classList.add("oreon-time-native-hidden");});
  const cards=[...grid.children],empty=shell.querySelector(".oreon-time-empty"),input=shell.querySelector("input");let active="ALL";
- function filter(){const q=upper(input.value);let count=0;cards.forEach(c=>{const show=(active==="ALL"||c.dataset.category===active)&&(!q||c.dataset.search.includes(q));c.style.display=show?"":"none";if(show)count++;});empty.hidden=!!count;empty.style.display=count?"none":"block";}
+ function filter(){const q=upper(input.value);let count=0;cards.forEach(c=>{const show=(active==="ALL"||upper(c.dataset.category)===active)&&(!q||c.dataset.search.includes(q));c.style.display=show?"":"none";if(show)count++;});empty.hidden=!!count;empty.style.display=count?"none":"block";}
  shell.querySelectorAll(".oreon-time-tab").forEach(b=>b.addEventListener("click",()=>{shell.querySelectorAll(".oreon-time-tab").forEach(x=>x.classList.remove("is-active"));b.classList.add("is-active");active=b.dataset.cat;filter();}));
  input.addEventListener("input",filter);filter();
  if(write){const b=document.createElement("button");b.type="button";b.className="oreon-time-write";b.textContent="WRITE →";b.addEventListener("click",()=>{const href=write.getAttribute("href");if(href&&href!=="#"&&!/^javascript:/i.test(href))location.href=write.href;else write.click();});shell.querySelector(".oreon-time-admin-actions").appendChild(b);}
  }finally{root.dataset.oreonTimeBuilding="0";}
 }
-function boot(n=0){const root=document.getElementById(ID);if(!root){if(n<60)setTimeout(()=>boot(n+1),200);return;}
- build(root);
+// Imweb populates galleries asynchronously. Retry only until a custom shell
+// is built; never rebuild an existing shell during hover, image load, or input.
+function boot(n=0){
+ const root=document.getElementById(ID);
+ if(!root){
+   if(n<100)setTimeout(()=>boot(n+1),250);
+   return;
+ }
+ if(!root.querySelector(":scope > .oreon-time-shell")){
+   build(root);
+ }
  [...root.querySelectorAll("a,button")].forEach(el=>{
    if(["글쓰기","WRITE"].includes(upper(el.textContent))&&!el.closest(".oreon-time-shell")){
      el.style.setProperty("display","none","important");
    }
  });
- let timer;new MutationObserver(mutations=>{if(!mutations.some(m=>{const e=m.target.nodeType===1?m.target:m.target.parentElement;return e&&!e.closest(".oreon-time-shell");}))return;clearTimeout(timer);timer=setTimeout(()=>{
-  build(root);
-  [...root.querySelectorAll("a,button")].forEach(el=>{
-    if(["글쓰기","WRITE"].includes(upper(el.textContent))&&!el.closest(".oreon-time-shell"))
-      el.style.setProperty("display","none","important");
-  });
- },300);}).observe(root,{childList:true,subtree:true,characterData:true});}
+ if(!root.querySelector(":scope > .oreon-time-shell")&&n<100){
+   setTimeout(()=>boot(n+1),250);
+ }
+}
 boot();
 })();
