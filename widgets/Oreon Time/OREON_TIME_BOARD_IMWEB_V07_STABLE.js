@@ -1,10 +1,10 @@
-/* OREON TIME photo-card board V06.
+/* OREON TIME photo-card board V07.
    Reads Imweb photo/gallery posts; keeps native posts intact underneath for routing.
    Hides native public write controls; publishing remains available via Imweb admin.
 */
 (function(){
 "use strict";
-const ID="w202610103e49cc0075aa3", STYLE="oreon-time-photo-v06-style";
+const ID="w202610103e49cc0075aa3", STYLE="oreon-time-photo-v07-style";
 const CATS=["CONFERENCE & EXHIBITION","EMPLOYEE STORY","GLOBAL PARTNERS"];
 const norm=s=>String(s||"").replace(/\s+/g," ").trim();
 const upper=s=>norm(s).toUpperCase();
@@ -181,15 +181,25 @@ function build(root){
  if(write){const b=document.createElement("button");b.type="button";b.className="oreon-time-write";b.textContent="WRITE →";b.addEventListener("click",()=>{const href=write.getAttribute("href");if(href&&href!=="#"&&!/^javascript:/i.test(href))location.href=write.href;else write.click();});shell.querySelector(".oreon-time-admin-actions").appendChild(b);}
  }finally{root.dataset.oreonTimeBuilding="0";}
 }
-function boot(n=0){const root=document.getElementById(ID);if(!root){if(n<60)setTimeout(()=>boot(n+1),200);return;}
- build(root);
+// Imweb populates galleries asynchronously. Retry only until a custom shell
+// is built; never rebuild an existing shell during hover, image load, or input.
+function boot(n=0){
+ const root=document.getElementById(ID);
+ if(!root){
+   if(n<100)setTimeout(()=>boot(n+1),250);
+   return;
+ }
+ if(!root.querySelector(":scope > .oreon-time-shell")){
+   build(root);
+ }
  [...root.querySelectorAll("a,button")].forEach(el=>{
    if(["글쓰기","WRITE"].includes(upper(el.textContent))&&!el.closest(".oreon-time-shell")){
      el.style.setProperty("display","none","important");
    }
  });
- // Do not continuously rebuild the gallery. Imweb's own changes to hidden native nodes
- // can otherwise produce a render loop, reset category filters and flash thumbnails.
+ if(!root.querySelector(":scope > .oreon-time-shell")&&n<100){
+   setTimeout(()=>boot(n+1),250);
+ }
 }
 boot();
 })();
