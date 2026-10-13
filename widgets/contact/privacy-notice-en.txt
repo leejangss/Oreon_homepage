@@ -1,0 +1,58 @@
+OREON Contact Form — Privacy Notice and Consent
+DRAFT — Items marked CONFIRM must be completed before publication.
+
+1. Who Handles Your Information
+This notice applies to inquiries submitted through the OREON contact form. The organization responsible for your information is [CONFIRM: OREON's full legal entity name]. It describes contact-form processing only, rather than unrelated membership, shopping, payment, or delivery services.
+
+2. Why We Collect Information
+We use the information you submit to receive, review, route, and respond to business partnership, investment, career, and other inquiries, and to communicate with you about the same inquiry. This consent does not cover unrelated promotional messages or a separate recruitment application process.
+
+3. Information Collected
+Required fields shown on the contact form:
+- Contact person / position.
+- Company email address.
+- Inquiry details, including personal information you choose to include in your message.
+
+Optional fields shown on the contact form:
+- Inquiry type.
+- Company name.
+- Company phone number.
+- Attachment file, including any personal information it contains.
+
+Please provide only information necessary for your inquiry. Do not include passwords, payment details, government-issued identification numbers, health information, or unnecessary personal information about other people.
+[CONFIRM: These required and optional categories match the published form settings.]
+
+4. Retention and Deletion
+Retention period: [CONFIRM: Specify the actual period and its starting point, for example a defined period after inquiry resolution.]
+After the applicable retention period ends or the information is no longer needed, information must be deleted unless an applicable law requires further retention. Any legally required retention must identify the relevant records, legal basis, and period.
+[CONFIRM: Document how inquiry records and downloaded attachments are deleted from Imweb, email accounts, shared storage, and backups, where applicable.]
+
+5. Your Choice to Consent
+You may refuse consent to the collection and use of your personal information. Without the required information and the consent needed to process it, OREON cannot accept and respond to your inquiry through this form. You may leave optional fields blank and submit an inquiry without an attachment.
+[CONFIRM: The form permits submission with all optional fields left blank.]
+
+6. Service Providers and Other Recipients
+Website platform: Imweb Co., Ltd.
+Relevant processing: Website hosting and the operation and storage of submissions and attachments through the contact form, within the services actually used by OREON.
+Processing entrusted to service providers is addressed under Article 26 of the Personal Information Protection Act.
+[CONFIRM: Actual contracted scope, applicable subprocessors, and whether inquiry data is also processed by email, CRM, cloud storage, or other providers.]
+[CONFIRM: Whether any third party receives information for its own purposes. If so, specify recipients, purposes, categories, retention periods, and the applicable legal basis or separate consent.]
+[CONFIRM: Whether any overseas transfer occurs and the disclosures and legal basis applicable to that transfer.]
+
+7. Your Rights and Contact Details
+Subject to applicable law, you may request access to, correction or deletion of your personal information, suspension of processing, or withdrawal of consent. Requests may also be made through an authorized representative, with appropriate verification of authority.
+
+Privacy officer: [CONFIRM: Name and position]
+Responsible department: [CONFIRM: Department]
+Privacy contact email: [CONFIRM: Email address]
+Privacy contact telephone: [CONFIRM: Telephone number]
+Please use these contact details for privacy inquiries or requests concerning previously submitted information.
+
+8. Security and Website Technologies
+[CONFIRM: Describe the administrative and technical safeguards actually in use, including access restrictions and the handling of inquiry attachments. Do not list controls that are not implemented.]
+[CONFIRM: List cookies and analytics tools actually used on the website, their purposes, relevant providers, and available user controls. This form consent does not itself authorize unrelated tracking or advertising.]
+
+9. Effective Date and Updates
+Effective date: [CONFIRM: Month Day, Year]
+Last updated: [CONFIRM: Month Day, Year, if applicable]
+This notice must reflect OREON's actual processing practices. Changes to the scope of consent must be communicated and consent obtained where required by applicable law.
