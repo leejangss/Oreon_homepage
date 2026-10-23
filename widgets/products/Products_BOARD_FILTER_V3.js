@@ -170,11 +170,30 @@ var panelCopy={"ALL": {"title": "ALL", "desc": "The complete OREON product lineu
     sendHeight();
   }
 
+  // Home Ingredients links use ?oreon_category=HA (same-origin path).
+  function categoryFromURL(){
+    var value=(new URL(location.href).searchParams.get('oreon_category')||'ALL').trim().toLowerCase();
+    var button=buttons.find(function(b){return b.getAttribute('data-filter').toLowerCase()===value});
+    return button?button.getAttribute('data-filter'):'ALL';
+  }
+  function updateCategoryURL(filter){
+    var url=new URL(location.href);
+    if(filter==='ALL')url.searchParams.delete('oreon_category');
+    else url.searchParams.set('oreon_category',filter);
+    history.replaceState(history.state,'',url.pathname+url.search+url.hash);
+  }
+  function showCategoryStage(){
+    var stage=document.querySelector('#oreon-live-products .oreon-category-stage');
+    if(stage)stage.scrollIntoView({behavior:'auto',block:'start'});
+  }
   buttons.forEach(function(btn){
     btn.addEventListener('click',function(){
-      applyFilter(btn.getAttribute('data-filter'));
+      var filter=btn.getAttribute('data-filter');
+      applyFilter(filter);
+      updateCategoryURL(filter);
     });
   });
+  window.addEventListener('popstate',function(){applyFilter(categoryFromURL())});
 
   window.addEventListener('load',function(){
     sendHeight();
@@ -183,7 +202,12 @@ var panelCopy={"ALL": {"title": "ALL", "desc": "The complete OREON product lineu
   });
   window.addEventListener('resize',sendHeight);
   if('ResizeObserver' in window){new ResizeObserver(sendHeight).observe(document.documentElement)}
-applyFilter("ALL");
+var initialCategory=categoryFromURL();
+applyFilter(initialCategory);
+if(new URL(location.href).searchParams.has('oreon_category')){
+  // Run after the cover-transition wrapper has been installed.
+  requestAnimationFrame(function(){requestAnimationFrame(showCategoryStage)});
+}
 }
 
 if(!mount()){var observer=new MutationObserver(function(){if(mount())observer.disconnect()});observer.observe(document.documentElement,{childList:true,subtree:true});setTimeout(function(){observer.disconnect()},15000)}
