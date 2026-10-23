@@ -146,8 +146,18 @@ var panelCopy={"ALL": {"title": "ALL", "desc": "The complete OREON product lineu
 
   function applyFilter(filter){
     var shown=0;
+    var seenProducts=new Set();
     cards.forEach(function(card){
       var show=cardMatches(card,filter);
+      // Deduplicate ALL only; keep each category's original post and link.
+      if(show && filter==='ALL'){
+        var heading=card.querySelector('h3');
+        var productKey=heading?heading.textContent.normalize('NFKC').trim().replace(/\s+/g,' ').toLowerCase():'';
+        if(productKey){
+          if(seenProducts.has(productKey))show=false;
+          else seenProducts.add(productKey);
+        }
+      }
       card.classList.toggle('is-hidden',!show);
       if(show){
         shown++;
