@@ -548,7 +548,7 @@ When extracting a category, include its marked HTML block plus the matching sect
 <!-- 01: Company film. Keep the MP4 beside this HTML when uploading. -->
 <!-- OREON SECTION START: COMPANY_FILM -->
 <section id="oreon-company-film" data-oreon-section="company-film" class="company-film" aria-label="OREON company introduction">
-<video id="oreon-company-video" loop playsinline preload="metadata" aria-label="OREON company introduction video"><source src="https://leejangss.github.io/Oreon_homepage/widgets/home/mp4.mp4?v=1" type="video/mp4"></video>
+<video id="oreon-company-video" autoplay loop playsinline preload="metadata" aria-label="OREON company introduction video"><source src="https://leejangss.github.io/Oreon_homepage/widgets/home/mp4.mp4?v=1" type="video/mp4"></video>
 <div id="oreon-video-audio-ui" role="group" aria-label="영상 재생 및 음량 조절">
   <div id="oreon-video-timeline">
     <span id="oreon-video-current">0:00</span>
@@ -572,7 +572,7 @@ When extracting a category, include its marked HTML block plus the matching sect
       <path d="m21 9-5 5"/>
     </svg>
   </button>
-  <input id="oreon-video-volume" type="range" min="0" max="1" step="0.05" value="0.40" aria-label="영상 음량">
+  <input id="oreon-video-volume" type="range" min="0" max="1" step="0.05" value="0.30" aria-label="영상 음량">
   <span id="oreon-video-audio-label">MUTE</span>
   <button id="oreon-video-controls-expand" type="button" aria-label="재생바 펼치기" title="재생바 펼치기" aria-expanded="false" aria-controls="oreon-video-timeline oreon-video-volume oreon-video-audio-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 14 6-6 6 6"/></svg></button>
 
@@ -1337,15 +1337,17 @@ When extracting a category, include its marked HTML block plus the matching sect
   const initialPlay=video.play();
   if(initialPlay) initialPlay.catch(()=>{
     if(userInteracted) return;
-    // Browsers can block unmuted autoplay. Continue the film muted,
-    // then restore the chosen 30% level on the first user gesture in the film.
-    video.muted=true;
+    // Keep sound enabled at 30% rather than silently switching to mute.
+    // Browsers that prohibit audible autoplay require a genuine user gesture.
+    video.muted=false;
+    applyVolume();
+    playback.title='클릭하면 소리와 함께 영상 재생';
     syncUI();
-    play();
+    syncPlayback();
   });
   const companyFilm=document.getElementById('oreon-company-film');
   function unlockFilmAudio(event){
-    if(userInteracted || !video.muted || selectedVolume===0) return;
+    if(userInteracted || selectedVolume===0 || (!video.paused && !video.muted)) return;
     if(event && event.target && event.target.closest && event.target.closest('#oreon-video-audio-ui')) return;
     userInteracted=true;
     if(!prepareAudio()) return;
