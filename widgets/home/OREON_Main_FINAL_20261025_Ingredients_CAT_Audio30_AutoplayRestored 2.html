@@ -1336,12 +1336,17 @@ When extracting a category, include its marked HTML block plus the matching sect
   syncUI();
   const initialPlay=video.play();
   if(initialPlay) initialPlay.catch(()=>{
-    if(userInteracted) return;
-    // Keep sound enabled at 30% rather than silently switching to mute.
-    // Browsers that prohibit audible autoplay require a genuine user gesture.
-    video.muted=false;
+    if(userInteracted || userPaused) return;
+    // Audible autoplay may be blocked by Safari/Chrome. Keep the film
+    // automatically playing silently rather than stopping entirely.
+    // The first genuine user interaction can activate 30% audio.
+    video.muted=true;
     applyVolume();
-    playback.title='클릭하면 소리와 함께 영상 재생';
+    const mutedAutoplay=video.play();
+    if(mutedAutoplay) mutedAutoplay.catch(()=>{
+      playback.title='클릭하여 영상 재생';
+      syncPlayback();
+    });
     syncUI();
     syncPlayback();
   });
