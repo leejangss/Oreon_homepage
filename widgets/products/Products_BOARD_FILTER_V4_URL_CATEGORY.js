@@ -209,7 +209,7 @@ var panelCopy={"ALL": {"title": "ALL", "desc": "The complete OREON product lineu
   if('ResizeObserver' in window){new ResizeObserver(sendHeight).observe(document.documentElement)}
 var initialFilter='ALL';
   try{
-    initialFilter=normalizeFilter(new URL(window.location.href).searchParams.get('cat'));
+    initialFilter=normalizeFilter(new URL(window.location.href).searchParams.get('oreon_category') || new URL(window.location.href).searchParams.get('cat'));
   }catch(e){}
   applyFilter(initialFilter);
 
@@ -224,6 +224,7 @@ var initialFilter='ALL';
       }
     },260);
   }
+
 }
 
 if(!mount()){var observer=new MutationObserver(function(){if(mount())observer.disconnect()});observer.observe(document.documentElement,{childList:true,subtree:true});setTimeout(function(){observer.disconnect()},15000)}
