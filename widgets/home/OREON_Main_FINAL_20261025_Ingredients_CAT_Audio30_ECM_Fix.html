@@ -572,7 +572,7 @@ When extracting a category, include its marked HTML block plus the matching sect
       <path d="m21 9-5 5"/>
     </svg>
   </button>
-  <input id="oreon-video-volume" type="range" min="0" max="1" step="0.05" value="0.25" aria-label="영상 음량">
+  <input id="oreon-video-volume" type="range" min="0" max="1" step="0.05" value="0.40" aria-label="영상 음량">
   <span id="oreon-video-audio-label">MUTE</span>
   <button id="oreon-video-controls-expand" type="button" aria-label="재생바 펼치기" title="재생바 펼치기" aria-expanded="false" aria-controls="oreon-video-timeline oreon-video-volume oreon-video-audio-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 14 6-6 6 6"/></svg></button>
 
@@ -735,32 +735,32 @@ When extracting a category, include its marked HTML block plus the matching sect
                       <p class="ingredient-eyebrow">Ingredients</p>
                       <h2 class="ingredient-title">Hyaluronic <span>Acid</span></h2>
                       <p class="ingredient-desc">Supports skin hydration, smoothness, and volume through its exceptional water-binding capacity.</p>
-                      <a class="ingredient-learn" href="https://test202608.imweb.me/Service-Plan" target="_top">Learn More <span aria-hidden="true">→</span></a>
+                      <a class="ingredient-learn" href="/47?cat=HA" target="_top" data-oreon-product-link>Learn More <span aria-hidden="true">→</span></a>
                     </div>
                     <div class="ingredient-copy" data-ing-style="13" style="">
                       <p class="ingredient-eyebrow">Ingredients</p>
                       <h2 class="ingredient-title">Poly-L-Lactic <span>Acid</span></h2>
                       <p class="ingredient-desc">Supports gradual collagen production to improve skin firmness and structural integrity.</p>
-                      <a class="ingredient-learn" href="https://test202608.imweb.me/Service-Plan" target="_top">Learn More <span aria-hidden="true">→</span></a>
+                      <a class="ingredient-learn" href="/47?cat=PLLA" target="_top" data-oreon-product-link>Learn More <span aria-hidden="true">→</span></a>
                     </div>
                     <div class="ingredient-copy" data-ing-style="14" style="">
                       <p class="ingredient-eyebrow">Ingredients</p>
                       <h2 class="ingredient-title">Extracellular <span>Matrix</span></h2>
                       <p class="ingredient-desc">Supports cellular activity and skin renewal through structural and biochemical cues.</p>
-                      <a class="ingredient-learn" href="https://test202608.imweb.me/Service-Plan" target="_top">Learn More <span aria-hidden="true">→</span></a>
+                      <a class="ingredient-learn" href="/47?cat=ECM" target="_top" data-oreon-product-link>Learn More <span aria-hidden="true">→</span></a>
                     </div>
                     <div class="ingredient-copy" data-ing-style="15" style="">
                       <p class="ingredient-eyebrow">Ingredients</p>
                       <h2 class="ingredient-title">Recombinant <span>Collagen</span></h2>
                       <p class="ingredient-desc">Provides collagen-based support for skin structure, firmness, and elasticity.</p>
-                      <a class="ingredient-learn" href="https://test202608.imweb.me/Service-Plan" target="_top">Learn More <span aria-hidden="true">→</span></a>
+                      <a class="ingredient-learn" href="/47?cat=rH%20Collagen" target="_top" data-oreon-product-link>Learn More <span aria-hidden="true">→</span></a>
                     </div>
                   </div>
                   <nav class="ingredient-nav" aria-label="Choose ingredient">
-                    <button type="button" class="ingredient-option" data-ing-style="16" style="" data-ing-go="2"><span>Hyaluronic Acid</span><span aria-hidden="true">→</span></button>
-                    <button type="button" class="ingredient-option" data-ing-style="17" style="" data-ing-go="3"><span>Poly-L-Lactic Acid</span><span aria-hidden="true">→</span></button>
-                    <button type="button" class="ingredient-option" data-ing-style="18" style="" data-ing-go="4"><span>Extracellular Matrix</span><span aria-hidden="true">→</span></button>
-                    <button type="button" class="ingredient-option" data-ing-style="19" style="" data-ing-go="5"><span>Recombinant Collagen</span><span aria-hidden="true">→</span></button>
+                    <button type="button" class="ingredient-option" data-ing-style="16" style="" data-ing-go="2"><span>Hyaluronic Acid</span><span class="ingredient-product-arrow" role="link" tabindex="0" data-oreon-product-path="/47?cat=HA" aria-label="View products">→</span></button>
+                    <button type="button" class="ingredient-option" data-ing-style="17" style="" data-ing-go="3"><span>Poly-L-Lactic Acid</span><span class="ingredient-product-arrow" role="link" tabindex="0" data-oreon-product-path="/47?cat=PLLA" aria-label="View products">→</span></button>
+                    <button type="button" class="ingredient-option" data-ing-style="18" style="" data-ing-go="4"><span>Extracellular Matrix</span><span class="ingredient-product-arrow" role="link" tabindex="0" data-oreon-product-path="/47?cat=ECM" aria-label="View products">→</span></button>
+                    <button type="button" class="ingredient-option" data-ing-style="19" style="" data-ing-go="5"><span>Recombinant Collagen</span><span class="ingredient-product-arrow" role="link" tabindex="0" data-oreon-product-path="/47?cat=rH%20Collagen" aria-label="View products">→</span></button>
                   </nav>
                 </div>
               </section>
@@ -997,6 +997,25 @@ When extracting a category, include its marked HTML block plus the matching sect
 <!-- OREON MODULE SCRIPT START: INGREDIENTS -->
 <script>
 (() => {
+ // Product links: navigate the hosting Imweb site, not the GitHub iframe origin.
+ function oreonProductDestination(path){
+   let origin=location.origin;
+   try{if(document.referrer){const ref=new URL(document.referrer);if(/^https?:$/.test(ref.protocol))origin=ref.origin;}}catch(e){}
+   return origin+path;
+ }
+ function oreonOpenProduct(path){window.top.location.href=oreonProductDestination(path);}
+ document.addEventListener('click',function(event){
+   const arrow=event.target.closest('[data-oreon-product-path]');
+   if(arrow){event.preventDefault();event.stopPropagation();oreonOpenProduct(arrow.dataset.oreonProductPath);return;}
+   const link=event.target.closest('a[data-oreon-product-link]');
+   if(link){event.preventDefault();oreonOpenProduct(link.getAttribute('href'));}
+ });
+ document.addEventListener('keydown',function(event){
+   const arrow=event.target.closest('[data-oreon-product-path]');
+   if(arrow&&(event.key==='Enter'||event.key===' ')){
+     event.preventDefault();event.stopPropagation();oreonOpenProduct(arrow.dataset.oreonProductPath);
+   }
+ });
  const wrap=document.getElementById('oreon-ingredients-scroll');
  if (!wrap) return;
  const bindings=["{{ introSlideStyle }}background:radial-gradient(120% 65% at 50% 128%,#eaf6ff 0%,#4fb2f0 18%,#1257e0 40%,#050914 68%),#050914;display:flex;align-items:center;justify-content:center;width:100%;padding:0 clamp(24px,6vw,72px);", "{{ wordPushStyle }}", "{{ introTitleTextStyle }}margin: 0; font-size: clamp(3rem,7.5vw,7rem); font-weight: 400; font-family: 'Outfit','Noto Sans KR',sans-serif; letter-spacing: -.03em; background: linear-gradient(90deg,#1E50FF,#bcd8ff,#1E50FF); background-size: 200% auto; background-position: 100% 0; -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; color: #f4f7fb; animation: shinyText 3s linear infinite", "{{ introParaTextStyle }}margin:0;font-size:clamp(.95rem,1.15vw,1.1rem);color:#8fa0b5;font-weight:300;letter-spacing:.02em;line-height:1.7;max-width:32ch;", "{{ flaskFlyStyle }}width:min(240px,20vw);", "{{ wordPushStyle }}position:relative;z-index:1;", "{{ introTitleTextStyle }}margin: 0; font-size: clamp(3rem,7.5vw,7rem); font-weight: 400; font-family: 'Outfit','Noto Sans KR',sans-serif; letter-spacing: -.03em; background: linear-gradient(90deg,#1E50FF,#bcd8ff,#1E50FF); background-size: 200% auto; -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; color: #2FA8E8; animation: shinyText 3s linear infinite", "{{ ingGroupStyle }}", "{{ ingBgStyle2 }}", "{{ ingBgStyle3 }}", "{{ ingBgStyle4 }}", "{{ ingBgStyle5 }}", "{{ ingTitleStyle2 }}", "{{ ingTitleStyle3 }}", "{{ ingTitleStyle4 }}", "{{ ingTitleStyle5 }}", "{{ ingLeftStyle2 }}", "{{ ingLeftStyle3 }}", "{{ ingLeftStyle4 }}", "{{ ingLeftStyle5 }}"];
@@ -1118,7 +1137,10 @@ When extracting a category, include its marked HTML block plus the matching sect
  const scene=new Ingredients();scene.render();
  let ticking=false;
  const queue=()=>{if(!ticking){ticking=true;requestAnimationFrame(()=>{ticking=false;scene.handleIngScroll();});}};
- wrap.querySelectorAll('[data-ing-go]').forEach(button=>button.addEventListener('click',()=>scene.ingGoTo(Number(button.dataset.ingGo))));
+ wrap.querySelectorAll('[data-ing-go]').forEach(button=>button.addEventListener('click',event=>{
+   if(event.target.closest('[data-oreon-product-path]'))return;
+   scene.ingGoTo(Number(button.dataset.ingGo));
+ }));
  window.addEventListener('scroll',queue,{passive:true});window.addEventListener('resize',queue);queue();
  const flask=wrap.querySelector('.ingredient-intro-flask');
  const surface=flask.querySelector('.water-surface');
@@ -1226,7 +1248,7 @@ When extracting a category, include its marked HTML block plus the matching sect
   });
   ['play','playing','pause','ended','error'].forEach(event=>video.addEventListener(event,syncPlayback));
   syncPlayback();
-  const DEFAULT_VOLUME=0.25;
+  const DEFAULT_VOLUME=0.30;
   let selectedVolume=DEFAULT_VOLUME;
   let lastAudibleVolume=DEFAULT_VOLUME;
   let userInteracted=false;
@@ -1310,15 +1332,31 @@ When extracting a category, include its marked HTML block plus the matching sect
     if(!document.hidden) play();
   });
   // Set the level before the first play request; never overwrite later choices.
-  video.muted=!nativeVolume;
+  video.muted=false;
   syncUI();
   const initialPlay=video.play();
   if(initialPlay) initialPlay.catch(()=>{
     if(userInteracted) return;
+    // Browsers can block unmuted autoplay. Continue the film muted,
+    // then restore the chosen 30% level on the first user gesture in the film.
     video.muted=true;
     syncUI();
     play();
   });
+  const companyFilm=document.getElementById('oreon-company-film');
+  function unlockFilmAudio(event){
+    if(userInteracted || !video.muted || selectedVolume===0) return;
+    if(event && event.target && event.target.closest && event.target.closest('#oreon-video-audio-ui')) return;
+    userInteracted=true;
+    if(!prepareAudio()) return;
+    video.muted=false;
+    applyVolume();
+    play();
+    syncUI();
+  }
+  if(companyFilm){
+    companyFilm.addEventListener('pointerdown',unlockFilmAudio,{passive:true});
+  }
 })();
 </script>
 
