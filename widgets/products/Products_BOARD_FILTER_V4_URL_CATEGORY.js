@@ -146,8 +146,17 @@ var panelCopy={"ALL": {"title": "ALL", "desc": "The complete OREON product lineu
 
   function applyFilter(filter){
     var shown=0;
+    var seenProducts=new Set();
     cards.forEach(function(card){
       var show=cardMatches(card,filter);
+      if(show && filter==='ALL'){
+        var heading=card.querySelector('h3');
+        var key=heading?heading.textContent.normalize('NFKC').trim().replace(/\s+/g,' ').toLowerCase():'';
+        if(key){
+          if(seenProducts.has(key))show=false;
+          else seenProducts.add(key);
+        }
+      }
       card.classList.toggle('is-hidden',!show);
       if(show){
         shown++;
