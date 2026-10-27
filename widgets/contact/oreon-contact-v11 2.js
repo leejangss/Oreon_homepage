@@ -213,3 +213,21 @@ style.textContent="\n@import url('https://fonts.googleapis.com/css2?family=Noto+
     }
   `;
 })();
+
+/* v11: move the entire contact widget up by 50 CSS pixels.
+   Apply outside the zoomed card to avoid multiplying the offset by 1.4. */
+(function () {
+  var id = 'oreon-contact-offset-v11';
+  var style = document.getElementById(id);
+  if (!style) {
+    style = document.createElement('style');
+    style.id = id;
+    document.head.appendChild(style);
+  }
+  style.textContent = `
+    #w2026090726d3d1f97041a {
+      position: relative !important;
+      top: -50px !important;
+    }
+  `;
+})();
