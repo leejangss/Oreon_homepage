@@ -1,7 +1,7 @@
 <!-- OREON PRODUCTS : HERO SECTION ONLY -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600&family=Outfit:wght@200;300;400;500;600&display=swap" rel="stylesheet">
 
 <style>
 html,body{margin:0!important;padding:0!important;width:100%;background:#02040b;overflow-x:hidden;}
@@ -204,12 +204,17 @@ body{min-width:0;}
     margin: 24px 0 0;
     max-width: 720px;
     white-space: normal;
-    font-family: 'IBM Plex Sans', Arial, sans-serif;
-    font-weight: 300;
-    font-size: clamp(13px, 1vw, 15px);
-    line-height: 1.8;
-    letter-spacing: .1em;
+    font-family: 'Outfit', sans-serif;
+    font-weight: 200;
+    font-size: 20px;
+    line-height: 1.6;
+    letter-spacing: normal;
     color: #c0c9d8;
+  }
+
+  /* Match Core Value hero's mobile subtitle font size. */
+  @media (max-width: 700px) {
+    .oreon-products-hero__sub { font-size: 15px; }
   }
 
   @media (max-width: 900px) {
