@@ -57,6 +57,9 @@ html body #rh-hero .rh-headline,html body #rh-hero .rh-headline *:not(#_a):not(#
 #rh-hero .rh-zoom{background:#0a0a0a}
 #rh-hero .rh-zoom .rh-zbg{position:absolute;inset:-40px;background-size:cover;background-position:center;filter:blur(28px) brightness(.55);transform:scale(1.1)}
 #rh-hero .rh-zoom img{object-fit:cover!important;z-index:1;}
+</style><style id="oreon-zoom-fix">
+#rh-hero .rh-zoom>img{position:absolute!important;display:block!important;margin:0!important;padding:0!important;border:0!important;max-width:none!important;max-height:none!important;object-fit:contain!important;object-position:center center!important;z-index:1!important}
+#rh-hero .rh-zoom .rh-zbg{display:block!important;position:absolute!important;inset:-40px!important;z-index:0!important}
 </style>
 <div id="rh-pin">
 <section id="rh-hero" aria-label="OREON TIME">
@@ -85,7 +88,7 @@ html body #rh-hero .rh-headline,html body #rh-hero .rh-headline *:not(#_a):not(#
       var sk=-10*(1-e);
       z.style.opacity=1;film.style.visibility='hidden';
       z.style.left=(fx+(0-fx)*e)+'px';z.style.top=(fy+(0-fy)*e)+'px';z.style.width=(fw+(W-fw)*e)+'px';z.style.height=(fh+(H-fh)*e)+'px';
-      z.style.transform='skew('+sk+'deg)';var nb=(document.querySelector('.nav, nav')||{}).offsetHeight||0;zi.style.top=(nb*e)+'px';zi.style.setProperty('left',(-6*(1-e))+'%','important');zi.style.setProperty('width',(100+12*(1-e))+'%','important');zi.style.objectPosition='50% 55%';zi.style.setProperty('height','calc(100% - '+(nb*e)+'px)','important');zi.style.transform='skew('+(-sk)+'deg) scale('+(1.08-.08*e)+')';
+      z.style.transform='skew('+sk+'deg)';var nb=0;zi.style.top=(nb*e)+'px';zi.style.setProperty('left',(-6*(1-e))+'%','important');zi.style.setProperty('width',(100+12*(1-e))+'%','important');zi.style.objectPosition='50% 55%';zi.style.setProperty('height','calc(100% - '+(nb*e)+'px)','important');zi.style.transform='skew('+(-sk)+'deg) scale('+(1.08-.08*e)+')';
       hl.style.opacity=String(Math.max(0,1-e*1.6));hl.style.transform='scale('+(1+e*.25)+')';bt.style.opacity=String(Math.max(0,1-e*3));}
     addEventListener('scroll',function(){if(!tk){tk=true;requestAnimationFrame(up);}},{passive:true});addEventListener('resize',up);up();})();
 })();
