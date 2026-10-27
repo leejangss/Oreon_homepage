@@ -1,10 +1,15 @@
-/* OREON IR BOARD - Imweb custom renderer v8 FONT +1
+/* OREON IR BOARD - Imweb custom renderer v9 FONT +1 FORCE
    Target widget: w20260920efdd7cabae0a1
    Rebuilds the visible IR list from Imweb's native board DOM instead of assuming a <table>.
 */
 (function () {
   const ID = "w20260920efdd7cabae0a1";
-  const STYLE_ID = "oreon-ir-board-v6-style";
+  const STYLE_ID = "oreon-ir-board-v9-style";
+
+  ["oreon-ir-board-v5-style","oreon-ir-board-v6-style","oreon-ir-board-v8-style"].forEach(id=>{
+    const old = document.getElementById(id);
+    if(old) old.remove();
+  });
 
   if (!document.getElementById(STYLE_ID)) {
     const style = document.createElement("style");
@@ -242,11 +247,23 @@
   box-shadow:0 0 0 3px rgba(47,168,232,.18),0 0 20px 3px rgba(47,108,255,.38);
 }
 
+/* v9: force +1px typography over Imweb/native CSS */
+#${ID} .oreon-ir-tab{font-size:15px!important}
+#${ID} .oreon-ir-search input{font-size:15px!important}
+#${ID} .oreon-ir-head{font-size:14px!important}
+#${ID} .oreon-ir-row{font-size:14px!important}
+#${ID} .oreon-ir-badge{font-size:12px!important}
+#${ID} .oreon-ir-empty{font-size:15px!important}
+#${ID} .oreon-ir-write{font-size:14px!important}
+.oreon-ir-contact-v4 h3{font-size:25px!important}
+.oreon-ir-contact-v4 p{font-size:16px!important}
+.oreon-ir-contact-v4 a{font-size:15px!important}
+
 @media(max-width:900px){
   #${ID} .oreon-ir-shell{border-radius:18px;padding:30px 24px}
   #${ID} .oreon-ir-toolbar{flex-direction:column;align-items:stretch;gap:18px}
   #${ID} .oreon-ir-search{width:100%}
-  #${ID} .oreon-ir-tab{height:40px;padding:0 18px;font-size:13px}
+  #${ID} .oreon-ir-tab{height:40px;padding:0 18px;font-size:13px!important}
   #${ID} .oreon-ir-head,
   #${ID} .oreon-ir-row{grid-template-columns:10% minmax(0,1fr) 35%}
   #${ID} .oreon-ir-cell--date{display:none}
@@ -256,12 +273,12 @@
 @media(max-width:560px){
   #${ID} .oreon-ir-shell{padding:24px 16px}
   #${ID} .oreon-ir-tabs{gap:8px}
-  #${ID} .oreon-ir-tab{padding:0 14px;font-size:12px}
-  #${ID} .oreon-ir-head{font-size:12px}
+  #${ID} .oreon-ir-tab{padding:0 14px;font-size:12px!important}
+  #${ID} .oreon-ir-head{font-size:12px!important}
   #${ID} .oreon-ir-row{font-size:13px;min-height:68px}
   #${ID} .oreon-ir-head,
   #${ID} .oreon-ir-row{grid-template-columns:12% minmax(0,1fr) 30%}
-  #${ID} .oreon-ir-badge{padding:0 9px;font-size:10px;letter-spacing:.04em}
+  #${ID} .oreon-ir-badge{padding:0 9px;font-size:10px!important;letter-spacing:.04em}
 }
 `;
     document.head.appendChild(style);
