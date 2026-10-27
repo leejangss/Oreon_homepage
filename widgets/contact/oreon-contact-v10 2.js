@@ -119,3 +119,97 @@ style.textContent="\n@import url('https://fonts.googleapis.com/css2?family=Noto+
     }
   `;
 })();
+
+/* v9: 140% overall, left labels another 140%, card 40 rendered px wider. */
+(function () {
+  var id = 'oreon-contact-scale-140';
+  var style = document.getElementById(id);
+  if (!style) {
+    style = document.createElement('style');
+    style.id = id;
+    document.head.appendChild(style);
+  }
+  style.textContent = `
+    #w2026090726d3d1f97041a .form-widget {
+      zoom: 1.4;
+      width: calc(100% / 1.4) !important;
+      max-width: calc(712px + 40px / 1.4) !important;
+      margin-left: auto !important;
+      margin-right: auto !important;
+    }
+    #w2026090726d3d1f97041a .form-widget .form-group:not([id*="privacy"]):not([id*="agree"]) > .control-label {
+      font-size: 19.6px !important;
+      white-space: normal !important;
+      overflow-wrap: anywhere;
+    }
+    @media (min-width: 768px) {
+      #w2026090726d3d1f97041a .form-widget .form-group {
+        grid-template-columns: 238px minmax(0, 1fr);
+      }
+      #w2026090726d3d1f97041a .form-widget .form-group:has(> .checkbox) {
+        grid-template-columns: 238px repeat(4, max-content);
+      }
+    }
+  `;
+})();
+
+/* v10: shared right edge for choices and inputs; symmetric card gutters. */
+(function () {
+  var id = 'oreon-contact-layout-v10';
+  var style = document.getElementById(id);
+  if (!style) {
+    style = document.createElement('style');
+    style.id = id;
+    document.head.appendChild(style);
+  }
+  style.textContent = `
+    #w2026090726d3d1f97041a .form-widget {
+      max-width: 850px !important;
+      container-type: inline-size;
+    }
+    @media (min-width: 768px) {
+      #w2026090726d3d1f97041a .form-widget .form-group {
+        grid-template-columns: 260px minmax(0,1fr);
+      }
+      #w2026090726d3d1f97041a .form-widget .form-group:has(> .checkbox) {
+        grid-template-columns: 260px minmax(0,1.6fr) minmax(0,.7fr) minmax(0,1.3fr) minmax(0,.8fr);
+      }
+      #w2026090726d3d1f97041a .form-widget .form-group:has(> .checkbox) > .checkbox:last-child {
+        justify-self: end;
+      }
+      #w2026090726d3d1f97041a .form-widget .form-group > div:has(> .checkbox) {
+        justify-content: space-between;
+      }
+    }
+    @container (max-width: 650px) {
+      #w2026090726d3d1f97041a .form-widget .form-group {
+        grid-template-columns: minmax(0,1fr) !important;
+      }
+      #w2026090726d3d1f97041a .form-widget .form-group > :not(input[type="hidden"]) {
+        grid-column: 1 !important;
+        grid-row: auto !important;
+      }
+      #w2026090726d3d1f97041a .form-widget .form-group:has(> .checkbox) {
+        display: flex !important;
+        flex-wrap: wrap;
+        gap: 10px 18px;
+      }
+      #w2026090726d3d1f97041a .form-widget .form-group:has(> .checkbox) > .control-label {
+        flex: 0 0 100%;
+      }
+    }
+    #w2026090726d3d1f97041a .form-widget :is(._input_form_submit,button[type="submit"],.form > .btn-primary) {
+      background: #2463eb !important;
+      border-color: #2463eb !important;
+      color: #fff !important;
+    }
+    #w2026090726d3d1f97041a .form-widget :is(._input_form_submit,button[type="submit"],.form > .btn-primary):hover {
+      background: #1d4ed8 !important;
+      color: #fff !important;
+    }
+    #w2026090726d3d1f97041a .form-widget :is(._input_form_submit,button[type="submit"],.form > .btn-primary)::after {
+      content: none !important;
+      display: none !important;
+    }
+  `;
+})();
