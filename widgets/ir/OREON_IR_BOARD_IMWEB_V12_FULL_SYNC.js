@@ -1,14 +1,25 @@
-/* OREON IR BOARD - Imweb custom renderer v11 FONT +2
+/* OREON IR BOARD - Imweb custom renderer v12 FULL SYNC
    Target widget: w20260920efdd7cabae0a1
-   Rebuilds the visible IR list from Imweb's native board DOM instead of assuming a <table>.
+   Fixes:
+   - Reads all native board pages instead of only the currently visible page.
+   - Fetches with cache disabled so recently edited Imweb posts are reflected.
+   - Strengthens NOTICE / IR NEWS category detection.
+   - Keeps the existing custom design, typography, detail-view behavior and CTA.
 */
 (function () {
   const ID = "w20260920efdd7cabae0a1";
-  const STYLE_ID = "oreon-ir-board-v11-style";
+  const STYLE_ID = "oreon-ir-board-v12-style";
+  const CATS = ["NOTICE", "IR NEWS"];
+  const EXCLUDE = new Set(["글쓰기","WRITE","IR NEWS","SEARCH","ALL","NOTICE","이동","수정","지우기","삭제","공유","인쇄"]);
+  const PAGE_SIZE = 10;
+  const MAX_FETCH_PAGES = 40;
 
-  ["oreon-ir-board-v5-style","oreon-ir-board-v6-style","oreon-ir-board-v8-style","oreon-ir-board-v9-style","oreon-ir-board-v10-style"].forEach(id=>{
+  [
+    "oreon-ir-board-v5-style","oreon-ir-board-v6-style","oreon-ir-board-v8-style",
+    "oreon-ir-board-v9-style","oreon-ir-board-v10-style","oreon-ir-board-v11-style"
+  ].forEach(id => {
     const old = document.getElementById(id);
-    if(old) old.remove();
+    if (old) old.remove();
   });
 
   if (!document.getElementById(STYLE_ID)) {
@@ -168,13 +179,36 @@
 }
 #${ID} .oreon-ir-pagination{
   display:flex;
+  align-items:center;
   justify-content:center;
+  flex-wrap:wrap;
+  gap:8px;
   margin-top:26px;
 }
-#${ID} .oreon-ir-pagination a,
-#${ID} .oreon-ir-pagination span{
-  color:#aeb9c9!important;
+#${ID} .oreon-ir-page{
+  min-width:36px;
+  height:36px;
+  padding:0 10px;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  border:1px solid rgba(185,198,217,.25);
+  border-radius:999px;
+  background:transparent;
+  color:#aeb9c9;
+  font:600 13px/1 Arial,sans-serif;
+  cursor:pointer;
 }
+#${ID} .oreon-ir-page:hover{
+  color:#fff;
+  border-color:rgba(47,108,224,.65);
+}
+#${ID} .oreon-ir-page.is-active{
+  color:#fff;
+  border-color:var(--oir-blue3);
+  background:linear-gradient(135deg,var(--oir-blue1) 0%,var(--oir-blue2) 55%,var(--oir-blue3) 100%);
+}
+#${ID} .oreon-ir-page:disabled{opacity:.35;cursor:default}
 
 #${ID} .oreon-ir-admin-actions{
   display:flex;
@@ -247,7 +281,7 @@
   box-shadow:0 0 0 3px rgba(47,168,232,.18),0 0 20px 3px rgba(47,108,255,.38);
 }
 
-/* v9: force +1px typography over Imweb/native CSS */
+/* Keep the larger V11 typography */
 #${ID} .oreon-ir-tab{font-size:17px!important}
 #${ID} .oreon-ir-search input{font-size:17px!important}
 #${ID} .oreon-ir-head{font-size:16px!important}
@@ -286,8 +320,6 @@
 
   const norm = s => (s || "").replace(/\s+/g, " ").trim();
   const upper = s => norm(s).toUpperCase();
-  const CATS = ["NOTICE", "IR NEWS"];
-  const EXCLUDE = new Set(["글쓰기","WRITE","IR NEWS","SEARCH","ALL","NOTICE"]);
 
   function isDateText(t){
     const s = norm(t);
@@ -297,16 +329,8 @@
            s === "방금";
   }
 
-  function isVisible(el){
-    if(!el || !el.getBoundingClientRect) return false;
-    const r = el.getBoundingClientRect();
-    const cs = getComputedStyle(el);
-    return r.width > 0 && r.height > 0 && cs.display !== "none" && cs.visibility !== "hidden";
-  }
-
-  function leafTexts(scope){
+  function getLeafTexts(scope){
     return [...scope.querySelectorAll("*")].filter(el=>{
-      if(!isVisible(el)) return false;
       const txt = norm(el.textContent);
       if(!txt) return false;
       return ![...el.children].some(ch=>norm(ch.textContent) === txt);
@@ -315,72 +339,333 @@
 
   function findRowForAnchor(a, root){
     let n = a;
-    for(let i=0;i<8 && n && n!==root;i++,n=n.parentElement){
+    for(let i=0;i<9 && n && n!==root;i++,n=n.parentElement){
       const txt = norm(n.textContent);
-      if(txt.length > 800) continue;
-      const leaves = leafTexts(n);
+      if(!txt || txt.length > 1200) continue;
+
+      const leaves = getLeafTexts(n);
       const hasDate = leaves.some(el=>isDateText(el.textContent));
       const hasNum = leaves.some(el=>/^\d+$/.test(norm(el.textContent)));
-      const linkCount = n.querySelectorAll("a").length;
-      if(hasDate && hasNum && linkCount <= 4) return n;
+      const links = n.querySelectorAll("a").length;
+
+      if(hasDate && hasNum && links <= 8) return n;
     }
     return null;
   }
 
-  function extractPosts(root){
-    const anchors = [...root.querySelectorAll("a")].filter(a=>{
-      if(!isVisible(a)) return false;
-      const txt = norm(a.textContent);
-      if(!txt || EXCLUDE.has(upper(txt))) return false;
-      return !/^(이동|수정|지우기|삭제|공유|인쇄)$/.test(txt);
+  function detectCategory(row){
+    const pool = [];
+    const push = v => { if(v) pool.push(upper(v)); };
+
+    push(row.textContent);
+    push(row.innerHTML);
+
+    row.querySelectorAll('[class*="cate" i],[class*="category" i],[data-category],[data-cate],[data-category-name],[title],[aria-label]').forEach(el=>{
+      push(el.textContent);
+      ["data-category","data-cate","data-category-name","title","aria-label"].forEach(k=>push(el.getAttribute(k)));
     });
 
-    const out = [];
-    const seen = new Set();
+    row.querySelectorAll("a[href]").forEach(a=>{
+      const h = a.getAttribute("href") || "";
+      try{ push(decodeURIComponent(h)); }catch(e){ push(h); }
+    });
 
-    for(const a of anchors){
+    const joined = pool.join(" | ");
+    if(/\bIR[\s_-]*NEWS\b/i.test(joined)) return "IR NEWS";
+    if(/\bNOTICE\b/i.test(joined)) return "NOTICE";
+    return "";
+  }
+
+  function cleanHref(a, baseUrl){
+    const raw = (a && a.getAttribute && a.getAttribute("href")) || "";
+    if(!raw || raw === "#" || /^javascript:/i.test(raw)) return "";
+    try{
+      return new URL(raw, baseUrl || location.href).href;
+    }catch(e){
+      return "";
+    }
+  }
+
+  function titleScore(a, row, baseUrl){
+    const txt = norm(a.textContent);
+    if(!txt || EXCLUDE.has(upper(txt)) || isDateText(txt) || /^\d+$/.test(txt)) return -999;
+
+    const href = cleanHref(a, baseUrl);
+    let score = Math.min(txt.length, 80);
+
+    if(/[?&](bmode|mode)=view(?:&|$)/i.test(href)) score += 200;
+    if(/[?&](idx|board_idx|post_idx)=/i.test(href)) score += 120;
+    if(/\/board\//i.test(href)) score += 50;
+    if(CATS.includes(upper(txt))) score -= 300;
+
+    const cat = detectCategory(row);
+    if(cat && upper(txt) === cat) score -= 300;
+
+    return score;
+  }
+
+  function extractPosts(root, baseUrl){
+    const allAnchors = [...root.querySelectorAll("a")];
+    const rows = [];
+    const seenRows = new Set();
+
+    for(const a of allAnchors){
+      const txt = norm(a.textContent);
+      if(!txt || EXCLUDE.has(upper(txt))) continue;
+
       const row = findRowForAnchor(a, root);
-      if(!row || seen.has(row)) continue;
+      if(!row || seenRows.has(row)) continue;
 
-      const leaves = leafTexts(row);
+      seenRows.add(row);
+      rows.push(row);
+    }
+
+    const out = [];
+
+    for(const row of rows){
+      const leaves = getLeafTexts(row);
       const nums = leaves
-        .filter(el=>/^\d+$/.test(norm(el.textContent)))
-        .sort((x,y)=>x.getBoundingClientRect().left-y.getBoundingClientRect().left);
-      const dates = leaves.filter(el=>isDateText(el.textContent));
+        .map(el=>norm(el.textContent))
+        .filter(t=>/^\d+$/.test(t))
+        .map(Number)
+        .filter(Number.isFinite);
 
-      const rowText = upper(row.textContent);
-      const category = CATS.find(c=>rowText.includes(c)) || "";
+      const dates = leaves.map(el=>norm(el.textContent)).filter(isDateText);
+      const anchors = [...row.querySelectorAll("a")];
 
-      const title = norm(a.textContent);
+      let titleAnchor = null;
+      let bestScore = -9999;
+      for(const a of anchors){
+        const sc = titleScore(a,row,baseUrl);
+        if(sc > bestScore){
+          bestScore = sc;
+          titleAnchor = a;
+        }
+      }
+      if(!titleAnchor || bestScore < 0) continue;
+
+      const title = norm(titleAnchor.textContent);
       if(!title || EXCLUDE.has(upper(title))) continue;
 
-      const rawHref = a.getAttribute("href") || "";
-      const safeHref = rawHref && rawHref !== "#" && !/^javascript:/i.test(rawHref) ? a.href : "";
+      const href = cleanHref(titleAnchor,baseUrl);
+      const category = detectCategory(row);
 
-      seen.add(row);
       out.push({
-        no: nums.length ? norm(nums[0].textContent) : String(out.length + 1),
+        no: nums.length ? String(Math.max(...nums)) : "",
         title,
         category,
-        date: dates.length ? norm(dates[0].textContent) : "",
-        href: safeHref,
-        nativeLink: a
+        date: dates.length ? dates[0] : "",
+        href,
+        nativeLink: titleAnchor
       });
     }
 
-    if(out.length > 1 && out.every(x=>/^\d+$/.test(x.no))){
-      out.sort((a,b)=>Number(b.no)-Number(a.no));
-    }
     return out;
   }
 
-  function findNativePagination(root){
-    const selectors = [".pagination",".pagination_wrap",".paging",".board_paging",".paging-block"];
-    for(const sel of selectors){
-      const el = root.querySelector(sel);
-      if(el && isVisible(el)) return el;
+  function canonicalUrl(url){
+    try{
+      const u = new URL(url,location.href);
+      u.hash = "";
+      u.searchParams.delete("oir_refresh");
+      return u.href;
+    }catch(e){
+      return url || "";
     }
-    return null;
+  }
+
+  function postKey(p){
+    const href = canonicalUrl(p.href || "");
+    if(href) return "H:"+href;
+    return "T:"+upper(p.title)+"|"+upper(p.date);
+  }
+
+  function mergePosts(target, posts){
+    const seen = new Set(target.map(postKey));
+    for(const p of posts){
+      const k = postKey(p);
+      if(seen.has(k)) continue;
+      seen.add(k);
+      target.push(p);
+    }
+  }
+
+  function getPaginationContainers(root){
+    const selectors = [
+      ".pagination",".pagination_wrap",".paging",".board_paging",".paging-block",
+      '[class*="paging" i]','[class*="pagination" i]'
+    ];
+    const out = [];
+    const seen = new Set();
+    selectors.forEach(sel=>{
+      try{
+        root.querySelectorAll(sel).forEach(el=>{
+          if(!seen.has(el)){ seen.add(el); out.push(el); }
+        });
+      }catch(e){}
+    });
+    return out;
+  }
+
+  function pageNumberFromControl(el){
+    const attrs = ["data-page","data-pageno","data-page-no","data-page_num","data-page-num"];
+    for(const k of attrs){
+      const v = el.getAttribute && el.getAttribute(k);
+      if(v && /^\d+$/.test(v)) return Number(v);
+    }
+
+    const txt = norm(el.textContent);
+    if(/^\d+$/.test(txt)) return Number(txt);
+
+    const onclick = (el.getAttribute && el.getAttribute("onclick")) || "";
+    const m = onclick.match(/(?:page|pageno|page_no|pageNum)\D{0,8}(\d+)/i);
+    return m ? Number(m[1]) : null;
+  }
+
+  function makePageUrl(baseUrl,pageNo){
+    try{
+      const u = new URL(baseUrl,location.href);
+      u.hash = "";
+      u.searchParams.set("page",String(pageNo));
+      return u.href;
+    }catch(e){
+      return "";
+    }
+  }
+
+  function discoverPaginationUrls(root,baseUrl){
+    const found = [];
+    const seen = new Set();
+
+    const add = url=>{
+      if(!url) return;
+      try{
+        const u = new URL(url,baseUrl || location.href);
+        if(u.origin !== location.origin) return;
+        if(/[?&](bmode|mode)=view(?:&|$)/i.test(u.href)) return;
+        const key = canonicalUrl(u.href);
+        if(seen.has(key)) return;
+        seen.add(key);
+        found.push(u.href);
+      }catch(e){}
+    };
+
+    const containers = getPaginationContainers(root);
+    containers.forEach(box=>{
+      box.querySelectorAll("a,button").forEach(el=>{
+        const href = el.getAttribute && el.getAttribute("href");
+        if(href && href !== "#" && !/^javascript:/i.test(href)){
+          add(new URL(href,baseUrl || location.href).href);
+        }else{
+          const n = pageNumberFromControl(el);
+          if(n) add(makePageUrl(baseUrl || location.href,n));
+        }
+      });
+    });
+
+    return found;
+  }
+
+  async function fetchBoardPage(url){
+    try{
+      const u = new URL(url,location.href);
+      u.hash = "";
+      u.searchParams.set("oir_refresh",String(Date.now()));
+
+      const res = await fetch(u.href,{
+        method:"GET",
+        credentials:"same-origin",
+        cache:"no-store",
+        headers:{
+          "Cache-Control":"no-cache",
+          "Pragma":"no-cache"
+        }
+      });
+
+      if(!res.ok) return null;
+
+      const html = await res.text();
+      const doc = new DOMParser().parseFromString(html,"text/html");
+      const root = doc.getElementById(ID);
+      if(!root) return null;
+
+      return {root, url:canonicalUrl(url)};
+    }catch(e){
+      return null;
+    }
+  }
+
+  async function collectAllPosts(liveRoot){
+    const collected = [];
+    const pageQueue = [];
+    const queued = new Set();
+    const visited = new Set();
+
+    const enqueue = url=>{
+      const key = canonicalUrl(url);
+      if(!key || queued.has(key) || visited.has(key)) return;
+      queued.add(key);
+      pageQueue.push(key);
+    };
+
+    // First request the current page fresh. This avoids stale Imweb DOM after editing a post.
+    const freshCurrent = await fetchBoardPage(location.href);
+    const firstRoot = freshCurrent ? freshCurrent.root : liveRoot;
+    const firstBase = freshCurrent ? freshCurrent.url : location.href;
+
+    mergePosts(collected,extractPosts(firstRoot,firstBase));
+    discoverPaginationUrls(firstRoot,firstBase).forEach(enqueue);
+
+    // If the board markup exposes page numbers only through JS, add page=2 as a conservative fallback.
+    if(pageQueue.length === 0){
+      enqueue(makePageUrl(location.href,2));
+    }
+
+    let fetchedPages = 0;
+    let consecutiveNoNew = 0;
+
+    while(pageQueue.length && fetchedPages < MAX_FETCH_PAGES){
+      const url = pageQueue.shift();
+      queued.delete(url);
+      if(visited.has(url)) continue;
+      visited.add(url);
+      fetchedPages++;
+
+      const before = collected.length;
+      const page = await fetchBoardPage(url);
+      if(!page){
+        consecutiveNoNew++;
+        if(consecutiveNoNew >= 2) break;
+        continue;
+      }
+
+      const posts = extractPosts(page.root,page.url);
+      mergePosts(collected,posts);
+      discoverPaginationUrls(page.root,page.url).forEach(enqueue);
+
+      if(collected.length === before){
+        consecutiveNoNew++;
+      }else{
+        consecutiveNoNew = 0;
+      }
+
+      // Sequential fallback for Imweb boards whose pagination buttons do not contain real hrefs.
+      const current = new URL(page.url,location.href);
+      const currentPage = Number(current.searchParams.get("page") || "1");
+      if(pageQueue.length === 0 && posts.length > 0 && currentPage < MAX_FETCH_PAGES){
+        enqueue(makePageUrl(location.href,currentPage + 1));
+      }
+
+      if(consecutiveNoNew >= 2) break;
+    }
+
+    // Preserve native board ordering; only use numeric NO to stabilize newest-first order when available.
+    const numeric = collected.filter(p=>/^\d+$/.test(p.no || ""));
+    if(numeric.length === collected.length && collected.length > 1){
+      collected.sort((a,b)=>Number(b.no)-Number(a.no));
+    }
+
+    return collected;
   }
 
   function isDetailView(root){
@@ -388,26 +673,19 @@
     const bmode = (url.searchParams.get("bmode") || "").toLowerCase();
     const mode = (url.searchParams.get("mode") || "").toLowerCase();
 
-    // Imweb board post detail page.
     if(bmode === "view" || mode === "view") return true;
 
-    // Conservative fallback for native detail DOM only.
-    // Do NOT use broad selectors such as .board_content because those can exist on list pages too.
     const strictSelectors = [
-      ".board_view_wrap",
-      ".board_view_body",
-      ".board_view_title",
-      ".board-detail",
-      ".post_view"
+      ".board_view_wrap",".board_view_body",".board_view_title",
+      ".board-detail",".post_view"
     ];
 
     for(const sel of strictSelectors){
       try{
         const el = root.querySelector(sel);
-        if(el && isVisible(el)) return true;
+        if(el) return true;
       }catch(e){}
     }
-
     return false;
   }
 
@@ -419,27 +697,52 @@
       .querySelectorAll('.oreon-ir-contact-v4[data-for="'+ID+'"],.oreon-ir-contact-v3[data-for="'+ID+'"]')
       .forEach(el=>el.remove());
 
-    root.dataset.oreonIrV4Building = "0";
+    root.dataset.oreonIrV12Building = "0";
   }
 
-  function build(root){
+  function renderPagination(shell,totalPages,currentPage,onPage){
+    const wrap = shell.querySelector(".oreon-ir-pagination");
+    wrap.innerHTML = "";
+    if(totalPages <= 1) return;
+
+    const makeBtn = (label,page,active,disabled)=>{
+      const b = document.createElement("button");
+      b.type = "button";
+      b.className = "oreon-ir-page" + (active ? " is-active" : "");
+      b.textContent = label;
+      b.disabled = !!disabled;
+      if(!disabled && !active) b.addEventListener("click",()=>onPage(page));
+      return b;
+    };
+
+    wrap.appendChild(makeBtn("‹",currentPage-1,false,currentPage<=1));
+
+    const start = Math.max(1,currentPage-2);
+    const end = Math.min(totalPages,start+4);
+    const adjustedStart = Math.max(1,end-4);
+
+    for(let p=adjustedStart;p<=end;p++){
+      wrap.appendChild(makeBtn(String(p),p,p===currentPage,false));
+    }
+
+    wrap.appendChild(makeBtn("›",currentPage+1,false,currentPage>=totalPages));
+  }
+
+  async function build(root){
     if(isDetailView(root)){
       restoreNativeDetail(root);
       return;
     }
 
-    if(root.dataset.oreonIrV4Building === "1") return;
-    root.dataset.oreonIrV4Building = "1";
+    if(root.dataset.oreonIrV12Building === "1") return;
+    root.dataset.oreonIrV12Building = "1";
 
-    // Remove our prior custom render before scanning native content.
     root.querySelectorAll(":scope > .oreon-ir-shell").forEach(el=>el.remove());
     [...root.children].forEach(ch=>ch.classList.remove("oreon-ir-native-hidden"));
 
-    const posts = extractPosts(root);
-    const pagination = findNativePagination(root);
     const nativeWrite = [...root.querySelectorAll("a,button")].find(el=>{
       const t = upper(el.textContent);
-      return isVisible(el) && (t === "글쓰기" || t === "WRITE");
+      return t === "글쓰기" || t === "WRITE";
     }) || root.querySelector(".btn-write");
 
     const shell = document.createElement("div");
@@ -468,19 +771,43 @@
       <div class="oreon-ir-admin-actions"></div>
     `;
 
+    root.insertBefore(shell,root.firstChild);
+    [...root.children].forEach(ch=>{
+      if(ch !== shell) ch.classList.add("oreon-ir-native-hidden");
+    });
+
     const body = shell.querySelector(".oreon-ir-body");
-    posts.forEach(p=>{
+    const empty = shell.querySelector(".oreon-ir-empty");
+    const input = shell.querySelector(".oreon-ir-search input");
+
+    let activeCat = "ALL";
+    let currentPage = 1;
+    let posts = [];
+
+    try{
+      posts = await collectAllPosts(root);
+    }catch(e){
+      posts = [];
+    }
+
+    body.innerHTML = "";
+
+    posts.forEach((p,index)=>{
       const row = document.createElement("div");
       row.className = "oreon-ir-row";
       row.dataset.category = upper(p.category);
-      row.dataset.search = upper(p.title + " " + p.category + " " + p.date);
+      row.dataset.search = upper(p.title+" "+p.category+" "+p.date);
+      row.dataset.index = String(index);
+
       row.innerHTML = `
         <div class="oreon-ir-cell oreon-ir-cell--no"></div>
         <div class="oreon-ir-cell oreon-ir-cell--title"><a></a></div>
         <div class="oreon-ir-cell oreon-ir-cell--category"></div>
         <div class="oreon-ir-cell oreon-ir-cell--date"></div>
       `;
-      row.querySelector(".oreon-ir-cell--no").textContent = p.no;
+
+      row.querySelector(".oreon-ir-cell--no").textContent = p.no || String(posts.length-index);
+
       const link = row.querySelector(".oreon-ir-cell--title a");
       link.textContent = p.title;
       link.href = p.href || "#";
@@ -490,51 +817,46 @@
           p.nativeLink.click();
         });
       }
+
+      const catCell = row.querySelector(".oreon-ir-cell--category");
       if(p.category){
         const badge = document.createElement("span");
         badge.className = "oreon-ir-badge";
         badge.textContent = p.category;
-        row.querySelector(".oreon-ir-cell--category").appendChild(badge);
-      } else {
-        row.querySelector(".oreon-ir-cell--category").textContent = "—";
+        catCell.appendChild(badge);
+      }else{
+        catCell.textContent = "—";
       }
+
       row.querySelector(".oreon-ir-cell--date").textContent = p.date || "—";
       body.appendChild(row);
     });
 
-    if(pagination){
-      shell.querySelector(".oreon-ir-pagination").appendChild(pagination.cloneNode(true));
-    }
-
-    root.insertBefore(shell, root.firstChild);
-    [...root.children].forEach(ch=>{
-      if(ch !== shell) ch.classList.add("oreon-ir-native-hidden");
-    });
-
     const rows = [...shell.querySelectorAll(".oreon-ir-row")];
-    const empty = shell.querySelector(".oreon-ir-empty");
-    const input = shell.querySelector(".oreon-ir-search input");
-    let activeCat = "ALL";
 
-    function filter(){
+    function applyFilter(){
       const q = upper(input.value);
-      let count = 0;
-
-      rows.forEach(row=>{
+      const matched = rows.filter(row=>{
         const rowCat = upper(row.dataset.category || "");
         const catOk = activeCat === "ALL" || rowCat === activeCat;
         const searchOk = !q || upper(row.dataset.search || "").includes(q);
-        const show = catOk && searchOk;
-
-        // Do not rely on the HTML hidden attribute because .oreon-ir-row uses display:grid.
-        // Set display directly so Imweb/browser CSS cannot override the filter.
-        row.style.display = show ? "grid" : "none";
-
-        if(show) count++;
+        return catOk && searchOk;
       });
 
-      empty.hidden = count !== 0;
-      empty.style.display = count ? "none" : "block";
+      const totalPages = Math.max(1,Math.ceil(matched.length/PAGE_SIZE));
+      if(currentPage > totalPages) currentPage = totalPages;
+
+      rows.forEach(r=>r.style.display="none");
+      const start = (currentPage-1)*PAGE_SIZE;
+      matched.slice(start,start+PAGE_SIZE).forEach(r=>r.style.display="grid");
+
+      empty.hidden = matched.length !== 0;
+      empty.style.display = matched.length ? "none" : "block";
+
+      renderPagination(shell,matched.length ? totalPages : 0,currentPage,(page)=>{
+        currentPage = page;
+        applyFilter();
+      });
     }
 
     shell.querySelectorAll(".oreon-ir-tab").forEach(btn=>{
@@ -542,13 +864,18 @@
         shell.querySelectorAll(".oreon-ir-tab").forEach(b=>b.classList.remove("is-active"));
         btn.classList.add("is-active");
         activeCat = btn.dataset.cat;
-        filter();
+        currentPage = 1;
+        applyFilter();
       });
     });
-    input.addEventListener("input",filter);
-    filter();
 
-    // Owner/admin WRITE button: only appears when Imweb itself rendered a native write control.
+    input.addEventListener("input",()=>{
+      currentPage = 1;
+      applyFilter();
+    });
+
+    applyFilter();
+
     if(nativeWrite){
       const actions = shell.querySelector(".oreon-ir-admin-actions");
       const write = document.createElement("button");
@@ -566,9 +893,9 @@
       actions.appendChild(write);
     }
 
-    // CTA
     document.querySelectorAll('.oreon-ir-contact-v3[data-for="'+ID+'"]').forEach(el=>el.remove());
     const existingCTA = document.querySelector('.oreon-ir-contact-v4[data-for="'+ID+'"]');
+
     if(!existingCTA){
       const cta = document.createElement("div");
       cta.className = "oreon-ir-contact-v4";
@@ -581,18 +908,20 @@
         <a href="https://test202608.imweb.me/23">Contact Us <span aria-hidden="true">→</span></a>
       `;
       const anchor = root.closest("section,.section_wrap,.section_first,.doz_row") || root;
-      anchor.parentNode.insertBefore(cta, anchor.nextSibling);
+      if(anchor.parentNode) anchor.parentNode.insertBefore(cta,anchor.nextSibling);
     }
 
-    root.dataset.oreonIrV4Building = "0";
+    root.dataset.oreonIrV12Building = "0";
   }
 
   function boot(tries){
     const root = document.getElementById(ID);
+
     if(!root){
       if((tries||0) < 50) setTimeout(()=>boot((tries||0)+1),200);
       return;
     }
+
     if(isDetailView(root)){
       restoreNativeDetail(root);
     }else{
@@ -603,9 +932,13 @@
     const obs = new MutationObserver(muts=>{
       const changedNative = muts.some(m=>{
         const t = m.target.nodeType === 1 ? m.target : m.target.parentElement;
-        return t && !t.closest(".oreon-ir-shell") && !t.closest(".oreon-ir-contact-v4");
+        return t &&
+          !t.closest(".oreon-ir-shell") &&
+          !t.closest(".oreon-ir-contact-v4");
       });
+
       if(!changedNative) return;
+
       clearTimeout(timer);
       timer = setTimeout(()=>{
         if(isDetailView(root)){
@@ -613,8 +946,9 @@
         }else{
           build(root);
         }
-      },250);
+      },600);
     });
+
     obs.observe(root,{childList:true,subtree:true,characterData:true});
   }
 
