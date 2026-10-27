@@ -1,4 +1,4 @@
-/* OREON Life Science · NEWS Editorial Board v1
+/* OREON Life Science · NEWS Editorial Board v3
  * Widget w202609085cc91e7d0d0b8
  * Display-only enhancement of the native Imweb NEWS board.
  * Native post links, categories, pagination and administration remain in Imweb.
@@ -9,7 +9,7 @@
 
   const ID = 'w202609085cc91e7d0d0b8';
   const SECTION = 's2026080930f1bc2f3bf2e';
-  const STYLE_ID = 'oreon-news-editorial-v01-styles';
+  const STYLE_ID = 'oreon-news-editorial-v03-styles';
   const SHELL = 'oreon-news-editorial';
   const HIDDEN = 'oreon-news-native-hidden';
   const CATEGORIES = [
@@ -47,6 +47,12 @@
       }
       #${ID}{width:100%;max-width:1440px;margin:0 auto!important;background:transparent!important;box-sizing:border-box}
       #${ID} > .${HIDDEN}{display:none!important}
+      /* Do not expose Imweb's marketing/AI-spam announcement as NEWS content. */
+      #${ID} .ai-spam-banner,
+      #${ID} [class*="spam-guard"],
+      #${ID} [class*="spam_guard"],
+      #${ID} [class*="spam-care"],
+      #${ID} [class*="spam_care"]{display:none!important}
       #${ID} .${SHELL}{font-family:'Outfit','Noto Sans KR',Arial,sans-serif;color:#eaf0f8;box-sizing:border-box;padding:0 0 68px}
       #${ID} .on-head{display:flex;align-items:center;justify-content:space-between;gap:20px;margin:0 0 28px}
       #${ID} .on-heading{font-size:clamp(26px,3.2vw,43px);font-weight:500;line-height:1.1;letter-spacing:-.035em;color:#f3f6fb;margin:0}
@@ -61,7 +67,8 @@
       #${ID} .on-feature.on-has-image .on-link{display:contents}
       #${ID} .on-visual{overflow:hidden;position:relative;background:#101c2c}
       #${ID} .on-feature .on-visual{min-height:390px}
-      #${ID} .on-image{display:block;width:100%;height:100%;position:absolute;inset:0;object-fit:cover;object-position:center;transition:transform .5s cubic-bezier(.2,.8,.2,1)}
+      /* Fit each source image in full without CSS cropping. */
+      #${ID} .on-image{display:block;width:100%;height:100%;position:absolute;inset:0;object-fit:contain;object-position:center;transition:none}
       #${ID} .on-feature .on-info{padding:39px clamp(26px,4vw,58px) 36px;display:flex;flex-direction:column;align-items:flex-start;justify-content:space-between;min-width:0;gap:36px}
       #${ID} .on-feature.on-no-image .on-info{min-height:390px;max-width:100%;padding:40px clamp(25px,5vw,68px)}
       #${ID} .on-eyebrow{display:flex;align-items:center;flex-wrap:wrap;gap:12px;max-width:100%}
@@ -79,17 +86,22 @@
       #${ID} .on-card.on-tone-1{background:linear-gradient(145deg,#253d4a,#182b38)}
       #${ID} .on-card.on-tone-2{background:linear-gradient(145deg,#142b40,#132034)}
       #${ID} .on-card.on-tone-3{background:linear-gradient(145deg,#202d3d,#151f2e)}
-      #${ID} .on-card .on-visual{height:210px;flex:0 0 210px}
-      #${ID} .on-card.on-has-image{min-height:420px}
-      #${ID} .on-card .on-info{padding:24px 25px 22px;display:flex;flex:1;flex-direction:column;gap:20px;min-width:0}
+      /* V02: allow the FULL native thumbnail to fit. Expanded photo zone. */
+      #${ID} .on-card .on-visual{height:300px;flex:0 0 300px;background:#111925}
+      #${ID} .on-feature .on-visual{background:#111925}
+      #${ID} .on-card.on-has-image{min-height:480px}
+      #${ID} .on-card .on-info{padding:21px 24px 20px;display:flex;flex:1;flex-direction:column;gap:16px;min-width:0}
       #${ID} .on-card.on-no-image .on-info{min-height:305px;justify-content:space-between;padding:29px 27px 22px}
       #${ID} .on-card .on-title{font-size:clamp(16px,1.33vw,20px);line-height:1.52;display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden}
+      /* Only cards with photos: 2px smaller than V01/V02. Text-only cards keep their scale. */
+      #${ID} .on-card.on-has-image .on-title{font-size:clamp(14px,calc(1.33vw - 2px),18px);line-height:1.5}
       #${ID} .on-card.on-no-image .on-title{font-size:clamp(19px,1.52vw,23px);line-height:1.47;-webkit-line-clamp:5}
       #${ID} .on-card .on-middle{margin:0;flex:1;display:flex;align-items:flex-start}
       #${ID} .on-card .on-read{border-top:1px solid rgba(199,219,242,.13);padding-top:16px}
       #${ID} .on-card .on-arrow{width:31px;height:31px;font-size:17px;border-radius:50%}
       #${ID} .on-feature:hover, #${ID} .on-card:hover{transform:translateY(-3px);box-shadow:0 18px 42px rgba(0,0,0,.18)}
-      #${ID} .on-feature:hover .on-image, #${ID} .on-card:hover .on-image{transform:scale(1.035)}
+      /* No zoom-on-hover: even small scaling trims the image edges. */
+      #${ID} .on-feature:hover .on-image, #${ID} .on-card:hover .on-image{transform:none}
       #${ID} .on-feature:hover .on-arrow, #${ID} .on-card:hover .on-arrow{color:#071321;background:#9ddaff;transform:translateX(2px)}
       #${ID} .on-pager{padding-top:33px;display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap}
       #${ID} .on-pager a,#${ID} .on-pager span{color:#c6d2e2!important}
@@ -106,9 +118,10 @@
         #${ID} .on-grid{grid-template-columns:1fr;gap:15px}
         #${ID} .on-card{min-height:260px}
         #${ID} .on-card.on-has-image{min-height:0}
-        #${ID} .on-card .on-visual{height:205px;flex-basis:205px}
+        #${ID} .on-card .on-visual{height:260px;flex-basis:260px}
         #${ID} .on-card.on-no-image .on-info{min-height:260px}
         #${ID} .on-card .on-title{font-size:18px}
+        #${ID} .on-card.on-has-image .on-title{font-size:16px}
       }
       @media(prefers-reduced-motion:reduce){#${ID} .on-feature,#${ID} .on-card,#${ID} .on-image,#${ID} .on-arrow{transition:none!important}}
     `;
@@ -124,7 +137,7 @@
     if (!img || img.closest('.no-image,.no_img,.placeholder,.board-profile')) return '';
     const cls = String(img.className || '');
     if (/(avatar|profile|icon|emoticon)/i.test(cls)) return '';
-    const url = img.getAttribute('data-src') || img.getAttribute('data-original') || img.currentSrc || img.getAttribute('src') || '';
+    const url = img.getAttribute('data-original') || img.getAttribute('data-full') || img.getAttribute('data-src') || img.currentSrc || img.getAttribute('src') || '';
     if (!url || /(?:no[_-]?image|placeholder|default_thumb|blank|loading|spacer|1x1|pixel)/i.test(url)) return '';
     if (/^data:image\/(?:svg\+xml|gif)/i.test(url)) return '';
     return url;
@@ -169,6 +182,28 @@
     leaves.sort((a,b) => b.length - a.length);
     return {text:leaves[0] || '',link:tile.querySelector('a[href]')};
   }
+  // Imweb may inject administrative/promotional links into the same widget.
+  // These are not articles and must never become the featured NEWS item.
+  function isSitePromotion(tile, title, target) {
+    // Imweb inserts "AI 스팸가드 / AI 스팸케어" marketing cards into some boards.
+    // Their links often have .title and look like a normal item to a generic DOM scraper.
+    const local = norm(tile && tile.textContent);
+    const txt = norm(title) + ' ' + (local.length < 800 ? local : local.slice(0,800));
+    const href = (target && target.getAttribute('href') || '').toLowerCase();
+    if (/스팸\s*(?:가드|케어|게시물)|스팸가드|스팸케어|새\s*스팸|이미\s*쌓인\s*스팸|AI\s*스팸|게시판\s*AI|스팸.*(?:한\s*번에|정리|알아보기|걸러|막고)/i.test(txt)) return true;
+    if (/(?:^|\W)(?:spamguard|spam-care|spam_care|spam-guard|spam_guard)(?:\W|$)/i.test(href)) return true;
+    if (/^(?:https?:)?\/\/(?:www\.)?(?:imweb\.me|help\.imweb\.me|support\.imweb\.me)\/(?:help|guide|support|notice|feature|blog)(?:[/?#]|$)/i.test(href)) return true;
+    return !!(tile && tile.closest('.admin-banner,.notice-banner,.marketing-banner,.promotion-banner,.board-promotion,.spam-banner,.ai-spam-banner,[class*="spam-guard"],[class*="spam_guard"],[class*="spam-care"],[class*="spam_care"],[class*="ai-spam"]'));
+  }
+  function isLikelyNewsTile(tile, target) {
+    if (!tile) return false;
+    const hasTitle = !!tile.querySelector('.title,.subject,.board-title,.board_title,.post-title,.post_title,.txt_title,[class*="post_title"],[class*="board_title"]');
+    const hasCategory = !!tile.querySelector('.category,.cate,.badge,[class*="categor"],[class*="cate_"]');
+    const url = (target && target.getAttribute('href') || '').toLowerCase();
+    const postUrl = /(?:[?&](?:bmode=view|idx=|post_id=)|\/posts?\/|\/news\/[^?#]+)/i.test(url);
+    const tileShape = tile.matches('.gallery-item,.gallery_item,.board-item,.board_item,.post-item,.post_item,.list-item,.list_item,.card-item,.board-gallery li,.board_list tr');
+    return hasTitle || hasCategory || postUrl || (tileShape && !!tile.querySelector('a[href]'));
+  }
   function hasWriteAncestor(el) {
     return !!el.closest('.pagination,.pagination_wrap,.paging,.board_paging,.paging-block,.on-pager,.'+SHELL+',.btn-wrap,.board-write,.board_write');
   }
@@ -207,6 +242,10 @@
     let result = norm(raw);
     const known = [cat,'Article','Press','Interview','Social Media','Notice','공지'];
     known.forEach(k => { if(k) result=result.replace(new RegExp('^'+k.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+'\\s+','i'),''); });
+    // Certain Imweb themes repeat category outside and inside the title link.
+    for (let n = 0; n < 3; n++) {
+      result = result.replace(/^(?:(?:ARTICLE|PRESS|INTERVIEW|SOCIAL MEDIA|NOTICE|공지)\s*[:|·-]?\s+)+/i, '').trim();
+    }
     return result;
   }
   function getDate(tile) {
@@ -230,17 +269,18 @@
   function extract(root) {
     const native = Array.from(root.children).filter(el => !el.classList.contains(SHELL));
     const candidates = native.flatMap(node => Array.from(node.querySelectorAll('a[href]')))
-      .filter(a => !hasWriteAncestor(a) && !denied.test(norm(a.textContent)));
+      .filter(a => !hasWriteAncestor(a) && !denied.test(norm(a.textContent)) && !isSitePromotion(a.closest('.ai-spam-banner,.spam-banner,.promotion-banner') || a, a.textContent, a));
     const posts=[], usedTiles=new Set(), usedPosts=new Set();
     for (const a of candidates) {
       const tile = resolveTile(a,root);
       if (!tile || usedTiles.has(tile) || tile.closest('.'+SHELL)) continue;
       const {text:rawTitle,link} = titleInfo(tile);
-      if (!rawTitle || denied.test(rawTitle)) continue;
+      if (!rawTitle || denied.test(rawTitle) || isSitePromotion(tile, rawTitle, link || a)) continue;
+      const target = link || a;
+      if (isSitePromotion(tile,rawTitle,target) || !isLikelyNewsTile(tile,target)) continue;
       const cat = getCategory(tile,rawTitle);
       const title = cleanTitle(rawTitle,cat);
-      if (title.length < 5 || isDate(title)) continue;
-      const target = link || a;
+      if (title.length < 5 || isDate(title) || isSitePromotion(tile,title,target)) continue;
       const rawHref = target.getAttribute('href') || '';
       const href = rawHref && rawHref !== '#' && !/^javascript:/i.test(rawHref) ? target.href : '';
       const photo = candidatePhoto(tile);
