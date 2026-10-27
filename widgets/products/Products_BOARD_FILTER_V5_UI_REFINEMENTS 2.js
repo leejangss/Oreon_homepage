@@ -18,7 +18,7 @@
     style.id = STYLE_ID;
     style.textContent = [
       '#oreon-live-products .oreon-filter-btn{font-size:22.5px!important;}',
-      '#oreon-live-products .oreon-product-index__desc{font-size:clamp(21px,1.62vw,25.5px)!important;}',
+      '#oreon-live-products .oreon-product-index__desc{font-size:clamp(21px,1.62vw,25.5px)!important;white-space:pre!important;width:max-content!important;max-width:none!important;position:relative;left:50%;transform:translateX(-50%);margin-left:0!important;margin-right:0!important;}',
       '#oreon-live-products .oreon-filter-card__image{transition:transform .38s ease,filter .38s ease,border-color .38s ease,box-shadow .38s ease!important;}',
       '#oreon-live-products a.oreon-filter-card:hover .oreon-filter-card__image,',
       '#oreon-live-products a.oreon-filter-card:focus-visible .oreon-filter-card__image{',
@@ -26,15 +26,15 @@
       'box-shadow:0 0 0 1px rgba(82,204,255,.26),0 0 20px rgba(70,180,240,.14)!important;',
       '}',
       '#oreon-live-products .oreon-filter-card__detail-arrow{',
-      'position:absolute;right:11px;bottom:11px;z-index:4;width:39px;height:39px;',
-      'border:1.5px solid #78bfe4;border-radius:50%;display:flex;align-items:center;justify-content:center;',
-      'background:rgba(248,252,255,.93);color:#278cc2;pointer-events:none;',
+      'position:absolute;right:11px;bottom:11px;z-index:4;width:27.3px;height:27.3px;',
+      'border:1.1px solid #95dfff;border-radius:50%;display:flex;align-items:center;justify-content:center;',
+      'background:transparent;color:#95dfff;pointer-events:none;',
       'transition:background .32s ease,border-color .32s ease,transform .32s ease;',
       '}',
-      '#oreon-live-products .oreon-filter-card__detail-arrow svg{display:block;width:21px;height:21px;}',
+      '#oreon-live-products .oreon-filter-card__detail-arrow svg{display:block;width:14.7px;height:14.7px;}',
       '#oreon-live-products a.oreon-filter-card:hover .oreon-filter-card__detail-arrow,',
       '#oreon-live-products a.oreon-filter-card:focus-visible .oreon-filter-card__detail-arrow{',
-      'background:#fff;border-color:#4fc3f7;transform:translateX(2px);',
+      'background:transparent;border-color:#b6edff;color:#b6edff;transform:translateX(2px);',
       '}',
       '@media(prefers-reduced-motion:reduce){',
       '#oreon-live-products .oreon-filter-card__detail-arrow{transition:none!important;}',
@@ -63,9 +63,48 @@
     return true;
   }
 
+  // One complete sentence per line. Native browser wrapping is disabled,
+  // and on narrow screens the font scales down only as much as needed to fit.
+  function formatIntroDescription() {
+    var root = document.getElementById('oreon-live-products');
+    if (!root) return false;
+    var stage = root.querySelector('.oreon-category-stage');
+    var desc = root.querySelector('.oreon-product-index__desc');
+    if (!stage || !desc) return false;
+    if (desc.dataset.oreonLinebreaksV5 === 'installed') return true;
+    desc.dataset.oreonLinebreaksV5 = 'installed';
+
+    function fitSentenceLines() {
+      // V4 sets the caption text anew whenever the category changes.
+      var normalized = desc.textContent.replace(/\s+/g, ' ').trim();
+      var sentenceLines = normalized.replace(/\.\s+(?=\S)/g, '.\n');
+      if (desc.textContent !== sentenceLines) desc.textContent = sentenceLines;
+
+      desc.style.removeProperty('font-size');
+      var naturalWidth = desc.getBoundingClientRect().width;
+      var availableWidth = Math.max(1, stage.getBoundingClientRect().width - 32);
+      if (naturalWidth > availableWidth) {
+        var fontSize = parseFloat(getComputedStyle(desc).fontSize) || 21;
+        desc.style.setProperty('font-size', (fontSize * availableWidth / naturalWidth).toFixed(2) + 'px', 'important');
+      }
+    }
+
+    root.addEventListener('click', function (event) {
+      if (event.target.closest('.oreon-filter-btn')) {
+        requestAnimationFrame(fitSentenceLines);
+      }
+    });
+    window.addEventListener('resize', fitSentenceLines, {passive:true});
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(fitSentenceLines);
+    fitSentenceLines();
+    return true;
+  }
+
   function waitForCards() {
+    formatIntroDescription();
     if (installArrows()) return;
     var observer = new MutationObserver(function () {
+      formatIntroDescription();
       if (installArrows()) observer.disconnect();
     });
     observer.observe(document.documentElement, {childList:true, subtree:true});
