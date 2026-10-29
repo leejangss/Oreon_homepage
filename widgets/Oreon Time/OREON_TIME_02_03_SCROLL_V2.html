@@ -262,7 +262,7 @@ function report(){
  var height=Math.ceil(main.getBoundingClientRect().height);
  if(height>0&&height!==lastHeight){lastHeight=height;send('height',{height:height});}
 }
-function schedule(){if(!pending){pending=true;requestAnimationFrame(report);}}
+function schedule(){report();}
 rows.forEach(function(row){row.addEventListener('click',function(e){
  e.preventDefault();var cat=row.dataset.category;if(!cats.includes(cat))return;
  select(cat);var target=items.find(function(it){return it.dataset.category===cat;});
@@ -276,7 +276,7 @@ items.forEach(function(item){item.addEventListener('click',function(e){
  main.dispatchEvent(new CustomEvent('oreon:category-select',{bubbles:true,detail:{category:cat,source:'oreon-time-v09-iframe'}}));
 });});
 // Keep every row visible even if the parent's scroll never generates iframe events.
-if('IntersectionObserver' in window&&!reduced){
+if(!embedded&&'IntersectionObserver' in window&&!reduced){
  var observer=new IntersectionObserver(function(entries){entries.forEach(function(entry){if(entry.isIntersecting){entry.target.classList.remove('pending');observer.unobserve(entry.target);}});},{threshold:0.1});
  rows.forEach(function(row){row.classList.add('pending');observer.observe(row);});
  setTimeout(function(){rows.forEach(function(row){row.classList.remove('pending');});},1800);
