@@ -1339,8 +1339,13 @@ When extracting a category, include its marked HTML block plus the matching sect
   document.addEventListener('visibilitychange',()=>{
     if(!document.hidden) play();
   });
-  // Set the level before the first play request; never overwrite later choices.
+  // Explicitly request audible 30% autoplay first. Browser permission still applies.
+  video.autoplay=true;
+  video.defaultMuted=false;
+  video.removeAttribute('muted');
   video.muted=false;
+  video.volume=DEFAULT_VOLUME;
+  applyVolume();
   syncUI();
   const initialPlay=video.play();
   if(initialPlay) initialPlay.catch(()=>{
