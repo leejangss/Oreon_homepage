@@ -12,7 +12,7 @@ style.textContent="\n@import url('https://fonts.googleapis.com/css2?family=Noto+
  */
 (function () {
   'use strict';
-  var instanceKey = '__oreonContactEnglishDesignV7_w2026090726d3d1f97041a';
+  var instanceKey = '__oreonContactEnglishDesignV12_w2026090726d3d1f97041a';
   if (window[instanceKey]) return;
   window[instanceKey] = true;
 
@@ -51,6 +51,14 @@ style.textContent="\n@import url('https://fonts.googleapis.com/css2?family=Noto+
       var forms = Array.from(section.querySelectorAll('.form-widget'));
       if (section.matches('.form-widget')) forms.unshift(section);
       forms.forEach(function (form) {
+        // Decorative border only: does not alter the card's layout or controls.
+        if (!form.querySelector(':scope > .oreon-contact-wide-frame')) {
+          var frame = document.createElement('span');
+          frame.className = 'oreon-contact-wide-frame';
+          frame.setAttribute('aria-hidden', 'true');
+          form.appendChild(frame);
+        }
+
         translatePrivacy(form);
         var walker = document.createTreeWalker(form, NodeFilter.SHOW_TEXT, {
           acceptNode: function (node) {
@@ -138,7 +146,7 @@ style.textContent="\n@import url('https://fonts.googleapis.com/css2?family=Noto+
       margin-right: auto !important;
     }
     #w2026090726d3d1f97041a .form-widget .form-group:not([id*="privacy"]):not([id*="agree"]) > .control-label {
-      font-size: 19.6px !important;
+      font-size: calc(19.6px - 0.5px / 1.4) !important;
       white-space: normal !important;
       overflow-wrap: anywhere;
     }
@@ -228,6 +236,36 @@ style.textContent="\n@import url('https://fonts.googleapis.com/css2?family=Noto+
     #w2026090726d3d1f97041a {
       position: relative !important;
       top: -50px !important;
+    }
+  `;
+})();
+
+/* v12: extend only the border by 20 rendered px on each side.
+   The existing 1.4 zoom is accounted for; input geometry is unchanged. */
+(function () {
+  var id = 'oreon-contact-frame-v12';
+  var style = document.getElementById(id);
+  if (!style) {
+    style = document.createElement('style');
+    style.id = id;
+    document.head.appendChild(style);
+  }
+  style.textContent = `
+    #w2026090726d3d1f97041a .form-widget {
+      border-color: transparent !important;
+    }
+    #w2026090726d3d1f97041a .form-widget > .oreon-contact-wide-frame {
+      display: block;
+      position: absolute;
+      top: -1px;
+      bottom: -1px;
+      left: calc(-1px - 20px / 1.4);
+      right: calc(-1px - 20px / 1.4);
+      border: 1px solid rgba(22,132,194,.55);
+      border-radius: inherit;
+      background: transparent;
+      pointer-events: none;
+      user-select: none;
     }
   `;
 })();
