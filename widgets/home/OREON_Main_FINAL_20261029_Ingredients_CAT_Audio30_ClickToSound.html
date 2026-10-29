@@ -1003,7 +1003,15 @@ When extracting a category, include its marked HTML block plus the matching sect
    try{if(document.referrer){const ref=new URL(document.referrer);if(/^https?:$/.test(ref.protocol))origin=ref.origin;}}catch(e){}
    return origin+path;
  }
- function oreonOpenProduct(path){window.top.location.href=oreonProductDestination(path);}
+ function oreonOpenProduct(path){
+   // Inside Imweb's GitHub iframe, let the Imweb parent navigate on its own origin.
+   if(window.parent !== window){
+     window.parent.postMessage({type:'OREON_PRODUCT_NAVIGATE',path:path},'*');
+     return;
+   }
+   // Standalone preview: use referring Imweb origin when available.
+   window.location.assign(oreonProductDestination(path));
+ }
  document.addEventListener('click',function(event){
    const arrow=event.target.closest('[data-oreon-product-path]');
    if(arrow){event.preventDefault();event.stopPropagation();oreonOpenProduct(arrow.dataset.oreonProductPath);return;}
@@ -1350,20 +1358,27 @@ When extracting a category, include its marked HTML block plus the matching sect
     syncUI();
     syncPlayback();
   });
-  const companyFilm=document.getElementById('oreon-company-film');
+  // Unmute on the first genuine interaction inside the HOME iframe.
+  // Browser policies prohibit guaranteed audible autoplay before interaction.
   function unlockFilmAudio(event){
-    if(userInteracted || selectedVolume===0 || (!video.paused && !video.muted)) return;
+    if(userPaused || selectedVolume===0 || !video.muted) return;
+    // Let the existing sound/play/volume controls handle their own interactions.
     if(event && event.target && event.target.closest && event.target.closest('#oreon-video-audio-ui')) return;
-    userInteracted=true;
     if(!prepareAudio()) return;
+    userInteracted=true;
     video.muted=false;
     applyVolume();
-    play();
+    if(video.paused || video.ended) play();
     syncUI();
   }
-  if(companyFilm){
-    companyFilm.addEventListener('pointerdown',unlockFilmAudio,{passive:true});
-  }
+  // Capture phase also catches clicks on Ingredients buttons and other HOME sections.
+  // Pointer events cover mouse and touch; keyboard covers accessible navigation.
+  document.addEventListener('pointerdown',unlockFilmAudio,{capture:true,passive:true});
+  document.addEventListener('click',unlockFilmAudio,true);
+  document.addEventListener('keydown',function(event){
+    if(event.key==='Enter' || event.key===' '){unlockFilmAudio(event);}
+  },true);
+
 })();
 </script>
 
