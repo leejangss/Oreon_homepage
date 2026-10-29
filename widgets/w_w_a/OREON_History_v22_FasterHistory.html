@@ -536,9 +536,9 @@ html,body{background:#000 !important}
   let flagTime=0, historyFadeStarted=null;
   const idleDelay=1800;
   const autoDuration=42000;
-  // Original .30–.94 history travel lasts 29.8667 s; shorten it by 1 s.
+  // Original history travel: 29.8667 s. v21: 28.8667 s. v22: 26.8667 s (2 s faster than v21).
   const historyTravelMs=autoDuration*(.94-.30)/.9;
-  const historySpeedFactor=historyTravelMs/(historyTravelMs-1000);
+  const historySpeedFactor=historyTravelMs/(historyTravelMs-3000);
 
   function resumeLater(){
     manualUntil = performance.now() + idleDelay;
