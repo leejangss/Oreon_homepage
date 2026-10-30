@@ -1,4 +1,4 @@
-/* OREON IR BOARD - Imweb custom renderer v12 FULL SYNC
+/* OREON IR BOARD - Imweb custom renderer v13 HIDE WRITE
    Target widget: w20260920efdd7cabae0a1
    Fixes:
    - Reads all native board pages instead of only the currently visible page.
@@ -876,22 +876,7 @@
 
     applyFilter();
 
-    if(nativeWrite){
-      const actions = shell.querySelector(".oreon-ir-admin-actions");
-      const write = document.createElement("button");
-      write.type = "button";
-      write.className = "oreon-ir-write";
-      write.innerHTML = 'WRITE <span aria-hidden="true">→</span>';
-      write.addEventListener("click",function(){
-        const href = nativeWrite.getAttribute && nativeWrite.getAttribute("href");
-        if(href && href !== "#" && !/^javascript:/i.test(href)){
-          window.location.href = nativeWrite.href;
-        }else{
-          nativeWrite.click();
-        }
-      });
-      actions.appendChild(write);
-    }
+    // WRITE button intentionally hidden in v13.
 
     document.querySelectorAll('.oreon-ir-contact-v3[data-for="'+ID+'"]').forEach(el=>el.remove());
     const existingCTA = document.querySelector('.oreon-ir-contact-v4[data-for="'+ID+'"]');
