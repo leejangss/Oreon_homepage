@@ -33,7 +33,7 @@ function syncSiteLinks(root){
   });
 }
 function connectSocialLinks(root){
-  [['Instagram','https://www.instagram.com/oreon_lifescience/'],['YouTube','https://www.youtube.com/channel/UCAytQ0e21nNAOsy7Pm-GuIQ']].forEach(function(item){
+  [['LinkedIn','https://www.linkedin.com/company/oreon-life-science/posts/'],['Instagram','https://www.instagram.com/oreon_lifescience/'],['YouTube','https://www.youtube.com/channel/UCAytQ0e21nNAOsy7Pm-GuIQ']].forEach(function(item){
     const button=root.querySelector('.socials button[aria-label^="'+item[0]+'"]');
     if(button && !button.dataset.oreonLink){
       button.addEventListener('click',function(){window.open(item[1],'_blank','noopener,noreferrer');});
