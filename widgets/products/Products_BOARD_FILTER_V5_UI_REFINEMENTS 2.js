@@ -100,10 +100,34 @@
     return true;
   }
 
+  // Change only the large ALL heading in the blue-gradient category intro.
+  // The sidebar ALL filter and all other category titles stay untouched.
+  function installPortfolioTitle() {
+    var root = document.getElementById('oreon-live-products');
+    if (!root) return false;
+    var title = root.querySelector('#oreon-panel-title');
+    if (!title) return false;
+    if (title.dataset.oreonPortfolioTitleV5 === 'installed') return true;
+    title.dataset.oreonPortfolioTitleV5 = 'installed';
+
+    function replaceAllHeading() {
+      if (title.textContent.trim() === 'ALL') {
+        title.textContent = 'Product Portfolio';
+      }
+    }
+    // V4 updates this heading whenever the selected category changes.
+    // Observe only this heading to preserve every existing filter interaction.
+    new MutationObserver(replaceAllHeading).observe(title, {childList: true, characterData: true, subtree: true});
+    replaceAllHeading();
+    return true;
+  }
+
   function waitForCards() {
+    installPortfolioTitle();
     formatIntroDescription();
     if (installArrows()) return;
     var observer = new MutationObserver(function () {
+      installPortfolioTitle();
       formatIntroDescription();
       if (installArrows()) observer.disconnect();
     });
