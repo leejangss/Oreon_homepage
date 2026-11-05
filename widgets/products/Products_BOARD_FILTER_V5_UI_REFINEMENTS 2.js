@@ -51,7 +51,7 @@
   if (window.__oreonProductsUIRefinementsV5) return;
   window.__oreonProductsUIRefinementsV5 = true;
 
-  var BASE_SCRIPT = 'https://cdn.jsdelivr.net/gh/leejangss/Oreon_homepage@main/widgets/products/Products_BOARD_FILTER_V4_URL_CATEGORY.js';
+  var BASE_SCRIPT = 'https://cdn.jsdelivr.net/gh/leejangss/Oreon_homepage@main/widgets/products/Products_BOARD_FILTER_V4_URL_CATEGORY.js?v=20261105pnad';
   var STYLE_ID = 'oreon-products-v5-ui-refinements';
 
   // Higher specificity than the V4 stylesheet; no existing animation/filter logic is changed.
