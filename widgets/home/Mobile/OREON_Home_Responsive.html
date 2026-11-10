@@ -538,28 +538,31 @@
 <style id="oreon-responsive-mobile">
 @media (max-width:767px) {
   #oreon-main { overflow:clip; }
-  #oreon-main .section-space { height:0; }
+  #oreon-main .section-space { height:42px; }
   #oreon-company-film .film-scroll-cue { display:none; }
-  #perspective { background:#05070f; }
-  #perspective .oreon-door-frame-stack {
-    height:clamp(256px,64vw,470px);
-    transform:translateX(-15%);
-    mask-image:linear-gradient(90deg,#000 65%,transparent 100%);
+  #perspective { background:#05070f; padding-bottom:24px; }
+  #perspective .oreon-door-frame-stack { height:clamp(398px,114vw,700px); }
+  #perspective .oreon-door-frame-stack > .oreon-door-frame {
+    position:absolute;
+    width:270vw;
+    max-width:none;
+    object-fit:fill;
+    transform:translateX(-20%) translateZ(0);
+    mask-image:linear-gradient(90deg,#000 72%,transparent 100%);
   }
-  #perspective .oreon-door-frame { position:absolute; object-position:36% center; }
   #perspective .perspective-copy {
-    align-items:center!important; padding:14px 12px 14px 43%!important;
+    align-items:flex-start!important; top:clamp(54px,15.5vw,108px)!important; bottom:24px!important; padding:0 20% 14px 15%!important;
   }
-  #perspective .perspective-copy>div { max-width:none!important; gap:10px!important; }
+  #perspective .perspective-copy>div { max-width:none!important; gap:16px!important; }
   #perspective .perspective-copy>div>span {
-    font-size:clamp(12px,3.2vw,17px)!important; letter-spacing:.13em!important;
+    font-size:clamp(12px,3.2vw,17px)!important; letter-spacing:.21em!important;
   }
   #perspective .perspective-copy h1 {
-    font-size:clamp(27px,8vw,52px)!important; max-width:none; white-space:normal;
+    font-size:clamp(30px,9vw,58px)!important; max-width:none; white-space:normal;
   }
-  #perspective .perspective-copy div[style*="gap:14px"] { width:auto; max-width:none; gap:0!important; }
-  #perspective .perspective-copy div[style*="gap:14px"]>span { display:none!important; }
-  #perspective .perspective-copy p { font-size:clamp(14px,3.85vw,20px)!important; white-space:normal; }
+  #perspective .perspective-copy div[style*="gap:14px"] { width:auto; max-width:none; gap:8px!important; margin-top:0!important; }
+  #perspective .perspective-copy div[style*="gap:14px"]>span { display:block; align-self:flex-start; margin-top:.8em; }
+  #perspective .perspective-copy p { font-size:clamp(13px,3.6vw,19px)!important; white-space:normal; }
   #perspective .oreon-caption-break { display:block; }
 
   #oreon-manufacturing { height:auto!important; }
@@ -601,7 +604,7 @@
   #oreon-manufacturing [data-mfg-page] p { font-size:14px!important; }
 
   #oreon-amphexon { height:auto!important; }
-  #oreon-amphexon>div { position:relative!important; height:auto!important; flex-direction:column; padding:20px 24px 50px; }
+  #oreon-amphexon>div { position:relative!important; height:auto!important; flex-direction:column; padding:44px 24px 74px; }
   #oreon-amphexon .amp-orb-stage { transform:none; }
   #oreon-amphexon .amp-orb-stage>div { width:min(74vw,320px)!important; }
   #oreon-amphexon .amp-orb-stage h2 { font-size:clamp(24px,7vw,36px)!important; }
@@ -627,7 +630,7 @@
   }
   #oreon-ingredients-scroll .ingredient-images { aspect-ratio:16/9; }
   #oreon-ingredients-scroll .ingredient-image { position:absolute; inset:0; }
-  #oreon-ingredients-scroll .ingredient-info { padding:26px 24px 36px; gap:24px; }
+  #oreon-ingredients-scroll .ingredient-info { padding:26px 24px 72px; gap:24px; background:#040914; }
   #oreon-ingredients-scroll .ingredient-copy-stack { min-height:0; }
   #oreon-ingredients-scroll .ingredient-copy {
     position:relative!important; inset:auto!important; display:none!important;
@@ -642,12 +645,12 @@
   #oreon-ingredients-scroll .ingredient-option { min-height:44px; padding:8px 0; color:#aebed5!important; }
   #oreon-ingredients-scroll .ingredient-option[aria-pressed="true"] { color:#fff!important; }
 
-  #gt-scope .mobile-wrap { padding:52px 18px 42px; }
+  #gt-scope .mobile-wrap { padding:76px 18px 42px; }
   #gt-scope .mobile-wrap .mob-title { width:auto; margin:0; font:400 clamp(30px,8vw,48px)/1.1 Outfit,sans-serif; }
   #gt-scope .mobile-wrap .global-subtitle { margin-top:14px; font-size:clamp(14px,4vw,18px); }
   #gt-scope .mobile-wrap .balls {
     display:grid; grid-template-columns:repeat(3,minmax(0,1fr));
-    width:100%; max-width:480px; gap:14px 9px; margin:28px auto 0;
+    width:100%; max-width:480px; gap:14px 9px; margin:44px auto 0;
   }
   #gt-scope .mobile-wrap .balls > .ball:nth-child(n) {
     width:min(var(--oreon-orb-ratio),calc(136px * var(--oreon-orb-scale)))!important; background-size:100% 100%; background-position:center;
