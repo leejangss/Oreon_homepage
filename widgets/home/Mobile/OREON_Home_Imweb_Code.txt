@@ -1,0 +1,93 @@
+<div id="oreon-scroll-shell" style="position:relative;width:100%;overflow:visible;">
+  <iframe id="oreon-main-frame" title="OREON Home"
+    style="display:block;width:100%;height:100vh;border:0"
+    allow="autoplay; fullscreen" allowfullscreen></iframe>
+</div>
+
+<script>
+
+(() => {
+  const shell = document.getElementById('oreon-scroll-shell');
+  const frame = document.getElementById('oreon-main-frame');
+  const pages = 'https://leejangss.github.io';
+  const home = pages + '/Oreon_homepage/widgets/home/';
+  const desktopUrl = home + 'OREON_Main_FINAL_20261029_Ingredients_CAT_Audio30_AudibleFirst.html?v=1';
+  const mobileUrl = home + 'Mobile/OREON_Home_Responsive.html?v=m_1';
+
+  let mobile;
+  let maxScroll = 0;
+  let maxHeight = 0;
+  let mobileHeight = 0;
+
+  function size() {
+    if (mobile) {
+      frame.style.height = mobileHeight ? mobileHeight + 'px' : '100vh';
+      return;
+    }
+    maxHeight = Math.max(maxHeight, Math.ceil(maxScroll + window.innerHeight + 120));
+    shell.style.height = maxHeight + 'px';
+  }
+
+  function syncDesktopScroll() {
+    if (mobile) return;
+    const y = Math.max(0, Math.min(maxScroll, -shell.getBoundingClientRect().top));
+    frame.contentWindow.postMessage({type:'OREON_SET_SCROLL', y}, pages);
+  }
+
+  function setLayout() {
+    const nextMobile = shell.getBoundingClientRect().width < 768;
+    if (mobile !== nextMobile) {
+      mobile = nextMobile;
+      maxScroll = maxHeight = mobileHeight = 0;
+      frame.style.position = mobile ? 'relative' : 'sticky';
+      frame.style.top = '0';
+      frame.style.height = '100vh';
+      shell.style.height = mobile ? 'auto' : '100vh';
+      if (mobile) frame.setAttribute('scrolling', 'no');
+      else frame.removeAttribute('scrolling');
+      frame.src = mobile ? mobileUrl : desktopUrl;
+    }
+    size();
+    syncDesktopScroll();
+  }
+
+  window.addEventListener('message', event => {
+    if (event.origin !== pages || event.source !== frame.contentWindow) return;
+    const data = event.data || {};
+
+    if (data.type === 'OREON_PRODUCT_NAVIGATE') {
+      try {
+        const url = new URL(data.path, location.origin);
+        const category = url.searchParams.get('cat');
+        if (url.origin === location.origin && url.pathname.replace(/\/$/, '') === '/47'
+            && ['HA', 'PLLA', 'ECM', 'rH Collagen'].includes(category)) {
+          location.assign(url.pathname + url.search);
+        }
+      } catch {}
+      return;
+    }
+
+    if (mobile) {
+      if (data.type === 'OREON_MOBILE_HEIGHT'
+          && Number.isFinite(data.height) && data.height > 0 && data.height < 100000) {
+        mobileHeight = Math.ceil(data.height);
+        size();
+      }
+      return;
+    }
+
+    if (data.type === 'OREON_SCROLL_METRICS' && Number.isFinite(data.maxScroll)) {
+      maxScroll = Math.max(maxScroll, data.maxScroll);
+      size();
+      syncDesktopScroll();
+    } else if (data.type === 'OREON_PROXY_WHEEL' && Number.isFinite(data.deltaY)) {
+      window.scrollBy({top:data.deltaY, left:0, behavior:'auto'});
+    }
+  });
+
+  window.addEventListener('scroll', syncDesktopScroll, {passive:true});
+  window.addEventListener('resize', setLayout);
+  if (typeof ResizeObserver === 'function') new ResizeObserver(setLayout).observe(shell);
+  setLayout();
+})();
+</script>
