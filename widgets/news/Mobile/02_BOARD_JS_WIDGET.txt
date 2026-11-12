@@ -1,0 +1,3 @@
+<!-- 기존 게시판 아래 JS 코드위젯: 기존 내용 전체를 이 두 줄로 교체 -->
+<script src="https://raw.githack.com/leejangss/Oreon_homepage/main/widgets/news/OREON_NEWS_BOARD_TIME_STYLE_V06_EDGE_FILL.js"></script>
+<script src="https://leejangss.github.io/Oreon_homepage/widgets/news/OREON_NEWS_MOBILE_CARD_V1.js?v=1"></script>

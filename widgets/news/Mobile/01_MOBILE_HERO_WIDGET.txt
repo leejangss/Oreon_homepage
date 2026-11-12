@@ -1,0 +1,2 @@
+<!-- 모바일 전용 히어로 코드위젯: 기존 내용 전체를 이 코드로 교체 -->
+<iframe title="OREON News" src="https://leejangss.github.io/Oreon_homepage/widgets/news/OREON_News_Mobile_Hero_V1.html?v=1" style="display:block;width:100%;height:560px;border:0;background:#000107;overflow:hidden" scrolling="no" loading="eager"></iframe>
