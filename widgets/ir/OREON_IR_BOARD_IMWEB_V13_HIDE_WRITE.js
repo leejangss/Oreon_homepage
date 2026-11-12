@@ -1,4 +1,4 @@
-/* OREON IR BOARD - Imweb custom renderer v13 HIDE WRITE
+/* OREON IR BOARD - v14 UNIQUE POSTS (compatible replacement for V13)
    Target widget: w20260920efdd7cabae0a1
    Fixes:
    - Reads all native board pages instead of only the currently visible page.
@@ -8,6 +8,10 @@
 */
 (function () {
   const ID = "w20260920efdd7cabae0a1";
+  // Prevent two copies of this corrected script from mounting two observers.
+  const INSTANCE_KEY = "__oreonIRBoardUniquePosts_"+ID;
+  if(window[INSTANCE_KEY]) return;
+  window[INSTANCE_KEY] = true;
   const STYLE_ID = "oreon-ir-board-v12-style";
   const CATS = ["NOTICE", "IR NEWS"];
   const EXCLUDE = new Set(["글쓰기","WRITE","IR NEWS","SEARCH","ALL","NOTICE","이동","수정","지우기","삭제","공유","인쇄"]);
@@ -405,7 +409,7 @@
   }
 
   function extractPosts(root, baseUrl){
-    const allAnchors = [...root.querySelectorAll("a")];
+    const allAnchors = [...root.querySelectorAll("a")].filter(a=>!a.closest(".oreon-ir-shell,.oreon-ir-contact-v4"));
     const rows = [];
     const seenRows = new Set();
 
@@ -475,9 +479,23 @@
   }
 
   function postKey(p){
-    const href = canonicalUrl(p.href || "");
-    if(href) return "H:"+href;
-    return "T:"+upper(p.title)+"|"+upper(p.date);
+    // A post's identity must not change with its list page or search context.
+    if(p.href){
+      try{
+        const u = new URL(p.href,location.href);
+        const postId = u.searchParams.get("idx") || u.searchParams.get("post_idx");
+        if(postId){
+          return "P:"+u.origin+"|"+ID+"|"+postId;
+        }
+        u.hash = "";
+        ["page","page_no","pageno","page_num","oir_refresh",
+         "category","category_idx","q","keyword","search","search_type"]
+          .forEach(key=>u.searchParams.delete(key));
+        u.searchParams.sort();
+        return "H:"+u.href;
+      }catch(e){}
+    }
+    return "T:"+norm(p.no)+"|"+norm(p.title)+"|"+norm(p.date);
   }
 
   function mergePosts(target, posts){
