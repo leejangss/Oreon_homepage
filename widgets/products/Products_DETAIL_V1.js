@@ -65,6 +65,25 @@ var content=body.cloneNode(true);content.removeAttribute('class');content.classN
 content.querySelectorAll('[style]').forEach(function(x){x.removeAttribute('style')});
 content.querySelectorAll('[id]').forEach(function(x){x.removeAttribute('id')});
 var image=content.querySelector('img');
+// iBODY SS only: replace the main image shown on the detail page.
+// The Imweb post, product listing thumbnail, and all other products stay unchanged.
+if(image && /(?:^|[^a-z0-9])i[\s_-]*body[\s_-]*ss(?=$|[^a-z0-9])/i.test(name)){
+  var originalImageSrc=image.getAttribute('src');
+  var originalImageSrcset=image.getAttribute('srcset');
+  var originalImageSizes=image.getAttribute('sizes');
+  image.removeAttribute('srcset');
+  image.removeAttribute('sizes');
+  image.removeAttribute('data-src');
+  image.removeAttribute('data-srcset');
+  image.addEventListener('error',function(){
+    // Preserve the original Imweb image when the GitHub Pages asset is unavailable.
+    if(originalImageSrcset!==null)image.setAttribute('srcset',originalImageSrcset);
+    if(originalImageSizes!==null)image.setAttribute('sizes',originalImageSizes);
+    if(originalImageSrc!==null)image.setAttribute('src',originalImageSrc);
+    else image.removeAttribute('src');
+  },{once:true});
+  image.src='https://leejangss.github.io/Oreon_homepage/widgets/products/ibody%20image.png';
+}
 var figure=document.createElement('figure');figure.className='rd-media';
 if(image){image.className='';image.alt=name;figure.appendChild(image)}
 content.querySelectorAll('p').forEach(function(p){
