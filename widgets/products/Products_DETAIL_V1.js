@@ -65,24 +65,37 @@ var content=body.cloneNode(true);content.removeAttribute('class');content.classN
 content.querySelectorAll('[style]').forEach(function(x){x.removeAttribute('style')});
 content.querySelectorAll('[id]').forEach(function(x){x.removeAttribute('id')});
 var image=content.querySelector('img');
-// iBODY SS only: replace the main image shown on the detail page.
-// The Imweb post, product listing thumbnail, and all other products stay unchanged.
-if(image && /(?:^|[^a-z0-9])i[\s_-]*body[\s_-]*ss(?=$|[^a-z0-9])/i.test(name)){
-  var originalImageSrc=image.getAttribute('src');
-  var originalImageSrcset=image.getAttribute('srcset');
-  var originalImageSizes=image.getAttribute('sizes');
-  image.removeAttribute('srcset');
-  image.removeAttribute('sizes');
-  image.removeAttribute('data-src');
-  image.removeAttribute('data-srcset');
-  image.addEventListener('error',function(){
-    // Preserve the original Imweb image when the GitHub Pages asset is unavailable.
-    if(originalImageSrcset!==null)image.setAttribute('srcset',originalImageSrcset);
-    if(originalImageSizes!==null)image.setAttribute('sizes',originalImageSizes);
-    if(originalImageSrc!==null)image.setAttribute('src',originalImageSrc);
-    else image.removeAttribute('src');
-  },{once:true});
-  image.src='https://leejangss.github.io/Oreon_homepage/widgets/products/ibody%20image.png';
+// iBODY SS only: use a fresh image element on the detail page.
+// Do not change the Imweb post, the listing thumbnail, or other product details.
+if (/(?:^|[^a-z0-9])i[\s_-]*body[\s_-]*ss(?=$|[^a-z0-9])/i.test(name)) {
+  var originalMainImage = image;
+  var ibodyImage = document.createElement('img');
+  ibodyImage.loading = 'eager';
+  ibodyImage.decoding = 'async';
+  ibodyImage.setAttribute('data-oreon-ibody-detail-image', 'true');
+  // Try three public paths in case one image host is still deploying or cached.
+  var ibodyImageURLs = [
+    'https://leejangss.github.io/Oreon_homepage/widgets/products/ibody%20image.png?v=20261113b',
+    'https://cdn.jsdelivr.net/gh/leejangss/Oreon_homepage@main/widgets/products/ibody%20image.png?v=20261113b',
+    'https://raw.githubusercontent.com/leejangss/Oreon_homepage/main/widgets/products/ibody%20image.png'
+  ];
+  var ibodyImageURLIndex = 0;
+  ibodyImage.addEventListener('error', function () {
+    ibodyImageURLIndex++;
+    if (ibodyImageURLIndex < ibodyImageURLs.length) {
+      ibodyImage.src = ibodyImageURLs[ibodyImageURLIndex];
+    } else {
+      console.warn('[OREON Products] iBODY SS image could not load from the uploaded GitHub file.');
+      if (originalMainImage && ibodyImage.parentNode) {
+        ibodyImage.replaceWith(originalMainImage);
+      }
+    }
+  });
+  ibodyImage.src = ibodyImageURLs[0];
+  // The copied Imweb <img> can carry lazy-loading handlers that restore its old URL.
+  // Keep that original offscreen as a fallback; show only this independent image.
+  if (originalMainImage && originalMainImage.parentNode) originalMainImage.remove();
+  image = ibodyImage;
 }
 var figure=document.createElement('figure');figure.className='rd-media';
 if(image){image.className='';image.alt=name;figure.appendChild(image)}
