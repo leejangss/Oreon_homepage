@@ -1,0 +1,72 @@
+<!-- PRODUCTS mobile category adjustment. Add in a separate code widget. -->
+<style>
+#oreon-live-products .oreon-mobile-filter-shell{display:contents}
+#oreon-live-products .oreon-mobile-filter-arrow{display:none}
+@media(max-width:767px){
+ #oreon-live-products .oreon-mobile-filter-shell{display:grid;grid-template-columns:32px minmax(0,1fr) 32px;align-items:center;width:100%;min-width:0;gap:2px}
+ #oreon-live-products .oreon-mobile-filter-shell .oreon-product-index__side{position:static;display:flex;flex-direction:row;flex-wrap:nowrap;align-items:center;gap:18px;width:100%;min-width:0;max-width:100%;overflow-x:auto;overflow-y:hidden;padding:0 4px 4px;scrollbar-width:none;-webkit-overflow-scrolling:touch;overscroll-behavior-x:contain}
+ #oreon-live-products .oreon-mobile-filter-shell .oreon-product-index__side::-webkit-scrollbar{display:none}
+ #oreon-live-products .oreon-mobile-filter-shell .oreon-filter-btn{position:relative;flex:0 0 auto;min-height:44px;padding:10px 0!important;font-size:13px!important;line-height:1.4!important;white-space:nowrap;transform:none!important;border-radius:0}
+ #oreon-live-products .oreon-mobile-filter-shell .oreon-filter-btn.is-active{color:#95dfff!important}
+ #oreon-live-products .oreon-mobile-filter-shell .oreon-filter-btn.is-active::after{content:'';display:block!important;position:absolute;left:0;right:0;bottom:2px;height:2px;background:#95dfff}
+ #oreon-live-products .oreon-mobile-filter-arrow{display:flex;align-items:center;justify-content:center;appearance:none;width:32px;min-width:0;height:44px;margin:0;padding:0;border:0;border-radius:0;background:transparent;color:#95dfff;cursor:pointer}
+ #oreon-live-products .oreon-mobile-filter-arrow svg{display:block;width:16px;height:16px;pointer-events:none}
+ #oreon-live-products .oreon-mobile-filter-arrow[hidden]{display:flex!important;visibility:hidden;pointer-events:none}
+ #oreon-live-products .oreon-mobile-filter-shell.no-overflow{grid-template-columns:minmax(0,1fr)}
+ #oreon-live-products .oreon-mobile-filter-shell.no-overflow .oreon-mobile-filter-arrow{display:none!important}
+ #oreon-live-products .oreon-mobile-filter-shell button:focus-visible{outline:2px solid #4fc3f7;outline-offset:-2px}
+}
+</style>
+<script>
+(function(){
+ 'use strict';
+ if(window.__oreonMobileCategoryV1)return;
+ window.__oreonMobileCategoryV1=true;
+ var mobile=window.matchMedia('(max-width:767px)');
+ var reduce=window.matchMedia('(prefers-reduced-motion:reduce)');
+ function mount(){
+  var root=document.getElementById('oreon-live-products');
+  var row=root&&root.querySelector('.oreon-product-index__side');
+  if(!row||row.parentElement.classList.contains('oreon-mobile-filter-shell'))return;
+  var shell=document.createElement('div');shell.className='oreon-mobile-filter-shell';
+  function arrow(label,path){
+   var b=document.createElement('button');b.type='button';b.className='oreon-mobile-filter-arrow';b.hidden=true;b.setAttribute('aria-label',label);
+   b.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="'+path+'"/></svg>';
+   return b;
+  }
+  var prev=arrow('이전 제품 카테고리 보기','M14 5l-7 7 7 7');
+  var next=arrow('다음 제품 카테고리 보기','M10 5l7 7-7 7');
+  row.before(shell);shell.append(prev,row,next);
+  function update(){
+   if(!mobile.matches){prev.hidden=true;next.hidden=true;return;}
+   var max=Math.max(0,row.scrollWidth-row.clientWidth);
+   shell.classList.toggle('no-overflow',max<=2);
+   var left=Math.max(0,row.scrollLeft);
+   prev.hidden=max<=2||left<=2;
+   next.hidden=max<=2||left>=max-2;
+  }
+  function move(amount){row.scrollBy({left:amount,behavior:reduce.matches?'auto':'smooth'});}
+  prev.addEventListener('click',function(){move(-Math.max(100,row.clientWidth*.7));});
+  next.addEventListener('click',function(){move(Math.max(100,row.clientWidth*.7));});
+  function reveal(button){
+   if(!mobile.matches||!button)return;
+   var r=row.getBoundingClientRect(),b=button.getBoundingClientRect();
+   if(b.left<r.left+4)move(b.left-r.left-4);
+   else if(b.right>r.right-4)move(b.right-r.right+4);
+  }
+  row.addEventListener('scroll',update,{passive:true});
+  row.addEventListener('click',function(e){var b=e.target.closest('.oreon-filter-btn');if(b)requestAnimationFrame(function(){reveal(b);update();});});
+  row.addEventListener('focusin',function(e){reveal(e.target.closest('.oreon-filter-btn'));});
+  var queued=false;
+  function schedule(){if(queued)return;queued=true;requestAnimationFrame(function(){queued=false;update();});}
+  window.addEventListener('resize',schedule,{passive:true});
+  if(mobile.addEventListener)mobile.addEventListener('change',schedule);
+  if('ResizeObserver'in window)new ResizeObserver(schedule).observe(row);
+  new MutationObserver(schedule).observe(row,{childList:true,subtree:true,characterData:true});
+  if(document.fonts)document.fonts.ready.then(function(){update();reveal(row.querySelector('.is-active'));});
+  update();
+ }
+ mount();
+ new MutationObserver(mount).observe(document.documentElement,{childList:true,subtree:true});
+})();
+</script>
