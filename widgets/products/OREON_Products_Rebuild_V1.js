@@ -281,61 +281,131 @@
   else run();
 })();
 
-/* V2: cover transition and soft blue breathing glow. */
+/* PC MOTION RESTORE: Hero cover + breathing blue gradient.
+ * The Rebuild V1 visual shell can be mounted directly after the hero OR inside
+ * the native Products section. Do not require an immediately adjacent board.
+ * Keep the two effects independent so the blue gradient still works when the
+ * Imweb board has not rendered its product data yet.
+ */
 (function () {
   'use strict';
   if (new URL(location.href).searchParams.get('bmode') === 'view') return;
-  var css = document.createElement('style');
-  css.textContent = `
-  #oreon-products-scroll-stack{position:relative;isolation:isolate;overflow:visible}
-  #oreon-products-scroll-stack>.oreon-sticky-hero{position:sticky!important;top:var(--oreon-pin-top,0px)!important;z-index:0!important}
-  #oreon-products-scroll-stack>.oreon-cover-section{position:relative!important;z-index:2!important;background:#02040b!important}
-  #oreon-live-products .oreon-category-stage{isolation:isolate;background:#02040b!important}
-  #oreon-live-products .oreon-category-stage::before{display:none!important}
-  #oreon-live-products .oreon-category-stage__inner{z-index:2}
-  #oreon-live-products .oreon-blue-glow{position:absolute;inset:0;z-index:0;pointer-events:none;opacity:0;transition:opacity 2.4s ease}
-  #oreon-live-products .oreon-blue-glow.is-visible{opacity:1}
-  #oreon-live-products .oreon-blue-glow::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 48% 52% at 50% -2%,rgba(48,112,255,.76) 0%,rgba(33,88,206,.34) 30%,rgba(12,30,74,.14) 56%,transparent 77%);animation:oreonBlueBreath 7s ease-in-out infinite;animation-play-state:paused}
-  #oreon-live-products .oreon-blue-glow::after{content:'';position:absolute;left:50%;top:-54px;width:min(780px,72vw);height:180px;transform:translateX(-50%);background:radial-gradient(ellipse at center,rgba(79,143,255,.28),rgba(38,91,210,.13) 42%,transparent 72%);filter:blur(18px);animation:oreonBlueBreath 7s ease-in-out infinite;animation-play-state:paused}
-  #oreon-live-products .oreon-blue-glow.is-visible::before,#oreon-live-products .oreon-blue-glow.is-visible::after{animation-play-state:running}
-  @keyframes oreonBlueBreath{0%,100%{opacity:.48}50%{opacity:1}}
-  @media(prefers-reduced-motion:reduce){#oreon-products-scroll-stack>.oreon-sticky-hero{position:relative!important;top:auto!important}#oreon-live-products .oreon-blue-glow{opacity:1;transition:none}#oreon-live-products .oreon-blue-glow::before,#oreon-live-products .oreon-blue-glow::after{animation:none;opacity:.7}}
-  `;
-  document.head.appendChild(css);
+  var STYLE_ID = 'oreon-products-pc-motion-restore-v2';
+  if (!document.getElementById(STYLE_ID)) {
+    var style = document.createElement('style');
+    style.id = STYLE_ID;
+    style.textContent = `
+      #oreon-live-products .oreon-category-stage{
+        position:relative;isolation:isolate;background:#02040b!important;
+      }
+      #oreon-live-products .oreon-category-stage::before{display:none!important}
+      #oreon-live-products .oreon-category-stage__inner{position:relative;z-index:2}
+      #oreon-live-products .oreon-blue-glow{
+        position:absolute;inset:0;z-index:0;pointer-events:none;overflow:hidden;
+        opacity:0;transition:opacity 2.4s ease;
+      }
+      #oreon-live-products .oreon-blue-glow.is-visible{opacity:1}
+      #oreon-live-products .oreon-blue-glow::before{
+        content:'';position:absolute;inset:0;
+        background:radial-gradient(ellipse 48% 52% at 50% -2%,
+          rgba(48,112,255,.76) 0%,rgba(33,88,206,.34) 30%,
+          rgba(12,30,74,.14) 56%,transparent 77%);
+        animation:oreonProductBlueBreath 7s ease-in-out infinite;
+      }
+      #oreon-live-products .oreon-blue-glow::after{
+        content:'';position:absolute;left:50%;top:-54px;
+        width:min(780px,72vw);height:180px;transform:translateX(-50%);
+        background:radial-gradient(ellipse at center,
+          rgba(79,143,255,.28),rgba(38,91,210,.13) 42%,transparent 72%);
+        filter:blur(18px);
+        animation:oreonProductBlueBreath 7s ease-in-out infinite;
+      }
+      @keyframes oreonProductBlueBreath{0%,100%{opacity:.48}50%{opacity:1}}
+      #oreon-products-scroll-stack{position:relative;isolation:isolate;overflow:visible;width:100%}
+      @media(min-width:768px){
+        #oreon-products-scroll-stack>.oreon-sticky-hero{
+          position:sticky!important;top:var(--oreon-pin-top,0px)!important;
+          z-index:0!important;
+        }
+        #oreon-products-scroll-stack>.oreon-cover-section{
+          position:relative!important;z-index:2!important;background:#02040b!important;
+        }
+      }
+      @media(prefers-reduced-motion:reduce){
+        #oreon-products-scroll-stack>.oreon-sticky-hero{position:relative!important;top:auto!important}
+        #oreon-live-products .oreon-blue-glow{opacity:1;transition:none}
+        #oreon-live-products .oreon-blue-glow::before,
+        #oreon-live-products .oreon-blue-glow::after{animation:none;opacity:.7}
+      }
+    `;
+    document.head.appendChild(style);
+  }
+
+  function installGlow(root) {
+    var stage = root.querySelector('.oreon-category-stage');
+    if (!stage) return false;
+    var glow = stage.querySelector('.oreon-blue-glow');
+    if (!glow) {
+      glow = document.createElement('div');
+      glow.className = 'oreon-blue-glow';
+      glow.setAttribute('aria-hidden','true');
+      stage.insertBefore(glow,stage.firstChild);
+    }
+    // No dependence on native-board hydration or on the hero's DOM position.
+    requestAnimationFrame(function(){glow.classList.add('is-visible')});
+    return true;
+  }
+
+  function installCover(root) {
+    var hero = document.getElementById('s2026101004845a3685ea4');
+    var board = document.getElementById('s202610106ac0b6c8e8611');
+    if (!hero || !root) return false;
+    var cover = (board && board.contains(root)) ? board : root;
+    var existing = document.getElementById('oreon-products-scroll-stack');
+    var stack = null;
+
+    if (existing && existing.contains(hero) && existing.contains(cover)) {
+      stack = existing;
+    } else {
+      // Keep the existing Imweb section order and all intervening widgets.
+      // The rebuilt Product Portfolio may be a direct sibling of the hero
+      // rather than a child of the original Products board section.
+      if (hero.parentElement !== cover.parentElement) return false;
+      var cursor = hero, between = [];
+      while (cursor && between.length < 24) {
+        between.push(cursor);
+        if (cursor === cover) break;
+        cursor = cursor.nextElementSibling;
+      }
+      if (between[between.length-1] !== cover) return false;
+      stack = document.createElement('div');
+      stack.id = 'oreon-products-scroll-stack';
+      hero.before(stack);
+      between.forEach(function(el){stack.appendChild(el)});
+    }
+    hero.classList.add('oreon-sticky-hero');
+    cover.classList.add('oreon-cover-section');
+    function size(){
+      var heroHeight = hero.offsetHeight || hero.getBoundingClientRect().height;
+      stack.style.setProperty('--oreon-pin-top', Math.min(0,window.innerHeight-heroHeight)+'px');
+    }
+    size();
+    if (!stack.dataset.oreonCoverResizeReady) {
+      stack.dataset.oreonCoverResizeReady='true';
+      window.addEventListener('resize',size,{passive:true});
+      if ('ResizeObserver' in window) new ResizeObserver(size).observe(hero);
+    }
+    return true;
+  }
+
   function install() {
     var root = document.getElementById('oreon-live-products');
     if (!root) return false;
-    if (root.dataset.motionReady) return true;
-    var hero = document.getElementById('s2026101004845a3685ea4');
-    var board = document.getElementById('s202610106ac0b6c8e8611');
-    if (!hero || !board || !board.contains(root)) return false;
-    if (hero.parentElement !== board.parentElement || hero.nextElementSibling !== board) return false;
-    var stack = document.createElement('div');
-    stack.id = 'oreon-products-scroll-stack';
-    hero.before(stack);
-    stack.append(hero,board);
-    hero.classList.add('oreon-sticky-hero');
-    board.classList.add('oreon-cover-section');
-    function size() {
-      // A tall hero scrolls fully into view before it is held behind ALL.
-      stack.style.setProperty('--oreon-pin-top', Math.min(0,window.innerHeight-hero.offsetHeight)+'px');
-    }
-    size();
-    window.addEventListener('resize',size,{passive:true});
-    if ('ResizeObserver' in window) new ResizeObserver(size).observe(hero);
-    var stage = root.querySelector('.oreon-category-stage');
-    var glow = document.createElement('div');
-    glow.className = 'oreon-blue-glow';
-    glow.setAttribute('aria-hidden','true');
-    stage.prepend(glow);
-    if ('IntersectionObserver' in window) {
-      new IntersectionObserver(function(entries){
-        entries.forEach(function(entry){glow.classList.toggle('is-visible',entry.isIntersecting)});
-      },{threshold:.12}).observe(stage);
-    } else {glow.classList.add('is-visible')}
-    root.dataset.motionReady='true';
-    return true;
+    installGlow(root);
+    if (!window.matchMedia('(min-width:768px)').matches) return true;
+    return installCover(root);
   }
+
   if (!install()) {
     var waiting = new MutationObserver(function(){if(install())waiting.disconnect()});
     waiting.observe(document.documentElement,{childList:true,subtree:true});
