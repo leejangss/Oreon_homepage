@@ -19,7 +19,16 @@ var SOURCE='w202610106ffb71b28cee8';
 var TEMPLATE="<section id=\"oreon-live-products\" class=\"oreon-product-index\" aria-label=\"OREON product portfolio\">\n  <div class=\"oreon-category-stage\">\n    <div class=\"oreon-category-stage__inner\">\n      <h2 class=\"oreon-product-index__title\" id=\"oreon-panel-title\">ALL</h2>\n      <p class=\"oreon-product-index__desc\" id=\"oreon-panel-desc\">The complete OREON product lineup.\nExplore every biomaterial solution in one place.</p>\n      <div class=\"oreon-category-stage__count\" id=\"oreon-filter-count\">13 PRODUCTS</div>\n    </div>\n  </div>\n\n  <div class=\"oreon-product-body\">\n    <div class=\"oreon-product-body__inner\">\n      <aside class=\"oreon-product-index__side\" aria-label=\"Product material filters\">\n        <button type=\"button\" class=\"oreon-filter-btn is-active\" data-filter=\"ALL\">ALL</button><button type=\"button\" class=\"oreon-filter-btn\" data-filter=\"ECM\">ECM</button><button type=\"button\" class=\"oreon-filter-btn\" data-filter=\"CaHA\">CaHA</button><button type=\"button\" class=\"oreon-filter-btn\" data-filter=\"rH Collagen\">rH Collagen</button><button type=\"button\" class=\"oreon-filter-btn\" data-filter=\"PNAD+\">PNAD+</button><button type=\"button\" class=\"oreon-filter-btn\" data-filter=\"PNLA\">PNLA</button><button type=\"button\" class=\"oreon-filter-btn\" data-filter=\"PLLA\">PLLA</button><button type=\"button\" class=\"oreon-filter-btn\" data-filter=\"PN\">PN</button><button type=\"button\" class=\"oreon-filter-btn\" data-filter=\"HA\">HA</button><button type=\"button\" class=\"oreon-filter-btn\" data-filter=\"Exosome\">Exosome</button><button type=\"button\" class=\"oreon-filter-btn\" data-filter=\"PDO\">PDO</button><button type=\"button\" class=\"oreon-filter-btn\" data-filter=\"TCA\">TCA</button><button type=\"button\" class=\"oreon-filter-btn\" data-filter=\"CA\">CA</button>\n      </aside>\n\n<div class=\"oreon-product-grid\" id=\"oreon-product-grid\"><div class=\"oreon-product-empty\" id=\"oreon-product-empty\">Products for this category will be added here.</div></div></div></div></section>";
 function mount(){
  if(document.getElementById('oreon-live-products'))return true;
- var widget=document.getElementById(SOURCE);if(!widget)return false;
+ // Keep the original Imweb board widget as the first and preferred data source.
+ // If Imweb regenerated its wrapper ID inside the same Products section,
+ // find the native card's actual widget without touching other page boards.
+ var widget=document.getElementById(SOURCE);
+ if(!widget){
+  var productsSection=document.getElementById('s202610106ac0b6c8e8611');
+  var nativeCardLink=productsSection && productsSection.querySelector('.list-style-card a.post_link_wrap');
+  if(nativeCardLink) widget=nativeCardLink.closest('[id^="w"]');
+ }
+ if(!widget)return false;
  if(new URL(location.href).searchParams.get('bmode')==='view')return true;
  if(widget.querySelector('.permission_error'))return true;
  var nodes=Array.from(widget.querySelectorAll('.list-style-card')).filter(function(n){return n.querySelector('a.post_link_wrap')});
@@ -48,9 +57,24 @@ function mount(){
 
  var totalText=widget.querySelector('.board-head .heading em');
  var total=totalText?Number(totalText.textContent.replace(/[^0-9]/g,'')):NaN;
- // Fail open: keep the native board if it spans pages. Never silently filter
- // only a subset while claiming to show the complete product inventory.
- if(Number.isFinite(total)&&total!==nodes.length){console.warn('OREON: display all products on one board page before enabling this layout.');return true}
+ // Imweb can report 19 displayed products while rendering 20 native cards
+ // because two cards share the same product name. The ALL filter below already
+ // hides one duplicate, so compare the count with the *unique* product count.
+ // Still fail open on real pagination or other unexplained mismatches.
+ var uniqueProductNames=new Set();
+ nodes.forEach(function(node){
+  var nameNode=node.querySelector('.title');
+  if(!nameNode)return;
+  var plainTitle=nameNode.cloneNode(true);
+  plainTitle.querySelectorAll('span,em,.icons').forEach(function(el){el.remove()});
+  var key=plainTitle.textContent.normalize('NFKC').trim().replace(/\s+/g,' ').toLowerCase();
+  if(key)uniqueProductNames.add(key);
+ });
+ var uniqueCount=uniqueProductNames.size;
+ if(Number.isFinite(total) && total!==nodes.length && total!==uniqueCount){
+  console.warn('OREON Products: native board count mismatch; leaving the native board visible.',{reported:total,cards:nodes.length,unique:uniqueCount});
+  return true;
+ }
  if(!nodes.length&&total!==0)return false;
  var host=document.createElement('div');host.innerHTML=TEMPLATE;
  var root=host.firstElementChild;var grid=root.querySelector('#oreon-product-grid');
@@ -236,7 +260,7 @@ var initialFilter='ALL';
 
 }
 
-if(!mount()){var observer=new MutationObserver(function(){if(mount())observer.disconnect()});observer.observe(document.documentElement,{childList:true,subtree:true});setTimeout(function(){observer.disconnect()},15000)}
+if(!mount()){var observer=new MutationObserver(function(){if(mount())observer.disconnect()});observer.observe(document.documentElement,{childList:true,subtree:true});setTimeout(function(){observer.disconnect()},60000)}
 })();
   }
   if (document.readyState === 'loading') {
