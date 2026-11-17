@@ -27,7 +27,7 @@ style.textContent=`
 #oreon-product-detail .rd-list{display:inline-flex;align-items:center;gap:12px;border:1px solid #8fd8fc66;border-radius:999px;padding:11px 25px;color:#d8f0ff;text-decoration:none;font-size:14px;transition:background .2s}
 #oreon-product-detail .rd-list:hover{background:#8fd8fc16}
 #oreon-product-detail a:focus-visible{outline:2px solid #8fd8fc;outline-offset:5px}
-#w202610106ffb71b28cee8.oreon-product-styled .rd-native-hidden{display:none!important}
+#w202611179c79ab4ab520e.oreon-product-styled .rd-native-hidden,#w202610106ffb71b28cee8.oreon-product-styled .rd-native-hidden{display:none!important}
 @media(max-width:800px){#oreon-product-detail{padding:32px 8px 56px}#oreon-product-detail .rd-layout{grid-template-columns:1fr;gap:36px}#oreon-product-detail .rd-media{position:relative;top:auto;max-width:520px;width:100%;margin:auto;aspect-ratio:1/1}#oreon-product-detail .rd-media img{max-height:420px}#oreon-product-detail h1{font-size:44px}}
 @media(prefers-reduced-motion:reduce){#oreon-product-detail *{transition:none!important;scroll-behavior:auto!important}}
 
@@ -53,7 +53,7 @@ style.textContent=`
 @media(max-width:800px){#oreon-product-detail{padding:32px 8px 56px}#oreon-product-detail .rd-layout{grid-template-columns:1fr;gap:32px}#oreon-product-detail .rd-media{margin:0 auto;max-width:440px;width:100%}#oreon-product-detail .rd-media img{max-height:420px}#oreon-product-detail .rd-heading-row{gap:12px;margin-bottom:24px}#oreon-product-detail h1{font-size:44px}#oreon-product-detail .rd-section{padding-left:22px;padding-bottom:34px}#oreon-product-detail .rd-content h6{margin-bottom:30px}}
 `;
 function init(){
-var widget=document.getElementById('w202610106ffb71b28cee8');
+var widget=document.getElementById('w202611179c79ab4ab520e') || document.getElementById('w202610106ffb71b28cee8');
 if(!widget)return false;
 if(document.getElementById('oreon-product-detail'))return true;
 var view=widget.querySelector('.board_view'),body=widget.querySelector('.board_txt_area'),nativeTitle=widget.querySelector('.view_tit');
