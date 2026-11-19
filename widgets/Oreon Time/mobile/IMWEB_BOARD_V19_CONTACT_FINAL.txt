@@ -1,0 +1,91 @@
+<script>
+(() => {
+  const root = 'https://leejangss.github.io/Oreon_homepage/widgets/Oreon%20Time/';
+  const file = window.matchMedia('(max-width: 767px)').matches
+    ? 'mobile/OREON_Time_Board_Mobile_V19.js?v=19'
+    : 'OREON_TIME_BOARD_SEAMLESS_LOOP_V17.js?v=20261103professionalism';
+  function loadBoard() {
+    const script = document.createElement('script');
+    script.src = root + file;
+    document.head.append(script);
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', loadBoard, {once:true});
+  else loadBoard();
+})();
+</script>
+<script src="https://leejangss.github.io/Oreon_homepage/widgets/Oreon%20Time/OREON_TIME_DETAIL_LIST_SCROLL_V19.js?v=19" defer></script>
+<script>
+(() => {
+  if (window.__oreonCategoryNavigation) return;
+  window.__oreonCategoryNavigation = true;
+  let request = 0;
+  function move(el, offset = 0) {
+    window.scrollTo({top: Math.max(0, scrollY + el.getBoundingClientRect().top + offset - 105),
+      behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth'});
+  }
+  function filter(category, ticket, attempt = 0) {
+    if (ticket !== request) return;
+    const stage = document.querySelector('#w202610103e49cc0075aa3 .omc');
+    if (!stage) {if (attempt < 40) setTimeout(() => filter(category, ticket, attempt + 1), 250); return}
+    document.dispatchEvent(new CustomEvent('oreon:category-select',{detail:{category,source:'oreon-time-v09-iframe'}}));
+    setTimeout(() => {if (ticket === request) move(stage)},150);
+  }
+  window.addEventListener('message', e => {
+    const frame = document.getElementById('oreon-time-motion-v09');
+    if (!frame || e.source !== frame.contentWindow || e.origin !== 'https://leejangss.github.io') return;
+    const d = e.data;
+    if (!d || d.namespace !== 'OREON_TIME_V09' || typeof d.category !== 'string') return;
+    const cat = d.category.toUpperCase().replace(/^CAPABILITY$/,'PROFESSIONALISM');
+    if (!['CHALLENGE','PROFESSIONALISM','CREATIVITY','OPENNESS'].includes(cat)) return;
+    if (d.type === 'values' && Number.isFinite(d.offset) && d.offset >= 0 && d.offset < 30000) {request++; move(frame,d.offset)}
+    else if (d.type === 'board') filter(cat,++request);
+  });
+})();
+</script>
+
+<style>
+@media (max-width: 767px) {
+  #w202610103e49cc0075aa3 .omc.ot12-stage {
+    box-shadow: 0 -12px 0 #080808 !important;
+  }
+  #oreon-time-motion-v09 { display:block; border:0!important; background:#080808!important; }
+  iframe[src*="OREON_TIME_GET_IN_TOUCH_OUTFIT_V07"] {display:none!important}
+  #oreon-time-contact-v07 {display:none!important}
+  #oreon-mobile-contact-restored {
+    display:block; width:100%; border:0; margin:0; background:#0a0a0a;
+    overflow:hidden;
+  }
+}
+@media (min-width:768px) { #oreon-mobile-contact-restored {display:none;} }
+</style>
+<script>
+(() => {
+  const mobile = matchMedia('(max-width:767px)');
+  const source = 'https://leejangss.github.io/Oreon_homepage/widgets/Oreon%20Time/mobile/OREON_Time_Mobile_Contact_V1.html?v=1';
+  window.addEventListener('message', event => {
+    const frame = document.getElementById('oreon-mobile-contact-restored');
+    if (!frame || event.source !== frame.contentWindow || event.origin !== new URL(source).origin) return;
+    const data = event.data;
+    if (data?.type === 'oreon-contact-height' && Number.isFinite(data.height) && data.height > 0 && data.height < 5000)
+      frame.style.height = data.height + 'px';
+  });
+  function restoreContact() {
+    const board = document.getElementById('w202610103e49cc0075aa3');
+    if (!board || !mobile.matches || new URLSearchParams(location.search).get('bmode') === 'view') return;
+    const id = 'oreon-mobile-contact-restored';
+    const existing = document.getElementById(id);
+    if (existing) return;
+    const frame = document.createElement('iframe');
+    frame.id = id;
+    frame.title = 'OREON TIME GET IN TOUCH';
+    frame.src = source;
+    frame.scrolling = 'no';
+    board.after(frame);
+
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded',restoreContact,{once:true});
+  else restoreContact();
+  window.addEventListener('load',restoreContact,{once:true});
+  mobile.addEventListener('change',restoreContact);
+})();
+</script>
